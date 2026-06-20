@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useStore, go, fmt, setReciboData } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -87,7 +88,7 @@ export default function NuevoRecibo2Screen({ navigation }: Props) {
               <View className="w-6 h-6 rounded-full bg-white shadow-sm" />
             </TouchableOpacity>
           </View>
-          <Text className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+          <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {retencion ? t('nuevo_recibo2_retencion_on') : t('nuevo_recibo2_retencion_off')}
           </Text>
         </View>

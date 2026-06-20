@@ -1,6 +1,7 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
-import { useStore, go, fmt, setDarkMode } from '../store/sunatStore'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { Text } from '../components/AccessibleText'
+import { useStore, go, fmt, setDarkMode, setHighContrast } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 
@@ -29,6 +30,11 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
   const toggleDark = () => {
     dispatch(setDarkMode(!state.darkMode))
+    vibrateLight()
+  }
+
+  const toggleContrast = () => {
+    dispatch(setHighContrast(!state.highContrast))
     vibrateLight()
   }
 
@@ -116,7 +122,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               <Text className="text-gray-500 dark:text-gray-400 text-xs">{t('home_reportes_sub')}</Text>
             </View>
           </View>
-          <Text className="text-gray-400 dark:text-gray-500 text-lg">{'\u203A'}</Text>
+          <Text className="text-gray-500 dark:text-gray-400 text-lg">{'\u203A'}</Text>
         </TouchableOpacity>
 
         <View className="border-t border-gray-200 dark:border-gray-700 pt-4 pb-8">
@@ -127,8 +133,8 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               accessibilityLabel={`${t('lang_switch')}: ${nextLangLabel}`}
               accessibilityRole="button"
             >
-              <Text className="text-gray-400 text-sm mr-1">{'\uD83C\uDF10'}</Text>
-              <Text className="text-gray-400 dark:text-gray-500 text-sm">{nextLangLabel}</Text>
+              <Text className="text-gray-500 text-sm mr-1">{'\uD83C\uDF10'}</Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-sm">{nextLangLabel}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               className="flex-row items-center py-2 px-4"
@@ -136,8 +142,17 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               accessibilityLabel={state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}
               accessibilityRole="button"
             >
-              <Text className="text-gray-400 text-sm mr-1">{state.darkMode ? '\uD83C\uDF19' : '\u2600\uFE0F'}</Text>
-              <Text className="text-gray-400 dark:text-gray-500 text-sm">{state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}</Text>
+              <Text className="text-gray-500 text-sm mr-1">{state.darkMode ? '\uD83C\uDF19' : '\u2600\uFE0F'}</Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="flex-row items-center py-2 px-4"
+              onPress={toggleContrast}
+              accessibilityLabel={state.highContrast ? 'Desactivar alto contraste' : 'Activar alto contraste'}
+              accessibilityRole="button"
+            >
+              <Text className="text-gray-500 text-sm mr-1">{state.highContrast ? '\u{1F30D}' : '\u{1F453}'}</Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.highContrast ? 'Alto contraste ON' : 'Alto contraste'}</Text>
             </TouchableOpacity>
           </View>
         </View>

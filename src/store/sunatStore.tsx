@@ -43,10 +43,11 @@ export interface State {
   language: string
   darkMode: boolean
   biometricEnabled: boolean
+  highContrast: boolean
 }
 
 type Action =
-  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled'>> }
+  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast'>> }
   | { type: 'GO'; payload: string }
   | { type: 'SET_RECIBO_DATA'; payload: Partial<ReciboData> }
   | { type: 'ADD_RECIBO'; payload: Omit<Recibo, 'id'> }
@@ -56,6 +57,7 @@ type Action =
   | { type: 'SET_LANG'; payload: string }
   | { type: 'SET_DARK_MODE'; payload: boolean }
   | { type: 'SET_BIOMETRIC'; payload: boolean }
+  | { type: 'SET_HIGH_CONTRAST'; payload: boolean }
 
 const seedUser: User = {
   nombre: 'Juan Pérez García',
@@ -90,6 +92,7 @@ const seedState: State = {
   language: 'es',
   darkMode: false,
   biometricEnabled: false,
+  highContrast: false,
 }
 
 function reducer(state: State, action: Action): State {
@@ -133,6 +136,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, darkMode: action.payload }
     case 'SET_BIOMETRIC':
       return { ...state, biometricEnabled: action.payload }
+    case 'SET_HIGH_CONTRAST':
+      return { ...state, highContrast: action.payload }
     default:
       return state
   }
@@ -154,7 +159,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const raw = await AsyncStorage.getItem(KEY)
         if (raw) {
           const saved = JSON.parse(raw)
-          dispatch({ type: 'LOAD', payload: { user: saved.user, recibos: saved.recibos, nextId: saved.nextId, language: saved.language, darkMode: saved.darkMode, biometricEnabled: saved.biometricEnabled } })
+          dispatch({ type: 'LOAD', payload: { user: saved.user, recibos: saved.recibos, nextId: saved.nextId, language: saved.language, darkMode: saved.darkMode, biometricEnabled: saved.biometricEnabled, highContrast: saved.highContrast } })
         } else {
           dispatch({ type: 'LOAD', payload: {} })
         }
@@ -168,11 +173,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!state.loaded) return
     const persist = async () => {
       try {
-        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled }))
+        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast }))
       } catch {}
     }
     persist()
-  }, [state.user, state.recibos, state.nextId, state.loaded])
+  }, [state.user, state.recibos, state.nextId, state.language, state.darkMode, state.biometricEnabled, state.highContrast, state.loaded])
 
   return <StoreContext.Provider value={{ state, dispatch }}>{children}</StoreContext.Provider>
 }
@@ -187,6 +192,7 @@ export const go = (screen: string) => ({ type: 'GO' as const, payload: screen })
 export const setLang = (lang: string) => ({ type: 'SET_LANG' as const, payload: lang })
 export const setDarkMode = (val: boolean) => ({ type: 'SET_DARK_MODE' as const, payload: val })
 export const setBiometric = (val: boolean) => ({ type: 'SET_BIOMETRIC' as const, payload: val })
+export const setHighContrast = (val: boolean) => ({ type: 'SET_HIGH_CONTRAST' as const, payload: val })
 export const setReciboData = (data: Partial<ReciboData>) => ({ type: 'SET_RECIBO_DATA' as const, payload: data })
 export const emitirRecibo = () => ({ type: 'EMITIR_RECIBO' as const })
 export const showModal = (id: string) => ({ type: 'MODAL' as const, payload: id })

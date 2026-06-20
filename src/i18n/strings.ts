@@ -32,6 +32,8 @@ const strings: Record<string, Record<string, string>> = {
     register_confirm_pass: 'Confirmar contraseña *',
     register_create: 'Crear cuenta',
     register_terms: 'Al registrarte aceptas los términos y condiciones del Sistema SOL. Tus datos están protegidos según la Ley N° 29733.',
+    register_confirmar_title: '¿Crear cuenta SOL?',
+    register_confirmar_body: 'Al crear tu cuenta aceptas los términos y condiciones del Sistema SOL. Tus datos personales están protegidos según la Ley de Protección de Datos Personales (Ley N° 29733).',
     register_pass_hint: 'Mínimo 8 caracteres, usa letras y números',
     register_dni_example: 'Ejemplo: 10734521890',
     register_name_example: 'Ejemplo: Juan Pérez',
@@ -108,6 +110,8 @@ const strings: Record<string, Record<string, string>> = {
     resumen_recibo_corregir: 'Corregir datos',
     resumen_recibo_volver_hint: 'Regresa al paso anterior para corregir datos',
     resumen_recibo_zero: 'S/ 0.00',
+    resumen_recibo_alerta_title: 'Esta acción no se puede deshacer',
+    resumen_recibo_alerta_body: 'Una vez emitido, el RHE no puede modificarse. Solo puede anularse dentro de las 24 horas hábiles.',
     // ReciboEmitido
     recibo_emitido_title: 'Recibo emitido',
     recibo_emitido_exito: '¡Recibo emitido!',
@@ -158,6 +162,8 @@ const strings: Record<string, Record<string, string>> = {
     declarar_presentar_hint: 'Envía tu declaración jurada anual',
     declarar_presentar_disabled: 'Acepte los términos para presentar declaración',
     declarar_presentar_disabled_hint: 'Debes aceptar los términos primero',
+    declarar_confirmar_title: '¿Confirmar declaración?',
+    declarar_confirmar_body: 'Esta declaración es una declaración jurada. Los datos presentados tienen carácter legal y no podrán modificarse después de enviados.',
     // Declaracion exitosa
     declaracion_exitosa_title: 'Declaración presentada',
     declaracion_exitosa_text: 'Declaración presentada\ncon éxito',
@@ -265,6 +271,8 @@ const strings: Record<string, Record<string, string>> = {
     register_confirm_pass: 'Confirm Password *',
     register_create: 'Create Account',
     register_terms: 'By registering you accept the terms and conditions of the SOL System. Your data is protected under Law No. 29733.',
+    register_confirmar_title: 'Create SOL Account?',
+    register_confirmar_body: 'By creating your account you accept the terms and conditions of the SOL System. Your personal data is protected under the Personal Data Protection Law (Law No. 29733).',
     register_pass_hint: 'Minimum 8 characters, use letters and numbers',
     register_dni_example: 'Example: 10734521890',
     register_name_example: 'Example: John Doe',
@@ -341,6 +349,8 @@ const strings: Record<string, Record<string, string>> = {
     resumen_recibo_corregir: 'Correct data',
     resumen_recibo_volver_hint: 'Go back to correct data',
     resumen_recibo_zero: 'S/ 0.00',
+    resumen_recibo_alerta_title: 'This action cannot be undone',
+    resumen_recibo_alerta_body: 'Once issued, the RHE cannot be modified. It can only be voided within 24 business hours.',
     // ReciboEmitido
     recibo_emitido_title: 'Receipt issued',
     recibo_emitido_exito: 'Receipt issued!',
@@ -391,6 +401,8 @@ const strings: Record<string, Record<string, string>> = {
     declarar_presentar_hint: 'Submit your annual sworn declaration',
     declarar_presentar_disabled: 'Accept the terms to submit',
     declarar_presentar_disabled_hint: 'You must accept the terms first',
+    declarar_confirmar_title: 'Confirm declaration?',
+    declarar_confirmar_body: 'This declaration is a sworn statement. The data submitted has legal status and cannot be modified after submission.',
     // Declaracion exitosa
     declaracion_exitosa_title: 'Declaration submitted',
     declaracion_exitosa_text: 'Declaration submitted\nsuccessfully',

@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { Text } from './AccessibleText'
 import { useStore, hideModal, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 
@@ -12,7 +13,7 @@ export default function ModalRecibo() {
   const ret = recibo.montoBruto - recibo.montoNeto
 
   return (
-    <View className="absolute inset-0 bg-black/50 justify-end z-50">
+    <View className="absolute inset-0 bg-black/50 justify-end z-50" accessibilityViewIsModal={true} onAccessibilityEscape={() => dispatch(hideModal())}>
       <View className="bg-white dark:bg-gray-800 rounded-t-2xl p-6 max-h-[80%]">
         <View className="flex-row justify-between items-center mb-4">
           <Text className="text-lg font-bold text-gray-900 dark:text-gray-100">{t('detalle_title')}</Text>

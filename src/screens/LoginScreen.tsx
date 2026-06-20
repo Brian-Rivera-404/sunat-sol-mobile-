@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import {
-  View, Text, TextInput, TouchableOpacity, ScrollView,
+  View, TextInput, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform,
 } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { useStore, go, setBiometric, setDarkMode } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateError, vibrateSuccess, vibrateSelection } from '../utils/haptics'
@@ -100,7 +101,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
 
         <View className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
           {error ? (
-            <Text className="text-red-600 text-sm mb-4 text-center" accessibilityLiveRegion="polite" importantForAccessibility="yes">{error}</Text>
+            <Text className="text-red-600 text-sm mb-4 text-center" accessibilityRole="alert" accessibilityLiveRegion="assertive" importantForAccessibility="yes">{error}</Text>
           ) : null}
 
           <Text className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">
@@ -201,8 +202,8 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
                 accessibilityLabel={`${t('lang_switch')}: ${nextLangLabel}`}
                 accessibilityRole="button"
               >
-                <Text className="text-gray-400 text-xs mr-1">{'\uD83C\uDF10'}</Text>
-                <Text className="text-gray-400 dark:text-gray-500 text-xs">{nextLangLabel}</Text>
+                <Text className="text-gray-500 text-xs mr-1">{'\uD83C\uDF10'}</Text>
+                <Text className="text-gray-500 dark:text-gray-500 text-xs">{nextLangLabel}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 className="flex-row items-center justify-center py-1"
@@ -210,8 +211,8 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
                 accessibilityLabel={state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}
                 accessibilityRole="button"
               >
-                <Text className="text-gray-400 text-xs mr-1">{state.darkMode ? '\uD83C\uDF19' : '\u2600\uFE0F'}</Text>
-                <Text className="text-gray-400 dark:text-gray-500 text-xs">{state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}</Text>
+                <Text className="text-gray-500 text-xs mr-1">{state.darkMode ? '\uD83C\uDF19' : '\u2600\uFE0F'}</Text>
+                <Text className="text-gray-500 dark:text-gray-500 text-xs">{state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}</Text>
               </TouchableOpacity>
             </View>
           </View>

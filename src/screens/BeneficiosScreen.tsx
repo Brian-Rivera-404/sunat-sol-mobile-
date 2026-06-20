@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import HeaderBar from '../components/HeaderBar'

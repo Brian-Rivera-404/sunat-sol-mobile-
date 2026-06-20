@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useStore, go, fmt, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -62,7 +63,7 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
       <View className="px-4">
         <View className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-5 py-5 mb-6 shadow-sm" accessibilityLabel={`${t('recibo_emitido_recibo')} ${recibo.id}, ${t('recibo_emitido_fecha')} ${formatearFecha(recibo.fecha)}, RUC ${recibo.ruc}, ${t('recibo_emitido_cliente')} ${recibo.cliente}, ${t('recibo_emitido_monto_bruto')} ${fmt(recibo.montoBruto)}, ${t('recibo_emitido_neto')} ${fmt(recibo.montoNeto)}, ${t('recibo_emitido_estado')} ${ESTADO_LABEL[recibo.estado] || recibo.estado}`}>
           <View className="items-center mb-4">
-            <Text className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider">{t('recibo_emitido_codigo')}</Text>
+            <Text className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('recibo_emitido_codigo')}</Text>
             <Text className="text-xl font-bold text-[#002f5d] dark:text-blue-300 mt-1">{recibo.id}</Text>
           </View>
 

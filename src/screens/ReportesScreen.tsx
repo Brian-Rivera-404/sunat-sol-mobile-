@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, MESES } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import HeaderBar from '../components/HeaderBar'
@@ -67,7 +68,7 @@ export default function ReportesScreen({ navigation }: { navigation: any }) {
                     className="w-full bg-[#002f5d] dark:bg-blue-400 rounded-t-sm"
                     style={{ height: `${Math.max(altura, 2)}%` }}
                   />
-                  <Text className="text-[9px] text-gray-500 dark:text-gray-400 mt-1">{MESES[i]}</Text>
+                  <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{MESES[i]}</Text>
                 </View>
               )
             })}

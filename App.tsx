@@ -1,6 +1,7 @@
 import './src/styles/global.css'
 import React, { useEffect, useRef, useCallback } from 'react'
-import { View, Text, ActivityIndicator, AccessibilityInfo } from 'react-native'
+import { View, ActivityIndicator, AccessibilityInfo, Appearance } from 'react-native'
+import { Text } from './src/components/AccessibleText'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -28,8 +29,6 @@ const Stack = createNativeStackNavigator()
 const screenOptions = {
   headerShown: false,
   animation: 'slide_from_right' as const,
-  contentStyle: { backgroundColor: '#f9fafb' },
-  // content background set dynamically via root View className
 }
 
 function AppNavigator() {
@@ -41,6 +40,10 @@ function AppNavigator() {
       navigationRef.current.navigate(state.screen)
     }
   }, [state.screen])
+
+  useEffect(() => {
+    Appearance.setColorScheme(state.highContrast || state.darkMode ? 'dark' : 'light')
+  }, [state.darkMode, state.highContrast])
 
   const announceRoute = useCallback((routeName?: string) => {
     if (!routeName) return
@@ -73,7 +76,7 @@ function AppNavigator() {
   }
 
   return (
-    <View className={state.darkMode ? 'dark' : ''} style={{ flex: 1, backgroundColor: state.darkMode ? '#1f2937' : '#f9fafb' }}>
+    <View className="flex-1" accessibilityLanguage="es">
       <NavigationContainer
         ref={navigationRef}
         onStateChange={(navState) => {

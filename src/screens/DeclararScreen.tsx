@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
-import { View, Text, TouchableOpacity, ScrollView, Switch } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Switch, Alert } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess } from '../utils/haptics'
@@ -70,7 +71,21 @@ export default function DeclararScreen({ navigation }: { navigation: any }) {
 
         <TouchableOpacity
           className={`rounded-xl py-4 items-center mb-10 ${acepto ? 'bg-[#002f5d]' : 'bg-gray-300 dark:bg-gray-600'}`}
-          onPress={() => { vibrateSuccess(); dispatch(go('DeclaracionExitosa')) }}
+          onPress={() => {
+            Alert.alert(
+              t('declarar_confirmar_title'),
+              t('declarar_confirmar_body'),
+              [
+                { text: t('general_cancelar'), style: 'cancel' },
+                {
+                  text: t('declarar_presentar'),
+                  style: 'destructive',
+                  onPress: () => { vibrateSuccess(); dispatch(go('DeclaracionExitosa')) },
+                },
+              ],
+              { cancelable: true },
+            )
+          }}
           disabled={!acepto}
           accessibilityLabel={acepto ? t('declarar_presentar') : t('declarar_presentar_disabled')}
           accessibilityRole="button"

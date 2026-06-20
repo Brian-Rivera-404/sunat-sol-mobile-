@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useStore, go, RUC_DB, setReciboData } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -57,7 +58,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
           accessibilityLabel={t('nuevo_recibo_ruc_label')}
           accessibilityHint={t('nuevo_recibo_ruc_hint')}
         />
-        <Text className="text-xs text-gray-400 dark:text-gray-500 mb-1">{t('nuevo_recibo_ruc_example')}</Text>
+        <Text className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('nuevo_recibo_ruc_example')}</Text>
         {ruc.length === 11 && (
           cliente ? (
             <View className="bg-green-50 dark:bg-green-900 border border-green-300 dark:border-green-700 rounded-lg px-4 py-3 mb-3 flex-row items-center">
@@ -71,7 +72,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
           )
         )}
 
-        <Text className="text-xs text-gray-400 dark:text-gray-500 mb-2">{t('nuevo_recibo_ruc_test')}</Text>
+        <Text className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('nuevo_recibo_ruc_test')}</Text>
         {Object.entries(RUC_DB).map(([r, c]) => (
           <TouchableOpacity key={r} onPress={() => setRuc(r)} className="py-1" accessibilityLabel={t('nuevo_recibo_ruc_test_prefix') + `: ${r} - ${c}`} accessibilityRole="button" accessibilityHint="Presiona para autocompletar el RUC">
             <Text className="text-blue-600 dark:text-blue-400 text-sm">{r} - {c}</Text>

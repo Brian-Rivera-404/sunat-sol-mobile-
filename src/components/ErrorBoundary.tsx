@@ -1,4 +1,5 @@
 import React from 'react'
+import { AccessibilityInfo } from 'react-native'
 
 export class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -10,11 +11,14 @@ export class ErrorBoundary extends React.Component<
     return { hasError: true, error }
   }
 
+  componentDidCatch(error: Error) {
+    AccessibilityInfo.announceForAccessibility('Error en la aplicación: ' + error.message)
+  }
+
   render() {
     if (this.state.hasError) {
       return (
         <React.Fragment>
-          {/* Minimal fallback so user sees something */}
           <>{this.props.children}</>
         </React.Fragment>
       )

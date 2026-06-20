@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { View, Text, Animated, AccessibilityInfo } from 'react-native'
+import { View, Animated, AccessibilityInfo } from 'react-native'
+import { Text } from './AccessibleText'
 import { useStore } from '../store/sunatStore'
 
 export default function Toast() {
@@ -31,8 +32,8 @@ export default function Toast() {
       className="absolute bottom-8 left-6 right-6 bg-gray-800 dark:bg-gray-700 rounded-xl py-3 px-4 z-50"
       style={{ opacity }}
       accessible={true}
-      accessibilityRole="alert"
-      accessibilityLiveRegion="polite"
+          accessibilityRole="alert"
+          accessibilityLiveRegion="polite"
       importantForAccessibility="yes"
     >
       <Text className="text-white text-center font-medium text-sm">{state.toast}</Text>

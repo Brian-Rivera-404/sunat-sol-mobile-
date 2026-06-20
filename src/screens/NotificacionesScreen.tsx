@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import HeaderBar from '../components/HeaderBar'
@@ -32,7 +33,7 @@ export default function NotificacionesScreen({ navigation }: { navigation: any }
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <View>
-          <Text className="text-white font-bold text-xl">{t('notif_title')}</Text>
+          <Text className="text-white font-bold text-xl" accessibilityRole="header">{t('notif_title')}</Text>
           <Text className="text-blue-200 text-sm" accessibilityLabel={`${items.length} ${t('notif_count')}`}>{items.length} {t('notif_count')}</Text>
         </View>
       </HeaderBar>
@@ -49,7 +50,7 @@ export default function NotificacionesScreen({ navigation }: { navigation: any }
             <View className="flex-1">
               <Text className="text-sm font-bold text-gray-900 dark:text-gray-100">{item.titulo}</Text>
               <Text className="text-gray-500 dark:text-gray-400 text-sm mt-1">{item.desc}</Text>
-              <Text className="text-gray-400 dark:text-gray-500 text-xs mt-1">{item.time}</Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-xs mt-1">{item.time}</Text>
             </View>
           </View>
         ))}

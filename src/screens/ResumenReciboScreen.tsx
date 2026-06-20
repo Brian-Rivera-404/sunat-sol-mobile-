@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useStore, go, fmt, emitirRecibo } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -23,9 +24,23 @@ export default function ResumenReciboScreen({ navigation }: Props) {
   const neto = monto - retencionMonto
 
   function handleConfirmar() {
-    dispatch(emitirRecibo())
-    vibrateSuccess()
-    dispatch(go('ReciboEmitido'))
+    Alert.alert(
+      t('resumen_recibo_alerta_title'),
+      t('resumen_recibo_alerta_body'),
+      [
+        { text: t('general_cancelar'), style: 'cancel' },
+        {
+          text: t('resumen_recibo_confirmar'),
+          style: 'destructive',
+          onPress: () => {
+            dispatch(emitirRecibo())
+            vibrateSuccess()
+            dispatch(go('ReciboEmitido'))
+          },
+        },
+      ],
+      { cancelable: true },
+    )
   }
 
   return (
@@ -68,6 +83,11 @@ export default function ResumenReciboScreen({ navigation }: Props) {
             <Text className="text-gray-800 dark:text-gray-100 font-bold text-base">{t('resumen_recibo_neto')}</Text>
             <Text className="text-[#002f5d] dark:text-blue-300 font-bold text-lg">{fmt(neto)}</Text>
           </View>
+        </View>
+
+        <View className="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-xl px-4 py-4 mb-5" accessibilityRole="alert" accessibilityLiveRegion="assertive" importantForAccessibility="yes">
+          <Text className="text-amber-800 dark:text-amber-200 font-bold text-sm mb-1">{'\u26A0\uFE0F'} {t('resumen_recibo_alerta_title')}</Text>
+          <Text className="text-amber-700 dark:text-amber-300 text-sm leading-5">{t('resumen_recibo_alerta_body')}</Text>
         </View>
 
         <TouchableOpacity

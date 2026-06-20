@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react'
-import { View, Text, TouchableOpacity, ScrollView, RefreshControl } from 'react-native'
+import { View, TouchableOpacity, ScrollView, RefreshControl } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useStore, go, fmt, formatearFecha, showModal } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -59,7 +60,7 @@ export default function MisRecibosScreen({ navigation }: Props) {
         <View className="flex-1 items-center justify-center px-6">
           <Text className="text-5xl mb-4" accessibilityElementsHidden={true}>{'\uD83D\uDCC4'}</Text>
           <Text className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('mis_recibos_empty')}</Text>
-          <Text className="text-gray-400 dark:text-gray-500 text-center mb-6">{t('mis_recibos_empty_desc')}</Text>
+          <Text className="text-gray-500 dark:text-gray-400 text-center mb-6">{t('mis_recibos_empty_desc')}</Text>
           <TouchableOpacity
             className="bg-[#002f5d] rounded-lg py-4 px-8 items-center"
             onPress={() => dispatch(go('NuevoRecibo1'))}
@@ -97,7 +98,7 @@ export default function MisRecibosScreen({ navigation }: Props) {
                 <Text className="text-gray-800 dark:text-gray-200 font-bold">{fmt(recibo.montoBruto)}</Text>
               </View>
               <View className="flex-row justify-between items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                <Text className="text-xs text-gray-400 dark:text-gray-500">{FORMA_PAGO_LABEL[recibo.formaPago] || recibo.formaPago}</Text>
+                <Text className="text-xs text-gray-500 dark:text-gray-400">{FORMA_PAGO_LABEL[recibo.formaPago] || recibo.formaPago}</Text>
                 <TouchableOpacity
                   onPress={() => { vibrateLight(); dispatch(showModal(recibo.id)) }}
                   className="bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-1.5"

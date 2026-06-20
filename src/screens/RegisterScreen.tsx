@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native'
+import { Text } from '../components/AccessibleText'
 import { useStore, go } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess, vibrateError } from '../utils/haptics'
@@ -26,8 +27,22 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
     if (pass !== pass2) err.pass2 = 'No coinciden.'
     setErrors(err)
     if (Object.keys(err).length === 0) {
-      vibrateSuccess()
-      dispatch(go('Login'))
+      Alert.alert(
+        t('register_confirmar_title'),
+        t('register_confirmar_body'),
+        [
+          { text: t('general_cancelar'), style: 'cancel' },
+          {
+            text: t('register_create'),
+            style: 'destructive',
+            onPress: () => {
+              vibrateSuccess()
+              dispatch(go('Login'))
+            },
+          },
+        ],
+        { cancelable: true },
+      )
     } else {
       vibrateError()
     }
@@ -57,8 +72,8 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
               <Text className="text-lg" accessibilityElementsHidden={true}>{showPass ? '🙈' : '👁'}</Text>
             </TouchableOpacity>
           </View>
-          <Text className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('register_pass_hint')}</Text>
-          {errors.pass ? <Text className="text-red-600 text-xs mt-1" accessibilityLiveRegion="polite" importantForAccessibility="yes">{errors.pass}</Text> : null}
+          <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('register_pass_hint')}</Text>
+          {errors.pass ? <Text className="text-red-600 text-xs mt-1" accessibilityRole="alert" accessibilityLiveRegion="assertive" importantForAccessibility="yes">{errors.pass}</Text> : null}
         </View>
         <Field label={t('register_confirm_pass')} value={pass2} onChange={setPass2} error={errors.pass2} secureTextEntry />
         <View className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 mb-4">
@@ -79,8 +94,8 @@ function Field({ label, value, onChange, error, keyboardType, autoCapitalize, se
     <View className="mb-3">
       <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{label}</Text>
       <TextInput className={`border rounded-lg px-4 py-3 text-base ${error ? 'border-red-300 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'} text-gray-900 dark:text-gray-100`} value={value} onChangeText={t => { onChange(t) }} keyboardType={keyboardType} autoCapitalize={autoCapitalize} secureTextEntry={secureTextEntry} accessibilityLabel={label} accessibilityHint={hint} />
-      {hint ? <Text className="text-xs text-gray-400 dark:text-gray-500 mt-1">{hint}</Text> : null}
-      {error ? <Text className="text-red-600 dark:text-red-400 text-xs mt-1" accessibilityLiveRegion="polite" importantForAccessibility="yes">{error}</Text> : null}
+      {hint ? <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{hint}</Text> : null}
+      {error ? <Text className="text-red-600 dark:text-red-400 text-xs mt-1" accessibilityRole="alert" accessibilityLiveRegion="assertive" importantForAccessibility="yes">{error}</Text> : null}
     </View>
   )
 }
