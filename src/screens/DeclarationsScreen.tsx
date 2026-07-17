@@ -1,9 +1,10 @@
 import React from 'react'
-import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, fmt, formatearFecha, addDeclaration } from '../store/sunatStore'
+import { useStore, go, fmt, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
+import { isValidDate, isFutureDate } from '../utils/validators'
 import HeaderBar from '../components/HeaderBar'
 
 const ESTADO_COLORS: Record<string, { bg: string; text: string; icon: string }> = {
@@ -17,6 +18,33 @@ export default function DeclarationsScreen({ navigation }: { navigation: any }) 
   const { t } = useTranslate()
 
   const sorted = [...state.declarations].sort((a, b) => b.fechaLimite.localeCompare(a.fechaLimite))
+
+  const handleSetReminder = () => {
+    const today = new Date().toISOString().split('T')[0]
+    Alert.prompt
+      ? Alert.prompt(
+          t('declarations_reminder_title'),
+          t('declarations_reminder_desc'),
+          [
+            { text: t('general_cancelar'), style: 'cancel' },
+            {
+              text: t('declarations_reminder_set'),
+              onPress: (input?: string) => {
+                const date = (input || '').trim()
+                if (!isValidDate(date) || !isFutureDate(date)) {
+                  Alert.alert(t('general_error'), t('declarations_reminder_invalid'))
+                  return
+                }
+                Alert.alert(t('declarations_reminder_set'), t('declarations_reminder_success') + ' ' + date)
+              },
+            },
+          ],
+          'plain-text',
+          today,
+          'number-pad',
+        )
+      : Alert.alert(t('declarations_reminder_title'), t('declarations_reminder_platform'))
+  }
 
   return (
     <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
@@ -72,6 +100,22 @@ export default function DeclarationsScreen({ navigation }: { navigation: any }) 
             })}
           </View>
         )}
+        <TouchableOpacity
+          className="bg-white dark:bg-gray-800 rounded-xl p-4 flex-row items-center justify-between mb-4 shadow-sm"
+          onPress={() => { vibrateLight(); handleSetReminder() }}
+          accessibilityLabel={t('declarations_reminder_set')}
+          accessibilityRole="button"
+          accessibilityHint={t('declarations_reminder_hint')}
+        >
+          <View className="flex-row items-center">
+            <Text className="text-2xl mr-3">{'\uD83D\uDD14'}</Text>
+            <View>
+              <Text className="text-gray-800 dark:text-gray-200 font-semibold">{t('declarations_reminder_set')}</Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-xs">{t('declarations_reminder_desc')}</Text>
+            </View>
+          </View>
+          <Text className="text-gray-500 dark:text-gray-400 text-lg">{'\u203A'}</Text>
+        </TouchableOpacity>
         <View className="h-6" />
       </View>
     </ScrollView>

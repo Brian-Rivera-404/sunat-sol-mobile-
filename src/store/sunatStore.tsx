@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Platform } from 'react-native'
+import { secureSaveCCI, secureGetCCI, secureSavePinHash, secureGetPinHash } from '../services/secureStorage'
 import type { DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings } from '../types/shared'
 
 const KEY = 'sunat_sol_data'
@@ -252,12 +254,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     ;(async () => {
       try {
         const raw = await AsyncStorage.getItem(KEY)
+        let payload: Record<string, any> = {}
         if (raw) {
           const saved = JSON.parse(raw)
-          dispatch({ type: 'LOAD', payload: { user: saved.user, recibos: saved.recibos, nextId: saved.nextId, language: saved.language, darkMode: saved.darkMode, biometricEnabled: saved.biometricEnabled, highContrast: saved.highContrast, expenses: saved.expenses, declarations: saved.declarations, conversations: saved.conversations, assistantSettings: saved.assistantSettings, clients: saved.clients, inbox: saved.inbox, onboardingSeen: saved.onboardingSeen, sessionTimeoutMinutes: saved.sessionTimeoutMinutes, pinHash: saved.pinHash, cci: saved.cci } })
-        } else {
-          dispatch({ type: 'LOAD', payload: {} })
+          payload = saved
         }
+        if (Platform.OS !== 'web') {
+          const cci = await secureGetCCI()
+          if (cci) payload.cci = cci
+          const pinHash = await secureGetPinHash()
+          if (pinHash) payload.pinHash = pinHash
+        }
+        dispatch({ type: 'LOAD', payload })
       } catch {
         dispatch({ type: 'LOAD', payload: {} })
       }
@@ -268,11 +276,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!state.loaded) return
     const persist = async () => {
       try {
-        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast, expenses: state.expenses, declarations: state.declarations, conversations: state.conversations, assistantSettings: state.assistantSettings, clients: state.clients, inbox: state.inbox, onboardingSeen: state.onboardingSeen, sessionTimeoutMinutes: state.sessionTimeoutMinutes, pinHash: state.pinHash, cci: state.cci }))
+        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast, expenses: state.expenses, declarations: state.declarations, conversations: state.conversations, assistantSettings: state.assistantSettings, clients: state.clients, inbox: state.inbox, onboardingSeen: state.onboardingSeen, sessionTimeoutMinutes: state.sessionTimeoutMinutes }))
       } catch {}
     }
     persist()
-  }, [state.user, state.recibos, state.nextId, state.language, state.darkMode, state.biometricEnabled, state.highContrast, state.expenses, state.declarations, state.conversations, state.assistantSettings, state.clients, state.inbox, state.onboardingSeen, state.sessionTimeoutMinutes, state.pinHash, state.cci, state.loaded])
+  }, [state.user, state.recibos, state.nextId, state.language, state.darkMode, state.biometricEnabled, state.highContrast, state.expenses, state.declarations, state.conversations, state.assistantSettings, state.clients, state.inbox, state.onboardingSeen, state.sessionTimeoutMinutes, state.loaded])
+
+  useEffect(() => {
+    if (!state.loaded || !state.cci) return
+    secureSaveCCI(state.cci)
+  }, [state.cci, state.loaded])
+
+  useEffect(() => {
+    if (!state.loaded || !state.pinHash) return
+    secureSavePinHash(state.pinHash)
+  }, [state.pinHash, state.loaded])
 
   return <StoreContext.Provider value={{ state, dispatch }}>{children}</StoreContext.Provider>
 }
