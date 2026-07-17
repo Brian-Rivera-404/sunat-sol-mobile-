@@ -117,6 +117,23 @@ export default function TaxCalendarScreen({ navigation }: { navigation: any }) {
           })}
         </View>
 
+        {/* Próximas obligaciones — prototype parity */}
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+          <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('calendar_upcoming_obligations')}</Text>
+          {[
+            { label: t('calendar_obligation_jul'), date: t('calendar_obligation_jul_date') },
+            { label: t('calendar_obligation_annual'), date: t('calendar_obligation_annual_date') },
+          ].map((e, i) => (
+            <View key={i} className="flex-row justify-between items-center py-2" style={{ borderBottomWidth: i === 0 ? 1 : 0, borderBottomColor: '#F1F5F9' }}>
+              <View>
+                <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{e.label}</Text>
+                <Text className="text-xs" style={{ color: '#94A3B8' }}>{e.date}</Text>
+              </View>
+              <CalPill status="próximo" />
+            </View>
+          ))}
+        </View>
+
         <TouchableOpacity
           className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between mb-10 shadow-sm"
           onPress={() => { vibrateLight() }}

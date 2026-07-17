@@ -152,6 +152,19 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
           </View>
         </View>
 
+        {/* Fotografiar comprobante — prototype parity */}
+        <TouchableOpacity
+          className="bg-white dark:bg-gray-800 rounded-[16px] py-3.5 px-4 flex-row items-center justify-center mb-2.5 shadow-sm"
+          style={{ borderWidth: 2, borderStyle: 'dashed', borderColor: '#CBD5E1' }}
+          onPress={handlePickImage}
+          accessibilityLabel={t('expenses_scan_receipt')}
+          accessibilityRole="button"
+          accessibilityHint={t('expenses_scan_receipt_hint')}
+        >
+          <Text className="text-[22px] mr-2">{'\uD83D\uDCF8'}</Text>
+          <Text className="text-sm font-bold" style={{ color: '#1B4FBF' }}>{t('expenses_scan_receipt')}</Text>
+        </TouchableOpacity>
+
         <View className="flex-row justify-between items-center mb-3">
           <Text className="text-gray-500 dark:text-gray-400 text-sm">{(state.expenses ?? []).length} {t('expenses_count')}</Text>
           <TouchableOpacity

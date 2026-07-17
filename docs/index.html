@@ -5,24 +5,36 @@
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>SUNAT SOL</title>
-    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
       * { box-sizing: border-box; }
-      html, body { height: 100%; margin: 0; padding: 0; background: #14141f; }
-      body { overflow: hidden; display: flex; align-items: center; justify-content: center; }
-      #root { display: flex; height: 844px; width: 390px; flex: 0 0 auto; border-radius: 44px; overflow: hidden; position: relative; box-shadow: 0 0 0 8px #1e1e2e, 0 0 0 10px #2a2a3a, 0 20px 60px rgba(0,0,0,0.8); }
-      @media (max-width: 430px) { body { background: #fff; } #root { width: 100vw; height: 100vh; border-radius: 0; box-shadow: none; } }
+      html, body { height: 100%; margin: 0; padding: 0; background: radial-gradient(ellipse at 25% 15%, #c7d2fe 0%, #dbeafe 40%, #e0e7ff 100%); }
+      body { overflow: hidden; display: flex; align-items: center; justify-content: center; font-family: -apple-system, system-ui, sans-serif; }
+      .phone-frame { display: flex; flex-direction: column; height: 844px; width: 390px; flex: 0 0 auto; border-radius: 52px; overflow: hidden; position: relative; box-shadow: 0 0 0 10px #1a1a1a, 0 0 0 13px #2d2d2d, 0 40px 80px rgba(10,34,64,0.28), 0 0 60px rgba(99,102,241,0.12); }
+      .status-bar { background: linear-gradient(145deg, #0A2240 0%, #0D3060 100%); padding: 14px 28px 6px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 5; }
+      .status-bar .time { color: #fff; font-size: 14px; font-weight: 800; }
+      .status-bar .island { width: 96px; height: 28px; background: #111; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+      .status-bar .island::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #333; }
+      .status-bar .island::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #222; }
+      .status-bar .icons { display: flex; gap: 5px; align-items: center; color: rgba(255,255,255,0.8); font-size: 12px; }
+      #root { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+      .home-indicator { background: #fff; padding: 6px 0 10px; display: flex; justify-content: center; flex-shrink: 0; }
+      .home-indicator::after { content: ''; width: 128px; height: 5px; background: #1E293B; border-radius: 4px; opacity: 0.18; }
+      @media (max-width: 430px) { body { background: #fff; } .phone-frame { width: 100vw; height: 100vh; border-radius: 0; box-shadow: none; } }
     </style>
-  <link rel="preload" href="./_expo/static/css/web-0d0bbaae93d9b60d6d5a1a438671c236.css" as="style"><link rel="stylesheet" href="./_expo/static/css/web-0d0bbaae93d9b60d6d5a1a438671c236.css"><link rel="icon" href="./favicon.ico" /></head>
+  <link rel="preload" href="./_expo/static/css/web-b009d59c123f33f32d058298d7f7422f.css" as="style"><link rel="stylesheet" href="./_expo/static/css/web-b009d59c123f33f32d058298d7f7422f.css"><link rel="icon" href="./favicon.ico" /></head>
 
   <body>
-    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <!-- The root element for your Expo app. -->
-    <div id="root"></div>
-  <script src="./_expo/static/js/web/index-f6b0037b24c33c0fe12751c9de7f2ffc.js" defer></script>
-<script>document.addEventListener('click',function(){sessionStorage.setItem('_activity',Date.now())})</script>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="island"></div>
+        <div class="icons"><span>&#9679;&#9679;&#9679;&#9679;</span> <span>&#128267;</span></div>
+      </div>
+      <div id="root"></div>
+      <div class="home-indicator"></div>
+    </div>
+  <script src="./_expo/static/js/web/index-1a2d5b851e5b0676ec5dab628c710022.js" defer></script>
+  <script>document.addEventListener('click',function(){sessionStorage.setItem('_activity',Date.now())})</script>
 </body>
 </html>

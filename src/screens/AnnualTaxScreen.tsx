@@ -1,16 +1,17 @@
 import React, { useMemo } from 'react'
-import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 
-const ANNUAL_STEPS = [
-  { id: 'ingresos', icon: '\uD83D\uDCCB' },
-  { id: 'deducciones', icon: '\uD83D\uDCB0' },
-  { id: 'impuesto', icon: '\uD83D\uDCCA' },
-  { id: 'pago', icon: '\u2705' },
+const RENTA_CHECK = [
+  { id: 'ingresos', labelKey: 'annual_step_ingresos', done: true },
+  { id: 'gastos', labelKey: 'annual_step_gastos', done: true },
+  { id: 'liquidacion', labelKey: 'annual_step_liquidacion', done: false },
+  { id: 'declaracion', labelKey: 'annual_step_declaracion', done: false },
+  { id: 'devolucion', labelKey: 'annual_step_devolucion', done: false },
 ]
 
 export default function AnnualTaxScreen({ navigation }: { navigation: any }) {
@@ -34,10 +35,17 @@ export default function AnnualTaxScreen({ navigation }: { navigation: any }) {
     if (totalGastos > 0 || emitidos.length > 0) count++
     if (impuestoEstimado > 0) count++
     if (emitidos.some((r) => r.estado === 'emitido')) count++
+    if (saldoAPagar === 0 && totalIngresos > 0) count++
     return count
-  }, [totalIngresos, totalGastos, emitidos, impuestoEstimado])
+  }, [totalIngresos, totalGastos, emitidos, impuestoEstimado, saldoAPagar])
 
-  const progress = Math.min((pasosCompletados / ANNUAL_STEPS.length) * 100, 100)
+  const progress = Math.min((pasosCompletados / RENTA_CHECK.length) * 100, 100)
+  const screenWidth = Dimensions.get('window').width
+  const circleSize = 56
+  const strokeWidth = 4
+  const radius = (circleSize - strokeWidth) / 2
+  const circumference = 2 * Math.PI * radius
+  const offset = circumference - (progress / 100) * circumference
 
   return (
     <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
@@ -49,35 +57,52 @@ export default function AnnualTaxScreen({ navigation }: { navigation: any }) {
       </HeaderBar>
 
       <View className="px-4 pt-6">
-        <View className="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-[18px] px-4 py-3 mb-2.5" accessibilityRole="alert">
-          <Text className="text-amber-800 dark:text-amber-200 text-sm font-semibold">{'\u26A0\uFE0F'} {t('annual_tax_deadline')}: {t('annual_tax_deadline_date')}</Text>
-        </View>
-
+        {/* Progress card with circle */}
         <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
-          <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-2">{t('annual_tax_progress')}</Text>
-          <View className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full mb-2" accessibilityLabel={`${t('annual_tax_progress')}: ${Math.round(progress)}%`}>
-            <View className="h-full bg-[#0A2240] rounded-full" style={{ width: `${progress}%` }} />
+          <View className="flex-row justify-between items-center mb-3.5">
+            <View>
+              <Text className="text-xs" style={{ color: '#64748B' }}>{t('annual_tax_campaign')}</Text>
+              <Text className="text-lg font-extrabold" style={{ color: '#0A2240' }}>{pasosCompletados}/{RENTA_CHECK.length} {t('annual_tax_steps_completed')}</Text>
+            </View>
+            {/* Circular progress */}
+            <View className="items-center justify-center" style={{ width: circleSize, height: circleSize }}>
+              <View className="absolute inset-0 items-center justify-center">
+                <Text className="text-sm font-extrabold" style={{ color: '#1B4FBF' }}>{Math.round(progress)}%</Text>
+              </View>
+              <svg width={circleSize} height={circleSize} viewBox={`0 0 ${circleSize} ${circleSize}`}>
+                <circle cx={circleSize/2} cy={circleSize/2} r={radius} fill="none" stroke="#E2E8F0" strokeWidth={strokeWidth} />
+                <circle cx={circleSize/2} cy={circleSize/2} r={radius} fill="none" stroke="#1B4FBF" strokeWidth={strokeWidth} strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" transform={`rotate(-90 ${circleSize/2} ${circleSize/2})`} />
+              </svg>
+            </View>
           </View>
-          <Text className="text-xs text-gray-400 dark:text-gray-400">{pasosCompletados}/{ANNUAL_STEPS.length} {t('annual_tax_steps_completed')}</Text>
+          <View className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <View className="h-full rounded-full" style={{ width: `${progress}%`, backgroundColor: '#1B4FBF' }} />
+          </View>
         </View>
 
-        <View className="mb-2.5">
-          {ANNUAL_STEPS.map((step, i) => {
+        {/* Checklist — prototype parity */}
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] shadow-sm mb-2.5 overflow-hidden">
+          {RENTA_CHECK.map((item, i) => {
             const done = i < pasosCompletados
             return (
-              <View key={step.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm flex-row items-center">
-                <View className={`w-10 h-10 rounded-full ${done ? 'bg-[#0A2240]' : 'bg-gray-200 dark:bg-gray-700'} items-center justify-center mr-3`}>
-                  <Text className={done ? 'text-white' : 'text-gray-400'}>{step.icon}</Text>
+              <View key={item.id} className="flex-row items-center px-4" style={{ paddingVertical: 12, borderBottomWidth: i < RENTA_CHECK.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}>
+                <View className="w-[30] h-[30] rounded-full items-center justify-center mr-3.5" style={{ backgroundColor: done ? '#DCFCE7' : '#F1F5F9', borderWidth: 2, borderColor: done ? '#16A34A' : '#CBD5E1' }}>
+                  <Text className="text-sm font-extrabold" style={{ color: done ? '#16A34A' : '#94A3B8' }}>{done ? '\u2713' : String(i + 1)}</Text>
                 </View>
-                <View className="flex-1">
-                  <Text className={`text-sm font-semibold ${done ? 'text-gray-800 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500'}`}>{t('annual_tax_step_' + step.id)}</Text>
-                </View>
-                {done && <Text className="text-green-500">{'\u2713'}</Text>}
+                <Text className="text-sm flex-1" style={{ color: done ? '#64748B' : '#1E293B', fontWeight: done ? '500' : '700', textDecorationLine: done ? 'line-through' : 'none' }}>{t(item.labelKey)}</Text>
+                {!done && <Text className="text-lg" style={{ color: '#CBD5E1' }}>{'\u203A'}</Text>}
               </View>
             )
           })}
         </View>
 
+        {/* Deadline info box */}
+        <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-[16px] px-4 py-3 flex-row gap-2.5 mb-2.5" accessibilityRole="alert">
+          <Text className="text-lg">{'\uD83D\uDCC5'}</Text>
+          <Text className="text-xs leading-5 flex-1" style={{ color: '#1E40AF' }}><Text className="font-bold">{t('annual_tax_deadline')}:</Text> {t('annual_tax_deadline_desc')}</Text>
+        </View>
+
+        {/* Summary */}
         <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('annual_tax_summary')}</Text>
           <InfoRow label={t('declarar_ingresos')} value={fmt(totalIngresos)} />
@@ -107,7 +132,7 @@ export default function AnnualTaxScreen({ navigation }: { navigation: any }) {
 function InfoRow({ label, value, isBold }: { label: string; value: string; isBold?: boolean }) {
   return (
     <View className="flex-row justify-between items-center py-1.5" accessibilityLabel={`${label}: ${value}`}>
-      <Text className="text-sm text-gray-600 dark:text-gray-400 flex-1">{label}</Text>
+      <Text className="text-sm" style={{ color: '#64748B' }}>{label}</Text>
       <Text className={`text-xl font-extrabold ${isBold ? '' : ''}`} style={{ color: '#0A2240' }}>{value}</Text>
     </View>
   )
