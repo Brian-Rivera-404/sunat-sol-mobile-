@@ -75,8 +75,6 @@ export type BackupData = {
   }>
   onboardingSeen: boolean
   sessionTimeoutMinutes: number
-  pinHash: string | null
-  cci: string | null
   language: string
   darkMode: boolean
   biometricEnabled: boolean
@@ -110,8 +108,6 @@ export async function exportBackup(): Promise<{ success: boolean; fileUri?: stri
       inbox: stored.inbox || [],
       onboardingSeen: stored.onboardingSeen || false,
       sessionTimeoutMinutes: stored.sessionTimeoutMinutes || 10,
-      pinHash: stored.pinHash || null,
-      cci: stored.cci || null,
       language: stored.language || 'es',
       darkMode: stored.darkMode || false,
       biometricEnabled: stored.biometricEnabled || false,
@@ -125,14 +121,16 @@ export async function exportBackup(): Promise<{ success: boolean; fileUri?: stri
     await FileSystem.writeAsStringAsync(fileUri, jsonString, { encoding: FileSystem.EncodingType.UTF8 })
 
     if (await Sharing.isAvailableAsync()) {
-      await Sharing.shareAsync(fileUri, { mimeType: 'application/json', dialogTitle: 'Guardar respaldo SUNAT SOL' })
+      await Sharing.shareAsync(fileUri, {
+        mimeType: 'application/json',
+        dialogTitle: 'Este archivo contiene tus datos fiscales, compartilo solo con quien confíes.',
+      })
     }
 
     await AsyncStorage.setItem(BACKUP_KEY, jsonString)
 
     return { success: true, fileUri }
   } catch (error) {
-    console.error('[backupService] Error exportando:', error)
     return { success: false, error: String(error) }
   }
 }
@@ -158,8 +156,6 @@ export async function importBackup(fileUri: string): Promise<{ success: boolean;
       inbox: backup.inbox,
       onboardingSeen: backup.onboardingSeen,
       sessionTimeoutMinutes: backup.sessionTimeoutMinutes,
-      pinHash: backup.pinHash,
-      cci: backup.cci,
       language: backup.language,
       darkMode: backup.darkMode,
       biometricEnabled: backup.biometricEnabled,
@@ -171,7 +167,6 @@ export async function importBackup(fileUri: string): Promise<{ success: boolean;
 
     return { success: true }
   } catch (error) {
-    console.error('[backupService] Error importando:', error)
     return { success: false, error: String(error) }
   }
 }
@@ -188,7 +183,6 @@ export async function pickAndImportBackup(): Promise<{ success: boolean; error?:
     await FileSystem.writeAsStringAsync(uri, text, { encoding: FileSystem.EncodingType.UTF8 })
     return await importBackup(uri)
   } catch (error) {
-    console.error('[backupService] Error en import:', error)
     return { success: false, error: String(error) }
   }
 }
