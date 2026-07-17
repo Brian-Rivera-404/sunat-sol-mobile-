@@ -6,6 +6,7 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess, vibrateError } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 import { localFAQ } from '../services/localFAQ'
+import { C } from '../styles/theme'
 
 const CATEGORIAS = [
   'oficina_alquiler',
@@ -145,7 +146,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
         <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <View className="flex-row justify-between items-center mb-2">
             <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{t('expenses_used')}</Text>
-            <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(totalGastos)} / S/ {fmt(3 * UIT)}</Text>
+            <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(totalGastos)} / S/ {fmt(3 * UIT)}</Text>
           </View>
           <View className="h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <View className="h-2.5 bg-[#002f5d] rounded-full" style={{ width: `${Math.min(100, (totalGastos / (3 * UIT)) * 100)}%` }} />
@@ -162,7 +163,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
           accessibilityHint={t('expenses_scan_receipt_hint')}
         >
           <Text className="text-[22px] mr-2">{'\uD83D\uDCF8'}</Text>
-          <Text className="text-sm font-bold" style={{ color: '#1B4FBF' }}>{t('expenses_scan_receipt')}</Text>
+          <Text className="text-sm font-bold" style={{ color: C.blue }}>{t('expenses_scan_receipt')}</Text>
         </TouchableOpacity>
 
         <View className="flex-row justify-between items-center mb-3">
@@ -286,7 +287,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
                     <Text className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('expenses_cat_' + exp.categoria)}</Text>
                   </View>
                 </View>
-                <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(exp.monto)}</Text>
+                <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(exp.monto)}</Text>
               </View>
               {exp.comprobanteUri && (
                 <View className="mt-2">

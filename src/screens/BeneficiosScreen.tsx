@@ -4,6 +4,7 @@ import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 interface Beneficio {
   icon: string
@@ -63,7 +64,7 @@ export default function BeneficiosScreen({ navigation }: { navigation: any }) {
                     ) : null}
                   </View>
                   <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-4">{b.description}</Text>
-                  <Text className="text-xl font-extrabold mt-2" style={{ color: '#0A2240' }}>{b.amount}</Text>
+                  <Text className="text-xl font-extrabold mt-2" style={{ color: C.navy }}>{b.amount}</Text>
                 </View>
               </View>
             </View>

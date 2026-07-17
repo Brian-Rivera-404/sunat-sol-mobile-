@@ -5,6 +5,7 @@ import { useStore, go, fmt, formatearFecha, MESES } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 const REFERENCIA_MERCADO = 0.12
 
@@ -162,7 +163,7 @@ export default function ReportesScreen({ navigation }: { navigation: any }) {
                 <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100" numberOfLines={1}>{c.nombre}</Text>
                 <Text className="text-xs text-gray-400 dark:text-gray-400">{c.count} recibos</Text>
               </View>
-              <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(c.total)}</Text>
+              <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(c.total)}</Text>
             </View>
           ))}
         </View>
@@ -191,7 +192,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <View className="flex-row justify-between items-center py-1.5" accessibilityLabel={label + ': ' + value}>
       <Text className="text-sm text-gray-600 dark:text-gray-400">{label}</Text>
-      <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{value}</Text>
+      <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{value}</Text>
     </View>
   )
 }

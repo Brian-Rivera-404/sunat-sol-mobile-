@@ -6,6 +6,8 @@ import { useStore, go, fmt, setDarkMode, setHighContrast } from '../store/sunatS
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 
+import { C } from '../styles/theme'
+
 const MODULES = [
   { id: 'MisRecibos', labelKey: 'home_mis_recibos', icon: '\uD83D\uDCC4', bg: '#EEF2FF' },
   { id: 'Declarations', labelKey: 'home_declarar', icon: '\uD83D\uDCCA', bg: '#EEF2FF' },
@@ -70,7 +72,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           {/* Income card */}
           <View className="bg-white/9 rounded-[20px] p-[18px] border border-white/12">
             <Text className="text-white/55 text-xs mb-1">{t('home_ingresos_label')}</Text>
-            <Text className="text-3xl font-extrabold tracking-tight" style={{ color: '#F4C430' }}>{fmt(totalIngresos)}</Text>
+            <Text className="text-3xl font-extrabold tracking-tight" style={{ color: C.gold }}>{fmt(totalIngresos)}</Text>
             <Text className="text-white/40 text-xs mt-0.5">
               {reciboCount} recibo{reciboCount !== 1 ? 's' : ''} emitido{reciboCount !== 1 ? 's' : ''}
             </Text>
@@ -82,7 +84,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               </View>
               <View>
                 <Text className="text-white/45 text-xs">{t('home_neto')}</Text>
-                <Text className="text-sm font-bold" style={{ color: '#F4C430' }}>{fmt(totalNeto)}</Text>
+                <Text className="text-sm font-bold" style={{ color: C.gold }}>{fmt(totalNeto)}</Text>
               </View>
               <View>
                 <Text className="text-white/45 text-xs">{t('home_declarado')}</Text>

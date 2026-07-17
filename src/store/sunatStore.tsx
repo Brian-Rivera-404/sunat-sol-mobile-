@@ -122,7 +122,12 @@ const seedState: State = {
   darkMode: false,
   biometricEnabled: false,
   highContrast: false,
-  expenses: [],
+  expenses: [
+    { id: 'EXP-001', monto: 380, categoria: 'otros', establecimientoValidado: true, descripcion: 'Hotel Casa Andina Select Miraflores · Hospedaje', fecha: '2026-07-10' },
+    { id: 'EXP-002', monto: 145, categoria: 'otros', establecimientoValidado: true, descripcion: 'Restaurante La Mar · Restaurante', fecha: '2026-07-08' },
+    { id: 'EXP-003', monto: 2200, categoria: 'oficina_alquiler', establecimientoValidado: true, descripcion: 'Alquiler Oficina San Isidro · Arrendamiento', fecha: '2026-07-01' },
+    { id: 'EXP-004', monto: 80, categoria: 'otros', establecimientoValidado: false, descripcion: 'Ferretería Central Lima · Otro', fecha: '2026-07-05' },
+  ],
   declarations: [
     { id: 'DEC-004', periodo: '2026-06', estado: 'pendiente', fechaLimite: '2026-07-18', monto: 1890 },
     { id: 'DEC-003', periodo: '2026-05', estado: 'pagado', fechaLimite: '2026-06-16', monto: 2340 },

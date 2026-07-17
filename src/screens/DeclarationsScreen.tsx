@@ -6,6 +6,7 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import { isValidDate, isFutureDate } from '../utils/validators'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 const STATUS_STYLE: Record<string, { color: string; bg: string }> = {
   pendiente: { color: '#D97706', bg: '#FEF3C7' },
@@ -14,7 +15,7 @@ const STATUS_STYLE: Record<string, { color: string; bg: string }> = {
 }
 
 function StatusPill({ status }: { status: string }) {
-  const s = STATUS_STYLE[status] ?? { color: '#64748B', bg: '#F1F5F9' }
+  const s = STATUS_STYLE[status] ?? { color: C.s500, bg: C.s100 }
   return (
     <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
       <Text className="text-xs font-bold" style={{ color: s.color }}>{status}</Text>
@@ -94,11 +95,11 @@ export default function DeclarationsScreen({ navigation }: { navigation: any }) 
                 <View className="flex-row justify-between items-end">
                   <View>
                     <Text className="text-xs text-gray-500">{t('declarations_base')}: {fmt(dec.monto || 0)}</Text>
-                    <Text className="text-xl font-extrabold mt-0.5" style={{ color: '#0A2240' }}>{fmt(dec.monto || 0)}</Text>
-                  </View>
-                  {dec.estado === 'pendiente' ? (
-                    <TouchableOpacity
-                      className="rounded-xl px-4 py-2.5" style={{ backgroundColor: '#1B4FBF' }}
+                  <Text className="text-xl font-extrabold mt-0.5" style={{ color: C.navy }}>{fmt(dec.monto || 0)}</Text>
+                </View>
+                {dec.estado === 'pendiente' ? (
+                  <TouchableOpacity
+                    className="rounded-xl px-4 py-2.5" style={{ backgroundColor: C.blue }}
                       onPress={() => { vibrateLight(); dispatch(go('NuevoRecibo1')) }}
                       accessibilityLabel={t('declarations_declare_pay')}
                       accessibilityRole="button"

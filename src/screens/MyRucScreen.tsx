@@ -6,6 +6,7 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess, vibrateError } from '../utils/haptics'
 import { sanitizeInput } from '../utils/validators'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 export default function MyRucScreen({ navigation }: { navigation: any }) {
   const { state, dispatch } = useStore()
@@ -56,11 +57,11 @@ export default function MyRucScreen({ navigation }: { navigation: any }) {
       <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
         {/* Profile card */}
         <View className="bg-white dark:bg-gray-800 rounded-[18px] p-[18] flex-row items-center gap-4 mb-3 shadow-sm">
-          <View className="w-[58] h-[58] rounded-full items-center justify-center" style={{ backgroundColor: '#1B4FBF' }}>
+          <View className="w-[58] h-[58] rounded-full items-center justify-center" style={{ backgroundColor: C.blue }}>
             <Text className="text-white text-2xl font-extrabold">{initial}</Text>
           </View>
           <View className="flex-1">
-            <Text className="text-base font-extrabold" style={{ color: '#0A2240' }}>{user?.nombre || ''}</Text>
+            <Text className="text-base font-extrabold" style={{ color: C.navy }}>{user?.nombre || ''}</Text>
             <Text className="text-xs font-bold mt-0.5" style={{ color: '#16A34A' }}>{'\u25CF'} {t('miruc_estado_value')}</Text>
           </View>
         </View>
@@ -73,7 +74,7 @@ export default function MyRucScreen({ navigation }: { navigation: any }) {
               className="flex-row justify-between items-center px-4"
               style={{ paddingVertical: 10, borderBottomWidth: i < fields.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}
             >
-              <Text className="text-xs" style={{ color: '#64748B' }}>{f.label}</Text>
+              <Text className="text-xs" style={{ color: C.s500 }}>{f.label}</Text>
               <Text className="text-xs font-semibold text-right max-w-[58%]" style={{ color: '#1E293B' }}>{f.value}</Text>
             </View>
           ))}
@@ -87,14 +88,14 @@ export default function MyRucScreen({ navigation }: { navigation: any }) {
             accessibilityLabel={showFullCCI ? t('cci_hide_full') : t('cci_show_full')}
             accessibilityRole="button"
           >
-            <Text className="text-xs font-semibold" style={{ color: '#1B4FBF' }}>{showFullCCI ? t('general_hide') : t('general_show')} CCI</Text>
+            <Text className="text-xs font-semibold" style={{ color: C.blue }}>{showFullCCI ? t('general_hide') : t('general_show')} CCI</Text>
           </TouchableOpacity>
         )}
 
         {/* Actualizar datos button */}
         <TouchableOpacity
           className="w-full mt-4 rounded-[16px] py-3.5 items-center"
-          style={{ backgroundColor: '#F1F5F9', borderWidth: 1.5, borderColor: '#E2E8F0' }}
+          style={{ backgroundColor: C.s100, borderWidth: 1.5, borderColor: C.s200 }}
           onPress={() => { vibrateLight(); setCciInput(state.cci || ''); setShowCCIModal(true) }}
           accessibilityLabel={t('miruc_actualizar')}
           accessibilityRole="button"
@@ -130,7 +131,7 @@ export default function MyRucScreen({ navigation }: { navigation: any }) {
                 <Text className="text-gray-500 font-semibold">{t('general_cancelar')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="px-4 py-2 rounded-lg" style={{ backgroundColor: '#0A2240' }}
+                className="px-4 py-2 rounded-lg" style={{ backgroundColor: C.navy }}
                 onPress={handleSaveCCI}
                 accessibilityLabel={t('general_guardar')}
                 accessibilityRole="button"

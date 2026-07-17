@@ -6,6 +6,7 @@ import { useStore, go, fmt, formatearFecha, showModal } from '../store/sunatStor
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 const ESTADO_LABEL: Record<string, string> = { emitido: 'Emitido', anulado: 'Anulado', revertido: 'Revertido' }
 
@@ -16,7 +17,7 @@ const STATUS_STYLE: Record<string, { color: string; bg: string }> = {
 }
 
 function StatusPill({ status }: { status: string }) {
-  const s = STATUS_STYLE[status] ?? { color: '#64748B', bg: '#F1F5F9' }
+  const s = STATUS_STYLE[status] ?? { color: C.s500, bg: C.s100 }
   return (
     <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
       <Text className="text-xs font-bold" style={{ color: s.color }}>{ESTADO_LABEL[status] || status}</Text>
@@ -118,14 +119,14 @@ export default function MisRecibosScreen({ navigation }: Props) {
               </View>
               <View className="flex-row justify-between items-center">
                 <View>
-                  <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(recibo.montoBruto)}</Text>
+                  <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(recibo.montoBruto)}</Text>
                   {recibo.retencion > 0 && (
                     <Text className="text-xs text-gray-400">{t('mis_recibos_retencion')}: {fmt(recibo.retencion)}</Text>
                   )}
                 </View>
                 <View className="flex-row gap-2">
                   <TouchableOpacity
-                    className="rounded-xl px-3 py-1.5" style={{ backgroundColor: '#F1F5F9' }}
+                    className="rounded-xl px-3 py-1.5" style={{ backgroundColor: C.s100 }}
                     onPress={() => { vibrateLight(); dispatch(showModal(recibo.id)) }}
                     accessibilityLabel={`${t('mis_recibos_ver_detalle')} ${recibo.id}`}
                     accessibilityRole="button"

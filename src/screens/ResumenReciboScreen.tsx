@@ -6,6 +6,7 @@ import { useStore, go, fmt, emitirRecibo } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 import * as Speech from 'expo-speech'
 
 const FORMA_PAGO_LABEL: Record<string, string> = {
@@ -123,7 +124,7 @@ export default function ResumenReciboScreen({ navigation }: Props) {
           <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
           <View className="flex-row justify-between mt-2" accessibilityLabel={`${t('resumen_recibo_neto')}: ${fmt(neto)}`}>
             <Text className="text-gray-800 dark:text-gray-100 font-bold text-base">{t('resumen_recibo_neto')}</Text>
-            <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(neto)}</Text>
+            <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(neto)}</Text>
           </View>
         </View>
 

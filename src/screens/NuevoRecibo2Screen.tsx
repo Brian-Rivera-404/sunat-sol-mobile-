@@ -6,6 +6,7 @@ import { useStore, go, fmt, setReciboData } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 type Props = { navigation: NativeStackNavigationProp<any> }
 
@@ -147,7 +148,7 @@ export default function NuevoRecibo2Screen({ navigation }: Props) {
           <View className="h-px bg-gray-200 dark:bg-gray-600 my-2" />
           <View className="flex-row justify-between">
             <Text className="text-gray-800 dark:text-gray-100 font-bold">{t('nuevo_recibo2_neto')}</Text>
-            <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(neto)}</Text>
+            <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(neto)}</Text>
           </View>
         </View>
 

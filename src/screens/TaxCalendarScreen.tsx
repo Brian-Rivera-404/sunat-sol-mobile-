@@ -5,6 +5,7 @@ import { useStore, go, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 const CAL_PROTO = [
   { ruc: '0', date: '14 jul', status: 'vencido' as const },
@@ -22,7 +23,7 @@ const CAL_STATUS_STYLE: Record<string, { color: string; bg: string }> = {
 }
 
 function CalPill({ status }: { status: string }) {
-  const s = CAL_STATUS_STYLE[status] ?? { color: '#64748B', bg: '#F1F5F9' }
+  const s = CAL_STATUS_STYLE[status] ?? { color: C.s500, bg: C.s100 }
   return (
     <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: s.bg }}>
       <Text className="text-xs font-bold" style={{ color: s.color }}>{status}</Text>
@@ -81,7 +82,7 @@ export default function TaxCalendarScreen({ navigation }: { navigation: any }) {
             <View key={i} className="flex-row items-center justify-between py-2.5" style={{ borderBottomWidth: i < CAL_PROTO.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}>
               <View className="flex-row items-center">
                 <View className="w-8 h-8 rounded-full bg-[#EEF2FF] items-center justify-center mr-3">
-                  <Text className="text-xs font-bold" style={{ color: '#0A2240' }}>{item.ruc}</Text>
+                  <Text className="text-xs font-bold" style={{ color: C.navy }}>{item.ruc}</Text>
                 </View>
                 <View>
                   <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t('calendar_ruc_digit_title')} {item.ruc}</Text>

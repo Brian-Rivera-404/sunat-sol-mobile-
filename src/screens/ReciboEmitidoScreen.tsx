@@ -6,6 +6,7 @@ import { useStore, go, fmt, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 const FORMA_PAGO_LABEL: Record<string, string> = {
   transferencia: 'Transferencia',
@@ -98,7 +99,7 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
           <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
           <View className="flex-row justify-between mt-2 mb-3" accessibilityLabel={`${t('recibo_emitido_neto')}: ${fmt(recibo.montoNeto)}`}>
             <Text className="text-gray-800 dark:text-gray-100 font-bold text-base">{t('recibo_emitido_neto')}</Text>
-            <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(recibo.montoNeto)}</Text>
+            <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(recibo.montoNeto)}</Text>
           </View>
           <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
           <View className="flex-row justify-between mt-3" accessibilityLabel={`${t('recibo_emitido_estado')}: ${ESTADO_LABEL[recibo.estado] || recibo.estado}`}>

@@ -5,6 +5,7 @@ import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 const RENTA_CHECK = [
   { id: 'ingresos', labelKey: 'annual_step_ingresos', done: true },
@@ -61,13 +62,13 @@ export default function AnnualTaxScreen({ navigation }: { navigation: any }) {
         <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <View className="flex-row justify-between items-center mb-3.5">
             <View>
-              <Text className="text-xs" style={{ color: '#64748B' }}>{t('annual_tax_campaign')}</Text>
-              <Text className="text-lg font-extrabold" style={{ color: '#0A2240' }}>{pasosCompletados}/{RENTA_CHECK.length} {t('annual_tax_steps_completed')}</Text>
+              <Text className="text-xs" style={{ color: C.s500 }}>{t('annual_tax_campaign')}</Text>
+              <Text className="text-lg font-extrabold" style={{ color: C.navy }}>{pasosCompletados}/{RENTA_CHECK.length} {t('annual_tax_steps_completed')}</Text>
             </View>
             {/* Circular progress */}
             <View className="items-center justify-center" style={{ width: circleSize, height: circleSize }}>
               <View className="absolute inset-0 items-center justify-center">
-                <Text className="text-sm font-extrabold" style={{ color: '#1B4FBF' }}>{Math.round(progress)}%</Text>
+                <Text className="text-sm font-extrabold" style={{ color: C.blue }}>{Math.round(progress)}%</Text>
               </View>
               <svg width={circleSize} height={circleSize} viewBox={`0 0 ${circleSize} ${circleSize}`}>
                 <circle cx={circleSize/2} cy={circleSize/2} r={radius} fill="none" stroke="#E2E8F0" strokeWidth={strokeWidth} />
@@ -76,7 +77,7 @@ export default function AnnualTaxScreen({ navigation }: { navigation: any }) {
             </View>
           </View>
           <View className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-            <View className="h-full rounded-full" style={{ width: `${progress}%`, backgroundColor: '#1B4FBF' }} />
+            <View className="h-full rounded-full" style={{ width: `${progress}%`, backgroundColor: C.blue }} />
           </View>
         </View>
 
@@ -87,9 +88,9 @@ export default function AnnualTaxScreen({ navigation }: { navigation: any }) {
             return (
               <View key={item.id} className="flex-row items-center px-4" style={{ paddingVertical: 12, borderBottomWidth: i < RENTA_CHECK.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}>
                 <View className="w-[30] h-[30] rounded-full items-center justify-center mr-3.5" style={{ backgroundColor: done ? '#DCFCE7' : '#F1F5F9', borderWidth: 2, borderColor: done ? '#16A34A' : '#CBD5E1' }}>
-                  <Text className="text-sm font-extrabold" style={{ color: done ? '#16A34A' : '#94A3B8' }}>{done ? '\u2713' : String(i + 1)}</Text>
+                  <Text className="text-sm font-extrabold" style={{ color: done ? C.green : C.s400 }}>{done ? '\u2713' : String(i + 1)}</Text>
                 </View>
-                <Text className="text-sm flex-1" style={{ color: done ? '#64748B' : '#1E293B', fontWeight: done ? '500' : '700', textDecorationLine: done ? 'line-through' : 'none' }}>{t(item.labelKey)}</Text>
+                <Text className="text-sm flex-1" style={{ color: done ? C.s400 : C.s800, fontWeight: done ? '500' : '700', textDecorationLine: done ? 'line-through' : 'none' }}>{t(item.labelKey)}</Text>
                 {!done && <Text className="text-lg" style={{ color: '#CBD5E1' }}>{'\u203A'}</Text>}
               </View>
             )
@@ -132,8 +133,8 @@ export default function AnnualTaxScreen({ navigation }: { navigation: any }) {
 function InfoRow({ label, value, isBold }: { label: string; value: string; isBold?: boolean }) {
   return (
     <View className="flex-row justify-between items-center py-1.5" accessibilityLabel={`${label}: ${value}`}>
-      <Text className="text-sm" style={{ color: '#64748B' }}>{label}</Text>
-      <Text className={`text-xl font-extrabold ${isBold ? '' : ''}`} style={{ color: '#0A2240' }}>{value}</Text>
+      <Text className="text-sm" style={{ color: C.s500 }}>{label}</Text>
+      <Text className={`text-xl font-extrabold ${isBold ? '' : ''}`} style={{ color: C.navy }}>{value}</Text>
     </View>
   )
 }

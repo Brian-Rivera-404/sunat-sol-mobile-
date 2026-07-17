@@ -5,42 +5,24 @@ import { useStore, go, formatearFecha, markInboxRead } from '../store/sunatStore
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
-function getBorderColor(modulo: string): string {
-  switch (modulo) {
-    case 'declaraciones': return '#F59E0B'
-    case 'rhe': return '#10B981'
-    default: return '#0A2240'
-  }
+const TAG_STYLE: Record<string, { color: string; bg: string; label: string }> = {
+  declaraciones: { color: C.amber, bg: C.amberBg, label: 'Alerta' },
+  rhe: { color: C.green, bg: C.greenBg, label: '\u00C9xito' },
 }
 
-function getBadgeBg(modulo: string): string {
-  switch (modulo) {
-    case 'declaraciones': return '#FEF3C7'
-    case 'rhe': return '#D1FAE5'
-    default: return '#EEF2FF'
-  }
-}
-
-function getBadgeText(modulo: string): string {
-  switch (modulo) {
-    case 'declaraciones': return '#92400E'
-    case 'rhe': return '#065F46'
-    default: return '#0A2240'
-  }
-}
-
-function ModuleTag({ modulo }: { modulo: string }) {
-  const labelMap: Record<string, string> = {
-    declaraciones: 'Declaraciones',
-    rhe: 'RHE',
-  }
-  const label = labelMap[modulo] || modulo
+function TagBadge({ modulo }: { modulo: string }) {
+  const t = TAG_STYLE[modulo] ?? { color: '#64748B', bg: '#F1F5F9', label: modulo }
   return (
-    <View style={{ backgroundColor: getBadgeBg(modulo), borderRadius: 9999, paddingHorizontal: 8, paddingVertical: 2 }}>
-      <Text style={{ color: getBadgeText(modulo), fontSize: 10, fontWeight: '700' }}>{label}</Text>
+    <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: t.bg }}>
+      <Text className="text-xs font-extrabold" style={{ color: t.color }}>{t.label}</Text>
     </View>
   )
+}
+
+function getBorderColor(modulo: string): string {
+  return TAG_STYLE[modulo]?.color ?? C.navy
 }
 
 export default function InboxScreen({ navigation }: { navigation: any }) {
@@ -78,10 +60,10 @@ export default function InboxScreen({ navigation }: { navigation: any }) {
           </View>
         ) : (
           sorted.map((msg) => (
-            <TouchableOpacity
-              key={msg.id}
-              className={`bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm ${!msg.leido ? 'border-l-4' : ''}`}
-              style={!msg.leido ? { borderLeftColor: getBorderColor(msg.modulo) } : undefined}
+              <TouchableOpacity
+                key={msg.id}
+                className={`bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm`}
+                style={{ borderLeftWidth: 4, borderLeftColor: getBorderColor(msg.modulo), opacity: msg.leido ? 0.8 : 1 }}
               onPress={() => {
                 if (!msg.leido) dispatch(markInboxRead(msg.id))
                 dispatch(go('AssistantChat'))
@@ -101,7 +83,7 @@ export default function InboxScreen({ navigation }: { navigation: any }) {
                 </View>
                 <View className="items-end">
                   <Text className="text-xs text-gray-400 dark:text-gray-500 mb-1">{formatearFecha(msg.fecha)}</Text>
-                  <ModuleTag modulo={msg.modulo} />
+                  <TagBadge modulo={msg.modulo} />
                 </View>
               </View>
               {!msg.leido && (
