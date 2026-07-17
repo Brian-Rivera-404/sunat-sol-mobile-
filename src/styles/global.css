@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@theme {
+  --color-navy: #0A2240;
+  --color-navy-mid: #0D3060;
+  --color-blue-sunat: #1B4FBF;
+  --color-blue-lt: #2563EB;
+  --color-orange-sunat: #E85E1E;
+  --color-gold: #F4C430;
+  --color-bg-sunat: #EEF2FF;
+  --color-green-sunat: #16A34A;
+  --color-green-bg: #DCFCE7;
+  --color-red-sunat: #DC2626;
+  --color-red-bg: #FEE2E2;
+  --color-amber-sunat: #D97706;
+  --color-amber-bg: #FEF3C7;
+}
