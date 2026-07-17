@@ -5,33 +5,21 @@
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>SUNAT SOL</title>
-    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
-      /* These styles make the body full-height */
-      html,
-      body {
-        height: 100%;
-      }
-      /* These styles disable body scrolling if you are using <ScrollView> */
-      body {
-        overflow: hidden;
-      }
-      /* These styles make the root element full-height */
-      #root {
-        display: flex;
-        height: 100%;
-        flex: 1;
+      html, body { height: 100%; margin: 0; padding: 0; }
+      body { overflow: hidden; }
+      #root { display: flex; height: 100%; flex: 1; }
+      @media (min-width: 768px) {
+        body { background: #f0f0f0; display: flex; align-items: center; justify-content: center; }
+        #root { width: 390px; height: 844px; border-radius: 40px; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.2); }
       }
     </style>
-  <link rel="preload" href="/_expo/static/css/web-5118311f8ff55a05760f157ad3884967.css" as="style"><link rel="stylesheet" href="/_expo/static/css/web-5118311f8ff55a05760f157ad3884967.css"><link rel="icon" href="/favicon.ico" /></head>
+  <link rel="preload" href="./_expo/static/css/web-5118311f8ff55a05760f157ad3884967.css" as="style"><link rel="stylesheet" href="./_expo/static/css/web-5118311f8ff55a05760f157ad3884967.css"><link rel="icon" href="./favicon.ico" /></head>
 
   <body>
-    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <!-- The root element for your Expo app. -->
+    <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-  <script src="/_expo/static/js/web/index-c5571e934d426517b126b704c869b601.js" defer></script>
+  <script src="./_expo/static/js/web/index-c5571e934d426517b126b704c869b601.js" defer></script>
+  <script>document.addEventListener('click',function(){sessionStorage.setItem('_activity',Date.now())})</script>
 </body>
 </html>
