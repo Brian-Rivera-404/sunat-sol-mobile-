@@ -110,7 +110,7 @@ const seedRecibos: Recibo[] = [
 const initialReciboData: ReciboData = { ruc: '', cliente: '', monto: 0, formaPago: 'cheque', retencion: true }
 
 const seedState: State = {
-  screen: 'Login',
+  screen: 'Home',
   user: seedUser,
   recibos: seedRecibos,
   nextId: 31,
@@ -124,8 +124,10 @@ const seedState: State = {
   highContrast: false,
   expenses: [],
   declarations: [
-    { id: 'DEC-001', periodo: '2026-06', estado: 'pagado', fechaLimite: '2026-07-15', monto: 1200 },
-    { id: 'DEC-002', periodo: '2026-07', estado: 'pendiente', fechaLimite: '2026-08-15', monto: 0 },
+    { id: 'DEC-004', periodo: '2026-06', estado: 'pendiente', fechaLimite: '2026-07-18', monto: 1890 },
+    { id: 'DEC-003', periodo: '2026-05', estado: 'pagado', fechaLimite: '2026-06-16', monto: 2340 },
+    { id: 'DEC-002', periodo: '2026-04', estado: 'pagado', fechaLimite: '2026-05-15', monto: 1650 },
+    { id: 'DEC-001', periodo: '2026-03', estado: 'pagado', fechaLimite: '2026-04-15', monto: 1500 },
   ],
   conversations: [],
   assistantSettings: { modality: 'text_voice', ttsSpeed: 'normal', useLocalOnly: true, language: 'es' },
@@ -135,8 +137,9 @@ const seedState: State = {
     { id: 'c3', ruc: '20100047218', nombre: 'TELEFÓNICA DEL PERÚ S.A.A.', frecuente: true },
   ],
   inbox: [
-    { id: 'in1', titulo: 'Declaración pendiente', cuerpo: 'Tienes una declaración del período 2026-07 pendiente. Plazo: 15 de agosto.', fecha: '2026-07-10', leido: false, modulo: 'declaraciones' },
-    { id: 'in2', titulo: 'Recibo emitido', cuerpo: 'Se registró tu recibo E001-0030 correctamente.', fecha: '2026-06-19', leido: true, modulo: 'rhe' },
+    { id: 'in1', titulo: 'Declaración PDT 616 — jun 2026', cuerpo: 'Tienes plazo hasta el 18 de julio. Evita multas declarando a tiempo.', fecha: '2026-07-15', leido: false, modulo: 'declaraciones' },
+    { id: 'in2', titulo: 'CCI registrada exitosamente', cuerpo: 'Tu cuenta BCP terminada en ****4521 fue registrada para devoluciones tributarias.', fecha: '2026-07-10', leido: true, modulo: 'rhe' },
+    { id: 'in3', titulo: 'Suspensión de retenciones aprobada', cuerpo: 'Tu solicitud de suspensión de retenciones es válida hasta el 31/12/2026.', fecha: '2026-07-02', leido: true, modulo: 'rhe' },
   ],
   onboardingSeen: false,
   sessionTimeoutMinutes: 10,

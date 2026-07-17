@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, setDarkMode, setHighContrast } from '../store/sunatStore'

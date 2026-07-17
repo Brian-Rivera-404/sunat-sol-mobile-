@@ -6,6 +6,30 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 
+const CAL_PROTO = [
+  { ruc: '0', date: '14 jul', status: 'vencido' as const },
+  { ruc: '1', date: '15 jul', status: 'vencido' as const },
+  { ruc: '2', date: '16 jul', status: 'vencido' as const },
+  { ruc: '3\u20134', date: '17 jul', status: 'hoy' as const },
+  { ruc: '5\u20136', date: '18 jul', status: 'pr\u00F3ximo' as const },
+  { ruc: '7\u20138\u20139', date: '21 jul', status: 'pr\u00F3ximo' as const },
+]
+
+const CAL_STATUS_STYLE: Record<string, { color: string; bg: string }> = {
+  vencido: { color: '#DC2626', bg: '#FEE2E2' },
+  hoy: { color: '#E85E1E', bg: '#FFF7ED' },
+  pr\u00F3ximo: { color: '#1B4FBF', bg: '#DBEAFE' },
+}
+
+function CalPill({ status }: { status: string }) {
+  const s = CAL_STATUS_STYLE[status] ?? { color: '#64748B', bg: '#F1F5F9' }
+  return (
+    <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: s.bg }}>
+      <Text className="text-xs font-bold" style={{ color: s.color }}>{status}</Text>
+    </View>
+  )
+}
+
 const DEADLINES = [
   { mes: 'Enero', dia: 12, label: 'calendar_onthly_declaration' },
   { mes: 'Febrero', dia: 12, label: 'calendar_onthly_declaration' },
@@ -50,8 +74,27 @@ export default function TaxCalendarScreen({ navigation }: { navigation: any }) {
           <Text className="text-xs text-gray-400 dark:text-gray-400 leading-4">{t('calendar_ruc_explain')}</Text>
         </View>
 
+        {/* RUC-digit calendar view – prototype parity */}
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm" accessibilityLabel={t('calendar_ruc_table')}>
+          <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('calendar_ruc_table')}</Text>
+          {CAL_PROTO.map((item, i) => (
+            <View key={i} className="flex-row items-center justify-between py-2.5" style={{ borderBottomWidth: i < CAL_PROTO.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}>
+              <View className="flex-row items-center">
+                <View className="w-8 h-8 rounded-full bg-[#EEF2FF] items-center justify-center mr-3">
+                  <Text className="text-xs font-bold" style={{ color: '#0A2240' }}>{item.ruc}</Text>
+                </View>
+                <View>
+                  <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t('calendar_ruc_digit_title')} {item.ruc}</Text>
+                  <Text className="text-xs text-gray-400">{item.date}</Text>
+                </View>
+              </View>
+              <CalPill status={item.status} />
+            </View>
+          ))}
+        </View>
+
         <View className="mb-2.5">
-          <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('calendar_upcoming')}</Text>
+          <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3 mt-1" accessibilityRole="header">{t('calendar_upcoming')}</Text>
           {DEADLINES.map((dl, i) => {
             const isPast = i < currentMonth
             const isCurrent = i === currentMonth

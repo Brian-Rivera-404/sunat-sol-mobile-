@@ -14,7 +14,6 @@ if (typeof Appearance.setColorScheme !== 'function') {
   ;(Appearance as any).setColorScheme = () => {}
 }
 
-import LoginScreen from './src/screens/LoginScreen'
 import RegisterScreen from './src/screens/RegisterScreen'
 import HomeScreen from './src/screens/HomeScreen'
 import NotificacionesScreen from './src/screens/NotificacionesScreen'
@@ -56,7 +55,7 @@ function AppNavigator() {
   const { t } = useTranslate()
 
   useEffect(() => {
-    if (navigationRef.current && state.screen && state.screen !== 'Login') {
+    if (navigationRef.current && state.screen) {
       navigationRef.current.navigate(state.screen)
     }
   }, [state.screen])
@@ -68,7 +67,6 @@ function AppNavigator() {
   const announceRoute = useCallback((routeName?: string) => {
     if (!routeName) return
     const names: Record<string, string> = {
-      Login: 'Inicio de sesión',
       Register: 'Crear cuenta',
       Home: 'Inicio',
       Notificaciones: 'Notificaciones',
@@ -106,7 +104,7 @@ function AppNavigator() {
     )
   }
 
-  const showAI = state.screen !== 'Login' && state.screen !== 'Register'
+  const showAI = state.screen !== 'Register'
 
   return (
     <View className="flex-1" accessibilityLanguage="es">
@@ -116,8 +114,7 @@ function AppNavigator() {
           announceRoute(navState?.routes[navState?.index]?.name)
         }}
       >
-        <Stack.Navigator screenOptions={screenOptions} initialRouteName="Login">
-          <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Navigator screenOptions={screenOptions} initialRouteName="Home">
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Notificaciones" component={NotificacionesScreen} />

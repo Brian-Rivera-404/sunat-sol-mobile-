@@ -36,7 +36,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
             style: 'destructive',
             onPress: () => {
               vibrateSuccess()
-              dispatch(go('Login'))
+              dispatch(go('Home'))
             },
           },
         ],
@@ -117,7 +117,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
 
           <TouchableOpacity
             className="py-2.5"
-            onPress={() => dispatch(go('Login'))}
+            onPress={() => dispatch(go('Home'))}
             accessibilityLabel={t('general_volver')}
             accessibilityRole="button"
             accessibilityHint="Regresa a la pantalla de inicio de sesión"

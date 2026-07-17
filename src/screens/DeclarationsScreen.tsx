@@ -70,38 +70,51 @@ export default function DeclarationsScreen({ navigation }: { navigation: any }) 
             <Text className="text-gray-500 dark:text-gray-400">{t('declarations_empty')}</Text>
           </View>
         ) : (
-          sorted.map((dec) => (
-            <View key={dec.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
-              <View className="flex-row justify-between items-start mb-3">
-                <View className="flex-1 mr-2">
-                  <Text className="text-sm font-bold text-gray-800 dark:text-gray-200">{dec.periodo}</Text>
-                  <Text className="text-xs text-gray-400 mt-0.5">{t('declarations_subtitle')}</Text>
-                </View>
-                <StatusPill status={t('declarations_' + dec.estado)} />
+          <>
+            {/* Warning banner – prototype parity */}
+            {sorted.some((d) => d.estado === 'pendiente') && (
+              <View className="bg-amber-50 dark:bg-amber-900 border border-amber-200 dark:border-amber-700 rounded-[16px] p-3.5 flex-row gap-2.5 mb-3" accessibilityRole="alert" accessibilityLiveRegion="polite">
+                <Text className="text-lg">{'\u26A0\uFE0F'}</Text>
+                <Text className="text-xs leading-5 flex-1" style={{ color: '#92400E' }}>
+                  <Text className="font-bold">{t('declarations_pending_banner')}</Text>
+                  {' '}{t('declarations_pending_banner_desc')}
+                </Text>
               </View>
-              <View className="flex-row justify-between items-end">
-                <View>
-                  <Text className="text-xs text-gray-500">{t('declarations_amount')}: {fmt(dec.monto || 0)}</Text>
-                  <Text className="text-xl font-extrabold mt-0.5" style={{ color: '#0A2240' }}>{fmt(dec.monto || 0)}</Text>
-                </View>
-                {dec.estado === 'pendiente' ? (
-                  <TouchableOpacity
-                    className="rounded-xl px-4 py-2.5" style={{ backgroundColor: '#1B4FBF' }}
-                    onPress={() => { vibrateLight(); dispatch(go('NuevoRecibo1')) }}
-                    accessibilityLabel={t('declarations_declare')}
-                    accessibilityRole="button"
-                  >
-                    <Text className="text-white font-extrabold text-sm">{t('declarations_declare')}</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <View className="items-end">
-                    <Text className="text-xs text-gray-400">{t('declarations_duedate')}</Text>
-                    <Text className="text-xs font-bold" style={{ color: '#16A34A' }}>{formatearFecha(dec.fechaLimite)}</Text>
+            )}
+
+            {sorted.map((dec) => (
+              <View key={dec.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+                <View className="flex-row justify-between items-start mb-3">
+                  <View className="flex-1 mr-2">
+                    <Text className="text-sm font-bold text-gray-800 dark:text-gray-200">{dec.periodo}</Text>
+                    <Text className="text-xs text-gray-400 mt-0.5">{t('declarations_subtitle')}</Text>
                   </View>
-                )}
+                  <StatusPill status={dec.estado} />
+                </View>
+                <View className="flex-row justify-between items-end">
+                  <View>
+                    <Text className="text-xs text-gray-500">{t('declarations_base')}: {fmt(dec.monto || 0)}</Text>
+                    <Text className="text-xl font-extrabold mt-0.5" style={{ color: '#0A2240' }}>{fmt(dec.monto || 0)}</Text>
+                  </View>
+                  {dec.estado === 'pendiente' ? (
+                    <TouchableOpacity
+                      className="rounded-xl px-4 py-2.5" style={{ backgroundColor: '#1B4FBF' }}
+                      onPress={() => { vibrateLight(); dispatch(go('NuevoRecibo1')) }}
+                      accessibilityLabel={t('declarations_declare_pay')}
+                      accessibilityRole="button"
+                    >
+                      <Text className="text-white font-extrabold text-sm">{t('declarations_declare_pay')}</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View className="items-end">
+                      <Text className="text-xs text-gray-400">{t('declarations_duedate')}</Text>
+                      <Text className="text-xs font-bold" style={{ color: '#16A34A' }}>{formatearFecha(dec.fechaLimite)}</Text>
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-          ))
+            ))}
+          </>
         )}
         <TouchableOpacity
           className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between mb-4 shadow-sm"

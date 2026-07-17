@@ -279,6 +279,10 @@ const strings: Record<string, Record<string, string>> = {
     declarations_reminder_invalid: 'Ingresa una fecha futura válida (AAAA-MM-DD)',
     declarations_reminder_success: 'Recordatorio configurado para el',
     declarations_reminder_platform: 'Usa la app de calendario de tu dispositivo para configurar el recordatorio',
+    declarations_pending_banner: 'Declaración pendiente:',
+    declarations_pending_banner_desc: 'Junio 2026 vence el 18 de julio. Declara ahora para evitar multas.',
+    declarations_declare_pay: 'Declarar y pagar',
+    declarations_base: 'Base',
     // Annual Tax
     annual_tax_title: 'Renta Anual',
     annual_tax_deadline: 'Fecha límite',
@@ -299,6 +303,8 @@ const strings: Record<string, Record<string, string>> = {
     // Calendar
     calendar_title: 'Calendario Tributario',
     calendar_ruc_digit: 'Último dígito de tu RUC',
+    calendar_ruc_digit_title: 'RUC',
+    calendar_ruc_table: 'Vencimientos por dígito de RUC',
     calendar_ruc_explain: 'Tus fechas de vencimiento se calculan según el último dígito de tu RUC.',
     calendar_upcoming: 'Próximos vencimientos',
     calendar_current: 'Mes actual',
@@ -798,6 +804,10 @@ const strings: Record<string, Record<string, string>> = {
     declarations_reminder_invalid: 'Enter a valid future date (YYYY-MM-DD)',
     declarations_reminder_success: 'Reminder set for',
     declarations_reminder_platform: 'Use your device calendar app to set the reminder',
+    declarations_pending_banner: 'Pending declaration:',
+    declarations_pending_banner_desc: 'June 2026, due July 18. Declare now to avoid penalties.',
+    declarations_declare_pay: 'Declare & Pay',
+    declarations_base: 'Base',
     // Annual Tax
     annual_tax_title: 'Annual Tax',
     annual_tax_deadline: 'Deadline',
@@ -818,6 +828,8 @@ const strings: Record<string, Record<string, string>> = {
     // Calendar
     calendar_title: 'Tax Calendar',
     calendar_ruc_digit: 'Last digit of your Tax ID',
+    calendar_ruc_digit_title: 'RUC',
+    calendar_ruc_table: 'Deadlines by RUC digit',
     calendar_ruc_explain: 'Your deadlines are calculated based on the last digit of your Tax ID.',
     calendar_upcoming: 'Upcoming deadlines',
     calendar_current: 'Current month',
