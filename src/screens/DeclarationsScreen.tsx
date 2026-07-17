@@ -7,10 +7,19 @@ import { vibrateLight } from '../utils/haptics'
 import { isValidDate, isFutureDate } from '../utils/validators'
 import HeaderBar from '../components/HeaderBar'
 
-const ESTADO_COLORS: Record<string, { bg: string; text: string; icon: string }> = {
-  pendiente: { bg: 'bg-yellow-100 dark:bg-yellow-900', text: 'text-yellow-700 dark:text-yellow-400', icon: '\u23F3' },
-  pagado: { bg: 'bg-green-100 dark:bg-green-900', text: 'text-green-700 dark:text-green-400', icon: '\u2714\uFE0F' },
-  vencido: { bg: 'bg-red-100 dark:bg-red-900', text: 'text-red-700 dark:text-red-400', icon: '\u274C' },
+const STATUS_STYLE: Record<string, { color: string; bg: string }> = {
+  pendiente: { color: '#D97706', bg: '#FEF3C7' },
+  pagado: { color: '#16A34A', bg: '#DCFCE7' },
+  vencido: { color: '#DC2626', bg: '#FEE2E2' },
+}
+
+function StatusPill({ status }: { status: string }) {
+  const s = STATUS_STYLE[status] ?? { color: '#64748B', bg: '#F1F5F9' }
+  return (
+    <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
+      <Text className="text-xs font-bold" style={{ color: s.color }}>{status}</Text>
+    </View>
+  )
 }
 
 export default function DeclarationsScreen({ navigation }: { navigation: any }) {
@@ -47,65 +56,58 @@ export default function DeclarationsScreen({ navigation }: { navigation: any }) 
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
-        <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('declarations_title')}</Text>
+        <Text className="text-white text-lg font-bold" accessibilityRole="header">{t('declarations_title')}</Text>
       </HeaderBar>
 
-      <View className="px-4 pt-6">
+      <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
         {sorted.length === 0 ? (
           <View className="flex-1 items-center justify-center py-20">
             <Text className="text-gray-500 dark:text-gray-400">{t('declarations_empty')}</Text>
           </View>
         ) : (
-          <View className="relative">
-            <View className="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" />
-            {sorted.map((dec, i) => {
-              const colors = ESTADO_COLORS[dec.estado] || ESTADO_COLORS.pendiente
-              return (
-                <View key={dec.id} className="flex-row mb-6">
-                  <View className="w-10 items-center z-10">
-                    <View className={`w-8 h-8 rounded-full ${colors.bg} items-center justify-center`}>
-                      <Text accessibilityElementsHidden>{colors.icon}</Text>
-                    </View>
-                  </View>
-                  <View className="flex-1 ml-3 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm" accessibilityLabel={`${t('declarations_declaration')} ${dec.periodo}, ${t('declarations_status')}: ${t('declarations_' + dec.estado)}, ${t('declarations_duedate')}: ${formatearFecha(dec.fechaLimite)}${dec.monto ? ', ' + t('declarations_amount') + ': ' + fmt(dec.monto) : ''}`}>
-                    <View className="flex-row justify-between items-center mb-1">
-                      <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{dec.periodo}</Text>
-                      <View className={`px-2 py-0.5 rounded-full ${colors.bg}`}>
-                        <Text className={`text-xs font-semibold ${colors.text}`}>{t('declarations_' + dec.estado)}</Text>
-                      </View>
-                    </View>
-                    {dec.monto > 0 && (
-                      <Text className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('declarations_amount')}: {fmt(dec.monto)}</Text>
-                    )}
-                    <Text className="text-xs text-gray-400 dark:text-gray-500">{t('declarations_duedate')}: {formatearFecha(dec.fechaLimite)}</Text>
-                    {dec.estado === 'pendiente' && (
-                      <TouchableOpacity
-                        className="mt-3 bg-[#002f5d] rounded-lg py-2 items-center"
-                        onPress={() => { vibrateLight(); dispatch(go('NuevoRecibo1')) }}
-                        accessibilityLabel={t('declarations_declare')}
-                        accessibilityRole="button"
-                        accessibilityHint={t('declarations_declare_hint')}
-                      >
-                        <Text className="text-white font-semibold text-sm">{t('declarations_declare')}</Text>
-                      </TouchableOpacity>
-                    )}
-                  </View>
+          sorted.map((dec) => (
+            <View key={dec.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+              <View className="flex-row justify-between items-start mb-3">
+                <View className="flex-1 mr-2">
+                  <Text className="text-sm font-bold text-gray-800 dark:text-gray-200">{dec.periodo}</Text>
+                  <Text className="text-xs text-gray-400 mt-0.5">{t('declarations_subtitle')}</Text>
                 </View>
-              )
-            })}
-          </View>
+                <StatusPill status={t('declarations_' + dec.estado)} />
+              </View>
+              <View className="flex-row justify-between items-end">
+                <View>
+                  <Text className="text-xs text-gray-500">{t('declarations_amount')}: {fmt(dec.monto || 0)}</Text>
+                  <Text className="text-xl font-extrabold mt-0.5" style={{ color: '#0A2240' }}>{fmt(dec.monto || 0)}</Text>
+                </View>
+                {dec.estado === 'pendiente' ? (
+                  <TouchableOpacity
+                    className="rounded-xl px-4 py-2.5" style={{ backgroundColor: '#1B4FBF' }}
+                    onPress={() => { vibrateLight(); dispatch(go('NuevoRecibo1')) }}
+                    accessibilityLabel={t('declarations_declare')}
+                    accessibilityRole="button"
+                  >
+                    <Text className="text-white font-extrabold text-sm">{t('declarations_declare')}</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View className="items-end">
+                    <Text className="text-xs text-gray-400">{t('declarations_duedate')}</Text>
+                    <Text className="text-xs font-bold" style={{ color: '#16A34A' }}>{formatearFecha(dec.fechaLimite)}</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+          ))
         )}
         <TouchableOpacity
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 flex-row items-center justify-between mb-4 shadow-sm"
+          className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between mb-4 shadow-sm"
           onPress={() => { vibrateLight(); handleSetReminder() }}
           accessibilityLabel={t('declarations_reminder_set')}
           accessibilityRole="button"
-          accessibilityHint={t('declarations_reminder_hint')}
         >
           <View className="flex-row items-center">
             <Text className="text-2xl mr-3">{'\uD83D\uDD14'}</Text>
@@ -117,7 +119,7 @@ export default function DeclarationsScreen({ navigation }: { navigation: any }) 
           <Text className="text-gray-500 dark:text-gray-400 text-lg">{'\u203A'}</Text>
         </TouchableOpacity>
         <View className="h-6" />
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   )
 }

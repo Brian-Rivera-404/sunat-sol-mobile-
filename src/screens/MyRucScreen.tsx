@@ -16,6 +16,8 @@ export default function MyRucScreen({ navigation }: { navigation: any }) {
   const [cciInput, setCciInput] = useState(state.cci || '')
   const [showFullCCI, setShowFullCCI] = useState(false)
 
+  const initial = (user?.nombre || 'U').charAt(0).toUpperCase()
+
   const emitidos = useMemo(() => recibos.filter((r) => r.estado === 'emitido'), [recibos])
   const totalIngresos = useMemo(() => emitidos.reduce((s, r) => s + r.montoBruto, 0), [emitidos])
   const impuestoEstimado = useMemo(() => Math.max(0, totalIngresos - 7 * 5150) * 0.08, [totalIngresos])
@@ -31,137 +33,114 @@ export default function MyRucScreen({ navigation }: { navigation: any }) {
     setShowCCIModal(false)
   }
 
+  const fields = [
+    { label: t('miruc_ruc'), value: '10456789123' },
+    { label: t('miruc_razon_social'), value: user?.nombre?.toUpperCase() || '' },
+    { label: t('miruc_regimen'), value: t('miruc_regimen_value') },
+    { label: t('miruc_estado'), value: '\u25CF ' + t('miruc_estado_value') },
+    { label: t('miruc_direccion'), value: user?.direccion || '' },
+    { label: t('miruc_correo'), value: user?.email || '' },
+    { label: t('miruc_celular'), value: user?.tel || '' },
+    { label: t('miruc_cci'), value: state.cci ? `BCP ${showFullCCI ? state.cci : '****' + state.cci.slice(-4)}` : t('miruc_cci_empty') },
+  ]
+
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
-        <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('miruc_title')}</Text>
+        <Text className="text-white text-lg font-bold" accessibilityRole="header">{t('miruc_title')}</Text>
       </HeaderBar>
 
-      <View className="px-4 pt-6">
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4" accessibilityLabel={`DNI: ${user.dni}, Tipo: ${t('miruc_tipo')}`}>
-          <Text className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-widest">{user.dni}</Text>
-          <Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('miruc_tipo')}</Text>
-        </View>
-
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
-          <SectionRow label={t('miruc_nombre')} value={user.nombre} module="ruc" />
-          <SectionRow label={t('miruc_tipo_contribuyente')} value={t('miruc_tipo_contribuyente_val')} module="ruc" />
-          <View className="flex-row justify-between items-center py-2" accessibilityLabel={`${t('miruc_estado')}: ${t('miruc_activo')}`}>
-            <View className="flex-row items-center">
-              <Text className="text-sm text-gray-500 dark:text-gray-400">{t('miruc_estado')}</Text>
-              <TouchableOpacity className="ml-1" accessibilityLabel={`${t('general_help')} ${t('miruc_estado')}`} accessibilityRole="button" accessibilityHint={t('general_help_hint')}>
-                <Text className="text-blue-500 text-base font-bold">?</Text>
-              </TouchableOpacity>
-            </View>
-            <View className="bg-green-100 dark:bg-green-900 px-3 py-1 rounded-full">
-              <Text className="text-green-700 dark:text-green-400 text-xs font-bold">{t('miruc_activo')}</Text>
-            </View>
+      <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
+        {/* Profile card */}
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-[18] flex-row items-center gap-4 mb-3 shadow-sm">
+          <View className="w-[58] h-[58] rounded-full items-center justify-center" style={{ backgroundColor: '#1B4FBF' }}>
+            <Text className="text-white text-2xl font-extrabold">{initial}</Text>
           </View>
-          <SectionRow label={t('miruc_condicion')} value={t('miruc_habido')} module="ruc" />
-          <SectionRow label={t('miruc_inicio')} value="02/01/2024" module="ruc" />
-          <SectionRow label={t('miruc_direccion')} value={user.direccion} module="ruc" />
-          <SectionRow label={t('miruc_actividad_economica')} value={`6201 — ${t('miruc_actividad_val')}`} module="ruc" />
+          <View className="flex-1">
+            <Text className="text-base font-extrabold" style={{ color: '#0A2240' }}>{user?.nombre || ''}</Text>
+            <Text className="text-xs font-bold mt-0.5" style={{ color: '#16A34A' }}>{'\u25CF'} {t('miruc_estado_value')}</Text>
+          </View>
         </View>
 
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
-          <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('miruc_resumen')}</Text>
-          <SectionRow label={t('declarar_ingresos')} value={fmt(totalIngresos)} />
-          <SectionRow label={t('miruc_recibos_emitidos')} value={String(emitidos.length)} />
-          <SectionRow label={t('miruc_impuesto_estimado')} value={fmt(impuestoEstimado)} />
+        {/* Fields card */}
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] shadow-sm overflow-hidden">
+          {fields.map((f, i) => (
+            <View
+              key={f.label}
+              className="flex-row justify-between items-center px-4"
+              style={{ paddingVertical: 10, borderBottomWidth: i < fields.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}
+            >
+              <Text className="text-xs" style={{ color: '#64748B' }}>{f.label}</Text>
+              <Text className="text-xs font-semibold text-right max-w-[58%]" style={{ color: '#1E293B' }}>{f.value}</Text>
+            </View>
+          ))}
         </View>
 
+        {/* CCI toggle */}
+        {state.cci && (
+          <TouchableOpacity
+            className="mt-2 mb-1 px-1 py-2"
+            onPress={() => setShowFullCCI(!showFullCCI)}
+            accessibilityLabel={showFullCCI ? t('cci_hide_full') : t('cci_show_full')}
+            accessibilityRole="button"
+          >
+            <Text className="text-xs font-semibold" style={{ color: '#1B4FBF' }}>{showFullCCI ? t('general_hide') : t('general_show')} CCI</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Actualizar datos button */}
         <TouchableOpacity
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 flex-row items-center justify-between mb-4 shadow-sm"
-          onPress={() => { setCciInput(state.cci || ''); setShowCCIModal(true); vibrateLight() }}
-          accessibilityLabel={t('cci_register')}
+          className="w-full mt-4 rounded-[16px] py-3.5 items-center"
+          style={{ backgroundColor: '#F1F5F9', borderWidth: 1.5, borderColor: '#E2E8F0' }}
+          onPress={() => { vibrateLight(); setCciInput(state.cci || ''); setShowCCIModal(true) }}
+          accessibilityLabel={t('miruc_actualizar')}
           accessibilityRole="button"
-          accessibilityHint={t('cci_register_hint')}
         >
-          <View className="flex-row items-center flex-1">
-            <Text className="text-2xl mr-3">{'\uD83C\uDFE6'}</Text>
-            <View className="flex-1">
-              <Text className="text-gray-800 dark:text-gray-200 font-semibold">{t('cci_register')}</Text>
-              <Text className="text-gray-500 dark:text-gray-400 text-xs">
-                {state.cci
-                  ? `${t('cci_registered')}: ${showFullCCI ? state.cci : '****' + state.cci.slice(-4)}`
-                  : t('cci_not_registered')}
-              </Text>
-            </View>
-            {state.cci && (
-              <TouchableOpacity
-                className="ml-2 px-2 py-1"
-                onPress={(e) => { e.stopPropagation(); setShowFullCCI(!showFullCCI); vibrateLight() }}
-                accessibilityLabel={showFullCCI ? t('cci_hide_full') : t('cci_show_full')}
-                accessibilityRole="button"
-              >
-                <Text className="text-blue-500 text-xs font-semibold">{showFullCCI ? t('general_hide') : t('general_show')}</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-          <Text className="text-gray-500 dark:text-gray-400 text-lg">{'\u203A'}</Text>
+          <Text className="text-sm font-bold" style={{ color: '#475569' }}>{t('miruc_actualizar')}</Text>
         </TouchableOpacity>
 
-        <View className="h-10" />
-      </View>
+        <View className="h-8" />
+      </ScrollView>
 
-      <Modal visible={showCCIModal} transparent animationType="slide" onRequestClose={() => setShowCCIModal(false)}>
-        <View className="flex-1 bg-black/50 justify-end">
-          <View className="bg-white dark:bg-gray-800 rounded-t-2xl p-6" accessibilityViewIsModal onAccessibilityEscape={() => setShowCCIModal(false)}>
-            <Text className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2" accessibilityRole="header">{t('cci_register')}</Text>
-            <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg px-4 py-3 mb-4">
-              <Text className="text-blue-700 dark:text-blue-300 text-sm leading-5">{'\uD83D\uDCA1'} {t('cci_explanation')}</Text>
-            </View>
-            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('cci_label')}</Text>
+      {/* CCI Modal */}
+      <Modal visible={showCCIModal} transparent animationType="fade">
+        <View className="flex-1 justify-center items-center bg-black/50 px-6">
+          <View className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-sm">
+            <Text className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">{t('cci_register')}</Text>
+            <Text className="text-xs text-gray-500 mb-4">{t('cci_desc')}</Text>
             <TextInput
-              className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100 mb-1"
-              placeholder="**** **** **** **** ****"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100"
               keyboardType="number-pad"
               maxLength={20}
               value={cciInput}
               onChangeText={setCciInput}
-              accessibilityLabel={t('cci_label')}
-              accessibilityHint={t('cci_hint')}
+              accessibilityLabel={t('cci_register')}
             />
-            <Text className="text-xs text-gray-500 dark:text-gray-400 mb-4">{t('cci_example')}: 00215100345678901234</Text>
-            {cciInput.length === 20 && !/^\d{20}$/.test(cciInput.replace(/\s/g, '')) && (
-              <Text className="text-red-500 text-sm mb-2" accessibilityRole="alert" accessibilityLiveRegion="polite">{t('cci_invalid')}</Text>
-            )}
-            <View className="flex-row space-x-3">
-              <TouchableOpacity className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg py-3.5 items-center" onPress={() => setShowCCIModal(false)} accessibilityLabel={t('general_cancelar')} accessibilityRole="button">
-                <Text className="text-gray-700 dark:text-gray-300 font-semibold">{t('general_cancelar')}</Text>
+            <Text className="text-xs text-gray-400 mt-1 mb-4">{t('cci_hint')}</Text>
+            <View className="flex-row justify-end gap-3">
+              <TouchableOpacity
+                className="px-4 py-2"
+                onPress={() => setShowCCIModal(false)}
+                accessibilityLabel={t('general_cancelar')}
+                accessibilityRole="button"
+              >
+                <Text className="text-gray-500 font-semibold">{t('general_cancelar')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity className="flex-1 bg-[#002f5d] rounded-lg py-3.5 items-center" onPress={handleSaveCCI} accessibilityLabel={t('general_save')} accessibilityRole="button" accessibilityHint={t('cci_save_hint')}>
-                <Text className="text-white font-semibold">{t('general_save')}</Text>
+              <TouchableOpacity
+                className="px-4 py-2 rounded-lg" style={{ backgroundColor: '#0A2240' }}
+                onPress={handleSaveCCI}
+                accessibilityLabel={t('general_guardar')}
+                accessibilityRole="button"
+              >
+                <Text className="text-white font-semibold">{t('general_guardar')}</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-    </ScrollView>
-  )
-}
-
-function SectionRow({ label, value, module }: { label: string; value: string; module?: string }) {
-  const { dispatch } = useStore()
-  const { t } = useTranslate()
-  return (
-    <View className="py-2 flex-row items-start" accessibilityLabel={`${label}: ${value}`}>
-      <View className="flex-1">
-        <Text className="text-sm text-gray-500 dark:text-gray-400">{label}</Text>
-        <Text className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-0.5 flex-1">{value}</Text>
-      </View>
-      <TouchableOpacity
-        className="ml-2 w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900 items-center justify-center"
-        onPress={() => { dispatch(go('AssistantChat')); vibrateLight() }}
-        accessibilityLabel={`${t('general_help')} ${label}`}
-        accessibilityRole="button"
-        accessibilityHint={t('general_help_hint')}
-      >
-        <Text className="text-blue-600 dark:text-blue-400 text-sm font-bold">?</Text>
-      </TouchableOpacity>
     </View>
   )
 }

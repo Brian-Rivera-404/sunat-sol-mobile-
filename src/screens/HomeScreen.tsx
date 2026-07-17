@@ -58,10 +58,10 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               >
                 <Text className="text-lg">{'\uD83D\uDD14'}</Text>
                 {unreadCount > 0 && (
-                  <View className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-orange-sunat border-2 border-navy" />
+                  <View className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full border-2" style={{ backgroundColor: '#E85E1E', borderColor: '#0A2240' }} />
                 )}
               </TouchableOpacity>
-              <View className="w-[38] h-[38] rounded-full bg-orange-sunat items-center justify-center">
+              <View className="w-[38] h-[38] rounded-full items-center justify-center" style={{ backgroundColor: '#E85E1E' }}>
                 <Text className="text-white font-extrabold text-base">{initial}</Text>
               </View>
             </View>
@@ -70,7 +70,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           {/* Income card */}
           <View className="bg-white/9 rounded-[20px] p-[18px] border border-white/12">
             <Text className="text-white/55 text-xs mb-1">{t('home_ingresos_label')}</Text>
-            <Text className="text-gold text-3xl font-extrabold tracking-tight">{fmt(totalIngresos)}</Text>
+            <Text className="text-3xl font-extrabold tracking-tight" style={{ color: '#F4C430' }}>{fmt(totalIngresos)}</Text>
             <Text className="text-white/40 text-xs mt-0.5">
               {reciboCount} recibo{reciboCount !== 1 ? 's' : ''} emitido{reciboCount !== 1 ? 's' : ''}
             </Text>
@@ -82,7 +82,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               </View>
               <View>
                 <Text className="text-white/45 text-xs">{t('home_neto')}</Text>
-                <Text className="text-gold text-sm font-bold">{fmt(totalNeto)}</Text>
+                <Text className="text-sm font-bold" style={{ color: '#F4C430' }}>{fmt(totalNeto)}</Text>
               </View>
               <View>
                 <Text className="text-white/45 text-xs">{t('home_declarado')}</Text>
@@ -139,7 +139,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
               <View className="w-[46] h-[46] rounded-[14] items-center justify-center mr-3.5 relative" style={{ backgroundColor: `${c.accent}18` }}>
                 <Text className="text-[22px]">{c.icon}</Text>
                 {c.id === 'Inbox' && unreadCount > 0 && (
-                  <View className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-orange-sunat border-2 border-white" />
+                  <View className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full border-2 border-white" style={{ backgroundColor: '#E85E1E' }} />
                 )}
               </View>
               <View className="flex-1">

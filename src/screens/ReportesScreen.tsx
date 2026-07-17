@@ -121,15 +121,15 @@ export default function ReportesScreen({ navigation }: { navigation: any }) {
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('reportes_title')}</Text>
       </HeaderBar>
       <View className="px-4 pt-6">
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('reportes_resumen_anual')}</Text>
           <InfoRow label={t('declarar_ingresos')} value={fmt(totalIngresos)} />
           <InfoRow label={t('reportes_recibos_emitidos')} value={String(emitidos.length)} />
@@ -137,37 +137,37 @@ export default function ReportesScreen({ navigation }: { navigation: any }) {
           <InfoRow label={t('simulator_withholdings')} value={fmt(totalRetenciones)} />
           <InfoRow label={t('simulator_expenses')} value={fmt(totalGastos)} />
         </View>
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-4" accessibilityRole="header">{t('reportes_ingresos_mes')}</Text>
           <View className="flex-row items-end h-32 gap-1">
             {ingresosPorMes.map((monto, i) => {
               const altura = (monto / maxMes) * 100
               return (
                 <View key={i} className="flex-1 items-center" accessibilityLabel={MESES[i] + ': ' + fmt(monto)}>
-                  <View className="w-full bg-[#002f5d] dark:bg-blue-400 rounded-t-sm" style={{ height: Math.max(altura, 2) as any + '%' as any }} />
-                  <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{MESES[i]}</Text>
+                  <View className="w-full bg-[#0A2240] dark:bg-blue-400 rounded-t-sm" style={{ height: Math.max(altura, 2) as any + '%' as any }} />
+                  <Text className="text-xs text-gray-400 dark:text-gray-400 mt-1">{MESES[i]}</Text>
                 </View>
               )
             })}
           </View>
         </View>
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('reportes_principales_clientes')}</Text>
           {topClientes.map((c, i) => (
             <View key={i} className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-b-0" accessibilityLabel={i + 1 + '. ' + c.nombre + ', ' + c.count + ' recibos, total ' + fmt(c.total)}>
-              <View className="w-7 h-7 rounded-full bg-[#002f5d] dark:bg-blue-600 items-center justify-center mr-3">
+              <View className="w-7 h-7 rounded-full bg-[#0A2240] dark:bg-blue-600 items-center justify-center mr-3">
                 <Text className="text-white text-xs font-bold">{i + 1}</Text>
               </View>
               <View className="flex-1">
-                <Text className="text-sm font-semibold text-gray-900 dark:text-gray-100" numberOfLines={1}>{c.nombre}</Text>
-                <Text className="text-xs text-gray-500 dark:text-gray-400">{c.count} recibos</Text>
+                <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100" numberOfLines={1}>{c.nombre}</Text>
+                <Text className="text-xs text-gray-400 dark:text-gray-400">{c.count} recibos</Text>
               </View>
-              <Text className="text-sm font-bold text-gray-900 dark:text-gray-100">{fmt(c.total)}</Text>
+              <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(c.total)}</Text>
             </View>
           ))}
         </View>
         {totalIngresos > 0 && (
-          <View className="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-xl px-4 py-3 mb-4" accessibilityRole="alert">
+          <View className="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-[18px] px-4 py-3 mb-2.5" accessibilityRole="alert">
             <Text className="text-amber-800 dark:text-amber-200 text-xs leading-5">
               {'\u2139\uFE0F'} {t('simulator_market_ref')}: ~{Math.round(REFERENCIA_MERCADO * 100)}% ({fmt(totalIngresos * REFERENCIA_MERCADO)})
             </Text>
@@ -175,10 +175,10 @@ export default function ReportesScreen({ navigation }: { navigation: any }) {
           </View>
         )}
         <View className="flex-row mb-10">
-          <TouchableOpacity className="flex-1 bg-[#002f5d] rounded-lg py-4 items-center mr-2" onPress={handleExportPDF} accessibilityLabel={t('reportes_export_pdf')} accessibilityRole="button" accessibilityHint={t('reportes_export_hint')}>
+          <TouchableOpacity className="flex-1 bg-[#0A2240] rounded-xl py-4 items-center mr-2" onPress={handleExportPDF} accessibilityLabel={t('reportes_export_pdf')} accessibilityRole="button" accessibilityHint={t('reportes_export_hint')}>
             <Text className="text-white font-bold text-sm">{'\uD83D\uDCC4'} {t('reportes_export_pdf')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="flex-1 bg-[#002f5d] rounded-lg py-4 items-center ml-2" onPress={handleExportExcel} accessibilityLabel={t('reportes_export_excel')} accessibilityRole="button" accessibilityHint={t('reportes_export_hint')}>
+          <TouchableOpacity className="flex-1 bg-[#0A2240] rounded-xl py-4 items-center ml-2" onPress={handleExportExcel} accessibilityLabel={t('reportes_export_excel')} accessibilityRole="button" accessibilityHint={t('reportes_export_hint')}>
             <Text className="text-white font-bold text-sm">{'\uD83D\uDCCA'} {t('reportes_export_excel')}</Text>
           </TouchableOpacity>
         </View>
@@ -191,7 +191,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <View className="flex-row justify-between items-center py-1.5" accessibilityLabel={label + ': ' + value}>
       <Text className="text-sm text-gray-600 dark:text-gray-400">{label}</Text>
-      <Text className="text-sm font-semibold text-gray-900 dark:text-gray-100">{value}</Text>
+      <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{value}</Text>
     </View>
   )
 }

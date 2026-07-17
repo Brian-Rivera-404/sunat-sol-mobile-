@@ -12,7 +12,6 @@ if (typeof Appearance.setColorScheme !== 'function') {
   ;(Appearance as any).setColorScheme = () => {}
 }
 
-import { useSessionTimeout } from './src/hooks/useSessionTimeout'
 import LoginScreen from './src/screens/LoginScreen'
 import RegisterScreen from './src/screens/RegisterScreen'
 import HomeScreen from './src/screens/HomeScreen'
@@ -51,7 +50,6 @@ const screenOptions = {
 function AppNavigator() {
   const { state } = useStore()
   const navigationRef = useRef<NavigationContainerRef<any>>(null)
-  useSessionTimeout()
 
   useEffect(() => {
     if (navigationRef.current && state.screen && state.screen !== 'Login') {

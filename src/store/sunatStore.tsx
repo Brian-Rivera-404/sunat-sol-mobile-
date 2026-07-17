@@ -55,14 +55,12 @@ export interface State {
   inbox: InboxMessage[]
   onboardingSeen: boolean
   sessionTimeoutMinutes: number
-  pinAttempts: number
-  pinLockedUntil: string | null
   pinHash: string | null
   cci: string | null
 }
 
 type Action =
-  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinAttempts' | 'pinLockedUntil' | 'pinHash' | 'cci'>> }
+  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci'>> }
   | { type: 'GO'; payload: string }
   | { type: 'SET_RECIBO_DATA'; payload: Partial<ReciboData> }
   | { type: 'ADD_RECIBO'; payload: Omit<Recibo, 'id'> }
@@ -87,8 +85,6 @@ type Action =
   | { type: 'MARK_INBOX_READ'; payload: string }
   | { type: 'SET_ONBOARDING_SEEN'; payload: boolean }
   | { type: 'SET_SESSION_TIMEOUT'; payload: number }
-  | { type: 'SET_PIN_ATTEMPTS'; payload: number }
-  | { type: 'SET_PIN_LOCKED_UNTIL'; payload: string | null }
   | { type: 'SET_PIN_HASH'; payload: string | null }
   | { type: 'SET_CCI'; payload: string | null }
 
@@ -144,8 +140,6 @@ const seedState: State = {
   ],
   onboardingSeen: false,
   sessionTimeoutMinutes: 10,
-  pinAttempts: 0,
-  pinLockedUntil: null,
   pinHash: null,
   cci: null,
 }
@@ -237,10 +231,6 @@ function reducer(state: State, action: Action): State {
       return { ...state, onboardingSeen: action.payload }
     case 'SET_SESSION_TIMEOUT':
       return { ...state, sessionTimeoutMinutes: action.payload }
-    case 'SET_PIN_ATTEMPTS':
-      return { ...state, pinAttempts: action.payload }
-    case 'SET_PIN_LOCKED_UNTIL':
-      return { ...state, pinLockedUntil: action.payload }
     case 'SET_PIN_HASH':
       return { ...state, pinHash: action.payload }
     case 'SET_CCI':
@@ -286,11 +276,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!state.loaded) return
     const persist = async () => {
       try {
-        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast, expenses: state.expenses, declarations: state.declarations, conversations: state.conversations, assistantSettings: state.assistantSettings, clients: state.clients, inbox: state.inbox, onboardingSeen: state.onboardingSeen, sessionTimeoutMinutes: state.sessionTimeoutMinutes, pinAttempts: state.pinAttempts, pinLockedUntil: state.pinLockedUntil }))
+        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast, expenses: state.expenses, declarations: state.declarations, conversations: state.conversations, assistantSettings: state.assistantSettings, clients: state.clients, inbox: state.inbox, onboardingSeen: state.onboardingSeen, sessionTimeoutMinutes: state.sessionTimeoutMinutes }))
       } catch {}
     }
     persist()
-  }, [state.user, state.recibos, state.nextId, state.language, state.darkMode, state.biometricEnabled, state.highContrast, state.expenses, state.declarations, state.conversations, state.assistantSettings, state.clients, state.inbox, state.onboardingSeen, state.sessionTimeoutMinutes, state.pinAttempts, state.pinLockedUntil, state.loaded])
+  }, [state.user, state.recibos, state.nextId, state.language, state.darkMode, state.biometricEnabled, state.highContrast, state.expenses, state.declarations, state.conversations, state.assistantSettings, state.clients, state.inbox, state.onboardingSeen, state.sessionTimeoutMinutes, state.loaded])
 
   useEffect(() => {
     if (!state.loaded || !state.cci) return
@@ -334,8 +324,6 @@ export const setInbox = (inbox: InboxMessage[]) => ({ type: 'SET_INBOX' as const
 export const markInboxRead = (id: string) => ({ type: 'MARK_INBOX_READ' as const, payload: id })
 export const setOnboardingSeen = (val: boolean) => ({ type: 'SET_ONBOARDING_SEEN' as const, payload: val })
 export const setSessionTimeout = (minutes: number) => ({ type: 'SET_SESSION_TIMEOUT' as const, payload: minutes })
-export const setPinAttempts = (n: number) => ({ type: 'SET_PIN_ATTEMPTS' as const, payload: n })
-export const setPinLockedUntil = (iso: string | null) => ({ type: 'SET_PIN_LOCKED_UNTIL' as const, payload: iso })
 export const setPinHash = (hash: string | null) => ({ type: 'SET_PIN_HASH' as const, payload: hash })
 export const setCCI = (cci: string | null) => ({ type: 'SET_CCI' as const, payload: cci })
 

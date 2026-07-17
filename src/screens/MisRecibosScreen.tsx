@@ -7,23 +7,21 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 
-const FORMA_PAGO_LABEL: Record<string, string> = {
-  transferencia: 'Transferencia',
-  efectivo: 'Efectivo',
-  cheque: 'Cheque',
-  deposito: 'Dep\u00F3sito',
+const ESTADO_LABEL: Record<string, string> = { emitido: 'Emitido', anulado: 'Anulado', revertido: 'Revertido' }
+
+const STATUS_STYLE: Record<string, { color: string; bg: string }> = {
+  emitido: { color: '#16A34A', bg: '#DCFCE7' },
+  revertido: { color: '#DC2626', bg: '#FEE2E2' },
+  anulado: { color: '#D97706', bg: '#FEF3C7' },
 }
 
-const ESTADO_COLOR: Record<string, string> = {
-  emitido: 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-400',
-  anulado: 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-400',
-  revertido: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-400',
-}
-
-const ESTADO_LABEL: Record<string, string> = {
-  emitido: 'Emitido',
-  anulado: 'Anulado',
-  revertido: 'Revertido',
+function StatusPill({ status }: { status: string }) {
+  const s = STATUS_STYLE[status] ?? { color: '#64748B', bg: '#F1F5F9' }
+  return (
+    <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
+      <Text className="text-xs font-bold" style={{ color: s.color }}>{ESTADO_LABEL[status] || status}</Text>
+    </View>
+  )
 }
 
 type Props = { navigation: NativeStackNavigationProp<any> }
@@ -74,10 +72,10 @@ export default function MisRecibosScreen({ navigation }: Props) {
   }
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('mis_recibos_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold flex-1">{t('mis_recibos_title')}</Text>
         <View className="bg-white/20 rounded-full px-3 py-1">
@@ -85,25 +83,17 @@ export default function MisRecibosScreen({ navigation }: Props) {
         </View>
       </HeaderBar>
 
-      <View className="flex-row justify-end px-4 py-3">
-        <TouchableOpacity className="flex-row items-center border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-800" accessibilityLabel={t('mis_recibos_filtrar')} accessibilityRole="button" accessibilityHint={t('mis_recibos_filtrar_hint')}>
-          <Text className="text-gray-600 dark:text-gray-400 text-sm mr-1" accessibilityElementsHidden={true}>{'\u2699'}</Text>
-          <Text className="text-gray-600 dark:text-gray-400 text-sm">{t('mis_recibos_filtrar')}</Text>
-        </TouchableOpacity>
-      </View>
-
       {emitidos.length === 0 ? (
         <View className="flex-1 items-center justify-center px-6">
           <Text className="text-5xl mb-4" accessibilityElementsHidden={true}>{'\uD83D\uDCC4'}</Text>
           <Text className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('mis_recibos_empty')}</Text>
           <Text className="text-gray-500 dark:text-gray-400 text-center mb-6">{t('mis_recibos_empty_desc')}</Text>
           <TouchableOpacity
-            className="bg-[#002f5d] rounded-lg py-4 px-8 items-center"
+            className="bg-[#0A2240] rounded-lg py-4 px-8 items-center"
             onPress={() => dispatch(go('NuevoRecibo1'))}
             activeOpacity={0.8}
             accessibilityLabel={t('mis_recibos_primer_recibo')}
             accessibilityRole="button"
-            accessibilityHint={t('mis_recibos_primer_recibo_hint')}
           >
             <Text className="text-white font-bold text-base">{t('mis_recibos_primer_recibo')}</Text>
           </TouchableOpacity>
@@ -112,72 +102,64 @@ export default function MisRecibosScreen({ navigation }: Props) {
         <ScrollView
           className="flex-1 px-4"
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#002f5d" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0A2240" />}
         >
           {emitidos.map((recibo) => (
             <View
               key={recibo.id}
-              className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-4 mb-3 shadow-sm"
-              accessibilityLabel={`${t('mis_recibos_recibo')} ${recibo.id}, ${ESTADO_LABEL[recibo.estado] || recibo.estado}, ${t('mis_recibos_cliente')}: ${recibo.cliente}, ${t('mis_recibos_fecha')}: ${formatearFecha(recibo.fecha)}, ${t('mis_recibos_monto')}: ${fmt(recibo.montoBruto)}, ${t('mis_recibos_pago')}: ${FORMA_PAGO_LABEL[recibo.formaPago] || recibo.formaPago}`}
+              className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm"
             >
-              <View className="flex-row justify-between items-center mb-2">
-                <Text className="text-sm font-bold text-[#002f5d] dark:text-blue-300">{recibo.id}</Text>
-                <View className={`px-2 py-0.5 rounded-full ${ESTADO_COLOR[recibo.estado] || 'bg-gray-100 dark:bg-gray-700'}`}>
-                  <Text className={`text-xs font-semibold ${ESTADO_COLOR[recibo.estado]?.split(' ')[2] || 'text-gray-600 dark:text-gray-400'}`}>
-                    {ESTADO_LABEL[recibo.estado] || recibo.estado}
-                  </Text>
+              <View className="flex-row justify-between items-start mb-2.5">
+                <View className="flex-1 mr-2">
+                  <Text className="text-sm font-bold text-gray-800 dark:text-gray-200">{recibo.cliente}</Text>
+                  <Text className="text-xs text-gray-400 mt-0.5">#{recibo.id} · {formatearFecha(recibo.fecha)}</Text>
                 </View>
+                <StatusPill status={recibo.estado} />
               </View>
-              <Text className="text-gray-800 dark:text-gray-200 font-medium mb-1" numberOfLines={1}>{recibo.cliente}</Text>
-              <View className="flex-row justify-between items-center mt-1">
-                <Text className="text-gray-500 dark:text-gray-400 text-sm">{formatearFecha(recibo.fecha)}</Text>
-                <Text className="text-gray-800 dark:text-gray-200 font-bold">{fmt(recibo.montoBruto)}</Text>
-              </View>
-              <View className="flex-row justify-between items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                <Text className="text-xs text-gray-500 dark:text-gray-400">{FORMA_PAGO_LABEL[recibo.formaPago] || recibo.formaPago}</Text>
-                <View className="flex-row">
+              <View className="flex-row justify-between items-center">
+                <View>
+                  <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(recibo.montoBruto)}</Text>
+                  {recibo.retencion > 0 && (
+                    <Text className="text-xs text-gray-400">{t('mis_recibos_retencion')}: {fmt(recibo.retencion)}</Text>
+                  )}
+                </View>
+                <View className="flex-row gap-2">
                   <TouchableOpacity
+                    className="rounded-xl px-3 py-1.5" style={{ backgroundColor: '#F1F5F9' }}
                     onPress={() => { vibrateLight(); dispatch(showModal(recibo.id)) }}
-                    className="bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-1.5 mr-2"
                     accessibilityLabel={`${t('mis_recibos_ver_detalle')} ${recibo.id}`}
                     accessibilityRole="button"
-                    accessibilityHint={t('mis_recibos_ver_detalle_hint')}
                   >
-                    <Text className="text-[#002f5d] dark:text-blue-300 text-xs font-semibold">{t('mis_recibos_ver_detalle')}</Text>
+                    <Text className="text-xs font-semibold" style={{ color: '#475569' }}>{t('mis_recibos_ver_detalle')}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    className="rounded-xl px-3 py-1.5" style={{ backgroundColor: '#FEE2E2' }}
+                    onPress={() => handleRevert(recibo.id)}
+                    accessibilityLabel={`${t('revert_button')} ${recibo.id}`}
+                    accessibilityRole="button"
+                  >
+                    <Text className="text-xs font-semibold" style={{ color: '#DC2626' }}>{t('revert_button')}</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
-              <View className="flex-row justify-between items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                <Text className="text-xs text-red-500 dark:text-red-400">{'\u26A0\uFE0F'} {t('revert_plazo')}</Text>
-                <TouchableOpacity
-                  className="bg-red-50 dark:bg-red-900 rounded-lg px-4 py-1.5"
-                  onPress={() => handleRevert(recibo.id)}
-                  accessibilityLabel={`${t('revert_button')} ${recibo.id}`}
-                  accessibilityRole="button"
-                  accessibilityHint={t('revert_button_hint')}
-                >
-                  <Text className="text-red-600 dark:text-red-400 text-xs font-semibold">{t('revert_button')}</Text>
-                </TouchableOpacity>
               </View>
             </View>
           ))}
 
           {revertidos.length > 0 && (
             <View className="mb-4">
-              <Text className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 mt-2">{t('revert_reverted_list')}</Text>
+              <Text className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 mt-4">{t('revert_reverted_list')}</Text>
               {revertidos.map((recibo) => (
                 <View
                   key={recibo.id}
-                  className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-3 mb-2 shadow-sm opacity-60"
-                  accessibilityLabel={`${t('mis_recibos_recibo')} ${recibo.id}, ${t('estado_revertido')}`}
+                  className="bg-white dark:bg-gray-800 rounded-[18px] p-3 mb-2 shadow-sm opacity-60"
                 >
                   <View className="flex-row justify-between items-center">
-                    <Text className="text-sm font-bold text-gray-500">{recibo.id}</Text>
-                    <View className="px-2 py-0.5 rounded-full bg-yellow-100 dark:bg-yellow-900">
-                      <Text className="text-yellow-700 dark:text-yellow-400 text-xs font-semibold">{t('estado_revertido')}</Text>
+                    <View>
+                      <Text className="text-sm font-bold text-gray-500">{recibo.id}</Text>
+                      <Text className="text-xs text-gray-400">{recibo.cliente}</Text>
                     </View>
+                    <StatusPill status={recibo.estado} />
                   </View>
-                  <Text className="text-xs text-gray-400 dark:text-gray-500 mt-1">{recibo.cliente}</Text>
                 </View>
               ))}
             </View>
