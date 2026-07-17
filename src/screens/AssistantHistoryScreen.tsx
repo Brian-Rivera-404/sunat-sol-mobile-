@@ -5,8 +5,12 @@ import { useStore, go, deleteConversation, clearConversations, addConversation }
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
-export default function AssistantHistoryScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'AssistantHistory'>
+
+export default function AssistantHistoryScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
 

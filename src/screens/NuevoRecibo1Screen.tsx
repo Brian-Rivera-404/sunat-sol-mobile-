@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import { View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 import { useStore, go, RUC_DB, setReciboData } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateError } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 
-type Props = { navigation: NativeStackNavigationProp<any> }
+type Props = { navigation: NativeStackNavigationProp<RootStackParamList, 'NuevoRecibo1'> }
 
 export default function NuevoRecibo1Screen({ navigation }: Props) {
   const { state, dispatch } = useStore()

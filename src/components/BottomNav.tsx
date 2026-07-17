@@ -6,10 +6,10 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 
 const NAV_ITEMS = [
-  { id: 'Home', icon: '\uD83C\uDFE0', labelKey: 'bottomnav_home' },
-  { id: 'MisRecibos', icon: '\uD83D\uDCC4', labelKey: 'bottomnav_recibos' },
-  { id: 'Declarations', icon: '\uD83D\uDCCA', labelKey: 'bottomnav_declarar' },
-  { id: 'Inbox', icon: '\uD83D\uDCEB', labelKey: 'bottomnav_buzon' },
+  { id: 'Home' as const, icon: '\uD83C\uDFE0', labelKey: 'bottomnav_home' },
+  { id: 'MisRecibos' as const, icon: '\uD83D\uDCC4', labelKey: 'bottomnav_recibos' },
+  { id: 'Declarations' as const, icon: '\uD83D\uDCCA', labelKey: 'bottomnav_declarar' },
+  { id: 'Inbox' as const, icon: '\uD83D\uDCEB', labelKey: 'bottomnav_buzon' },
 ]
 
 const MAIN_SCREENS = ['Home', 'MisRecibos', 'Declarations', 'Inbox']

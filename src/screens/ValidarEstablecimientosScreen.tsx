@@ -6,6 +6,8 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 import type { ValidatedEstablishment } from '../types/shared'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const VALIDATED_ESTABLISHMENTS: ValidatedEstablishment[] = [
   { ruc: '20123456789', nombre: 'Hotel Los Delfines', categoria: 'hotel', validado: true },
@@ -28,7 +30,9 @@ const CATEGORIA_ICONS: Record<string, string> = {
   otro: '\uD83D\uDCCC',
 }
 
-export default function ValidarEstablecimientosScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'ValidarEstablecimientos'>
+
+export default function ValidarEstablecimientosScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const [search, setSearch] = useState('')

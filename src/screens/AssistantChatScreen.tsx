@@ -7,6 +7,8 @@ import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import { askAssistant } from '../services/assistantApi'
 import HeaderBar from '../components/HeaderBar'
 import * as Speech from 'expo-speech'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 type Message = {
   id: string
@@ -21,7 +23,9 @@ const FAQ_CHIPS = [
   'faq_chip_equivoco',
 ]
 
-export default function AssistantChatScreen({ navigation, route }: { navigation: any; route?: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'AssistantChat'>
+
+export default function AssistantChatScreen({ navigation, route }: { navigation: ScreenNav; route?: { params?: { initialMessage?: string; modulo?: string } } }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const [messages, setMessages] = useState<Message[]>([])

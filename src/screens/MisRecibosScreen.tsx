@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react'
 import { View, TouchableOpacity, ScrollView, RefreshControl, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 import { useStore, go, fmt, formatearFecha, showModal } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
@@ -25,7 +26,7 @@ function StatusPill({ status }: { status: string }) {
   )
 }
 
-type Props = { navigation: NativeStackNavigationProp<any> }
+type Props = { navigation: NativeStackNavigationProp<RootStackParamList, 'MisRecibos'> }
 
 export default function MisRecibosScreen({ navigation }: Props) {
   const { state, dispatch } = useStore()

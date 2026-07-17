@@ -4,8 +4,12 @@ import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import HeaderBar from '../components/HeaderBar'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
-export default function NotificacionesScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Notificaciones'>
+
+export default function NotificacionesScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const emitidos = (state.recibos ?? []).filter(r => r.estado === 'emitido')

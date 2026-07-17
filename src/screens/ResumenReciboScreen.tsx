@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react'
 import { View, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 import { useStore, go, fmt, emitirRecibo } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess } from '../utils/haptics'
@@ -16,7 +17,7 @@ const FORMA_PAGO_LABEL: Record<string, string> = {
   deposito: 'Dep\u00F3sito',
 }
 
-type Props = { navigation: NativeStackNavigationProp<any> }
+type Props = { navigation: NativeStackNavigationProp<RootStackParamList, 'ResumenRecibo'> }
 
 export default function ResumenReciboScreen({ navigation }: Props) {
   const { state, dispatch } = useStore()

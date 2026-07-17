@@ -4,8 +4,12 @@ import { Text } from '../components/AccessibleText'
 import { useStore, go } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess, vibrateError } from '../utils/haptics'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
-export default function RegisterScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Register'>
+
+export default function RegisterScreen({ navigation }: { navigation: ScreenNav }) {
   const { dispatch } = useStore()
   const { t } = useTranslate()
   const [nombre, setNombre] = useState('')

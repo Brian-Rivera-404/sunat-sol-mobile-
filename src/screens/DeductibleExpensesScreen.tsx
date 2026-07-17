@@ -7,6 +7,8 @@ import { vibrateLight, vibrateSuccess, vibrateError } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 import { localFAQ } from '../services/localFAQ'
 import { C } from '../styles/theme'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const CATEGORIAS = [
   'oficina_alquiler',
@@ -49,7 +51,9 @@ const EXPENSES_DB: Array<{ id: string; ruc: string; nombre: string; categoria: s
   { id: 'cat5', ruc: '20123456793', nombre: 'Librería Central S.A.', categoria: 'utiles' },
 ]
 
-export default function DeductibleExpensesScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'DeductibleExpenses'>
+
+export default function DeductibleExpensesScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const [showForm, setShowForm] = useState(false)

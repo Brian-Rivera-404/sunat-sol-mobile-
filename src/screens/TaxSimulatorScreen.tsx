@@ -5,12 +5,16 @@ import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const UIT = 5150
 const TASA_IMPUESTO = 0.08
 const REFERENCIA_MERCADO = 0.12
 
-export default function TaxSimulatorScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'TaxSimulator'>
+
+export default function TaxSimulatorScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const [simMonto, setSimMonto] = useState('')

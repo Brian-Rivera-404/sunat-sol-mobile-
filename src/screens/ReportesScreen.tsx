@@ -6,10 +6,14 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const REFERENCIA_MERCADO = 0.12
 
-export default function ReportesScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Reportes'>
+
+export default function ReportesScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
 

@@ -5,25 +5,29 @@ import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, setDarkMode, setHighContrast } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 import { C } from '../styles/theme'
 
+type HomeNav = NativeStackNavigationProp<RootStackParamList, 'Home'>
+
 const MODULES = [
-  { id: 'MisRecibos', labelKey: 'home_mis_recibos', icon: '\uD83D\uDCC4', bg: '#EEF2FF' },
-  { id: 'Declarations', labelKey: 'home_declarar', icon: '\uD83D\uDCCA', bg: '#EEF2FF' },
-  { id: 'MyRuc', labelKey: 'home_mi_ruc', icon: '\uD83C\uF3DB\uFE0F', bg: '#EEF2FF' },
-  { id: 'DeductibleExpenses', labelKey: 'expenses_title', icon: '\uD83E\uDDFE', bg: '#FFF7ED' },
-  { id: 'AnnualTax', labelKey: 'annual_tax_title', icon: '\uD83D\uDCCA', bg: '#F0FDF4' },
-  { id: 'Beneficios', labelKey: 'home_beneficios', icon: '\uD83C\uDF81', bg: '#F5F3FF' },
+  { id: 'MisRecibos' as const, labelKey: 'home_mis_recibos', icon: '\uD83D\uDCC4', bg: '#EEF2FF' },
+  { id: 'Declarations' as const, labelKey: 'home_declarar', icon: '\uD83D\uDCCA', bg: '#EEF2FF' },
+  { id: 'MyRuc' as const, labelKey: 'home_mi_ruc', icon: '\uD83C\uF3DB\uFE0F', bg: '#EEF2FF' },
+  { id: 'DeductibleExpenses' as const, labelKey: 'expenses_title', icon: '\uD83E\uDDFE', bg: '#FFF7ED' },
+  { id: 'AnnualTax' as const, labelKey: 'annual_tax_title', icon: '\uD83D\uDCCA', bg: '#F0FDF4' },
+  { id: 'Beneficios' as const, labelKey: 'home_beneficios', icon: '\uD83C\uDF81', bg: '#F5F3FF' },
 ]
 
 const BOTTOM_CARDS = [
-  { id: 'Reportes', labelKey: 'home_reportes', icon: '\uD83D\uDCC8', subKey: 'home_reportes_sub', accent: '#1B4FBF' },
-  { id: 'Inbox', labelKey: 'inbox_title', icon: '\uD83D\uDCEB', subKey: 'inbox_subtitle', accent: '#E85E1E' },
-  { id: 'TaxCalendar', labelKey: 'calendar_title', icon: '\uD83D\uDCC5', subKey: 'calendar_subtitle', accent: '#D97706' },
+  { id: 'Reportes' as const, labelKey: 'home_reportes', icon: '\uD83D\uDCC8', subKey: 'home_reportes_sub', accent: '#1B4FBF' },
+  { id: 'Inbox' as const, labelKey: 'inbox_title', icon: '\uD83D\uDCEB', subKey: 'inbox_subtitle', accent: '#E85E1E' },
+  { id: 'TaxCalendar' as const, labelKey: 'calendar_title', icon: '\uD83D\uDCC5', subKey: 'calendar_subtitle', accent: '#D97706' },
 ]
 
-export default function HomeScreen({ navigation }: { navigation: any }) {
+export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
   const { state, dispatch } = useStore()
   const { t, switchLang, nextLangLabel } = useTranslate()
 

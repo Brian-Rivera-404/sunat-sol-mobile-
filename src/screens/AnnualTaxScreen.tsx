@@ -6,6 +6,8 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const RENTA_CHECK = [
   { id: 'ingresos', labelKey: 'annual_step_ingresos', done: true },
@@ -15,7 +17,9 @@ const RENTA_CHECK = [
   { id: 'devolucion', labelKey: 'annual_step_devolucion', done: false },
 ]
 
-export default function AnnualTaxScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'AnnualTax'>
+
+export default function AnnualTaxScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
 

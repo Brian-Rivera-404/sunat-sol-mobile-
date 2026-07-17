@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 import { useStore, go, fmt, setReciboData } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
 
-type Props = { navigation: NativeStackNavigationProp<any> }
+type Props = { navigation: NativeStackNavigationProp<RootStackParamList, 'NuevoRecibo2'> }
 
 const FORMA_PAGO = [
   { key: 'transferencia', label: 'Transferencia', icon: '\uD83C\uDFE6' },

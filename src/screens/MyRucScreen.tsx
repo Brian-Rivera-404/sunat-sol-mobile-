@@ -7,8 +7,12 @@ import { vibrateLight, vibrateSuccess, vibrateError } from '../utils/haptics'
 import { sanitizeInput } from '../utils/validators'
 import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
-export default function MyRucScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'MyRuc'>
+
+export default function MyRucScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const { user } = state

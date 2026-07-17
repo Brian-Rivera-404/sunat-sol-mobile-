@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 import { secureSaveCCI, secureGetCCI, secureSavePinHash, secureGetPinHash } from '../services/secureStorage'
 import type { RHEReceipt, DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings } from '../types/shared'
+import type { RootStackParamList } from '../types/navigation'
 
 const KEY = 'sunat_sol_data'
 
@@ -23,7 +24,7 @@ interface ReciboData {
 }
 
 export interface State {
-  screen: string
+  screen: keyof RootStackParamList
   user: User
   recibos: RHEReceipt[]
   nextId: number
@@ -49,7 +50,7 @@ export interface State {
 
 type Action =
   | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci'>> }
-  | { type: 'GO'; payload: string }
+  | { type: 'GO'; payload: keyof RootStackParamList }
   | { type: 'SET_RECIBO_DATA'; payload: Partial<ReciboData> }
   | { type: 'ADD_RECIBO'; payload: Omit<RHEReceipt, 'id'> }
   | { type: 'EMITIR_RECIBO' }
@@ -319,7 +320,7 @@ export function useStore() {
   return ctx
 }
 
-export const go = (screen: string) => ({ type: 'GO' as const, payload: screen })
+export const go = (screen: keyof RootStackParamList) => ({ type: 'GO' as const, payload: screen })
 export const setLang = (lang: string) => ({ type: 'SET_LANG' as const, payload: lang })
 export const setDarkMode = (val: boolean) => ({ type: 'SET_DARK_MODE' as const, payload: val })
 export const setBiometric = (val: boolean) => ({ type: 'SET_BIOMETRIC' as const, payload: val })

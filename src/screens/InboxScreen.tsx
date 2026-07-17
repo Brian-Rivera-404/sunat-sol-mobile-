@@ -6,6 +6,8 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const TAG_STYLE: Record<string, { color: string; bg: string; label: string }> = {
   declaraciones: { color: C.amber, bg: C.amberBg, label: 'Alerta' },
@@ -25,7 +27,9 @@ function getBorderColor(modulo: string): string {
   return TAG_STYLE[modulo]?.color ?? C.navy
 }
 
-export default function InboxScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Inbox'>
+
+export default function InboxScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
 

@@ -7,6 +7,8 @@ import { vibrateLight } from '../utils/haptics'
 import { isValidDate, isFutureDate } from '../utils/validators'
 import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const STATUS_STYLE: Record<string, { color: string; bg: string }> = {
   pendiente: { color: '#D97706', bg: '#FEF3C7' },
@@ -23,7 +25,9 @@ function StatusPill({ status }: { status: string }) {
   )
 }
 
-export default function DeclarationsScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Declarations'>
+
+export default function DeclarationsScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
 

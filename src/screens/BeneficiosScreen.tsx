@@ -5,6 +5,8 @@ import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 interface Beneficio {
   icon: string
@@ -23,7 +25,9 @@ const BENEFICIOS: Beneficio[] = [
   { icon: '\u23F8\uFE0F', title: 'Suspensión de retenciones', description: 'Solicita la suspensión de retenciones si tus ingresos proyectados son menores.', amount: 'Trámite gratuito', tag: 'Recomendado' },
 ]
 
-export default function BeneficiosScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Beneficios'>
+
+export default function BeneficiosScreen({ navigation }: { navigation: ScreenNav }) {
   const { dispatch } = useStore()
   const { t } = useTranslate()
 

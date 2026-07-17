@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { StoreProvider, useStore, go } from './src/store/sunatStore'
 import { useTranslate } from './src/i18n/useTranslate'
 import { vibrateLight } from './src/utils/haptics'
+import type { RootStackParamList } from './src/types/navigation'
 
 // Polyfill: setColorScheme no existe en react-native-web
 if (typeof Appearance.setColorScheme !== 'function') {
@@ -42,7 +43,7 @@ import ModalRecibo from './src/components/ModalRecibo'
 import Toast from './src/components/Toast'
 import BottomNav from './src/components/BottomNav'
 
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator<RootStackParamList>()
 
 const screenOptions = {
   headerShown: false,
@@ -51,7 +52,7 @@ const screenOptions = {
 
 function AppNavigator() {
   const { state, dispatch } = useStore()
-  const navigationRef = useRef<NavigationContainerRef<any>>(null)
+  const navigationRef = useRef<NavigationContainerRef<RootStackParamList>>(null)
   const { t } = useTranslate()
 
   useEffect(() => {

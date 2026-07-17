@@ -5,11 +5,15 @@ import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const UIT = 5150
 const DEDUCCION = 7 * UIT
 
-export default function DeclararScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Declarar'>
+
+export default function DeclararScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const [acepto, setAcepto] = useState(false)

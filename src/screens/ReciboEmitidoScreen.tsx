@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { View, TouchableOpacity, ScrollView } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 import { useStore, go, fmt, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess } from '../utils/haptics'
@@ -25,7 +26,7 @@ const ESTADO_COLOR: Record<string, string> = {
   anulado: 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900',
 }
 
-type Props = { navigation: NativeStackNavigationProp<any> }
+type Props = { navigation: NativeStackNavigationProp<RootStackParamList, 'ReciboEmitido'> }
 
 export default function ReciboEmitidoScreen({ navigation }: Props) {
   const { state, dispatch } = useStore()

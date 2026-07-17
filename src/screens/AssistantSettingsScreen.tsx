@@ -5,6 +5,8 @@ import { useStore, go, setAssistantSettings } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const MODALIDADES = [
   { key: 'text_only' as const, icon: '\uD83D\uDCDD' },
@@ -18,7 +20,9 @@ const VELOCIDADES = [
   { key: 'fast' as const, icon: '\uD83D\uDC23' },
 ]
 
-export default function AssistantSettingsScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'AssistantSettings'>
+
+export default function AssistantSettingsScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t, switchLang, nextLangLabel } = useTranslate()
   const settings = state.assistantSettings

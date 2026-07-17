@@ -5,6 +5,8 @@ import { useStore, go, setOnboardingSeen } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const TARJETAS = [
   { icon: '\uD83C\uDFA4', key: 'voice' },
@@ -12,7 +14,9 @@ const TARJETAS = [
   { icon: '\uD83D\uDCA1', key: 'explain' },
 ]
 
-export default function AssistantOnboardingScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'AssistantOnboarding'>
+
+export default function AssistantOnboardingScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const [noVolver, setNoVolver] = useState(false)

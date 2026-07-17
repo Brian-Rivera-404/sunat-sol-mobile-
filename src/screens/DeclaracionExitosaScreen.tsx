@@ -3,6 +3,8 @@ import { View, TouchableOpacity } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const generarOrden = () => {
   const nums = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10)).join('')
@@ -11,7 +13,9 @@ const generarOrden = () => {
   return `${pref}-${nums}`
 }
 
-export default function DeclaracionExitosaScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'DeclaracionExitosa'>
+
+export default function DeclaracionExitosaScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const [orden] = React.useState(generarOrden)

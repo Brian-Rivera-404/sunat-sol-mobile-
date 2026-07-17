@@ -6,6 +6,8 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
 
 const CAL_PROTO = [
   { ruc: '0', date: '14 jul', status: 'vencido' as const },
@@ -46,7 +48,9 @@ const DEADLINES = [
   { mes: 'Diciembre', dia: 12, label: 'calendar_onthly_declaration' },
 ]
 
-export default function TaxCalendarScreen({ navigation }: { navigation: any }) {
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'TaxCalendar'>
+
+export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNav }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
 
