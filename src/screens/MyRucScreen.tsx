@@ -4,6 +4,7 @@ import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, formatearFecha, setCCI } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess, vibrateError } from '../utils/haptics'
+import { sanitizeInput } from '../utils/validators'
 import HeaderBar from '../components/HeaderBar'
 
 export default function MyRucScreen({ navigation }: { navigation: any }) {
@@ -13,13 +14,14 @@ export default function MyRucScreen({ navigation }: { navigation: any }) {
   const recibos = state.recibos ?? []
   const [showCCIModal, setShowCCIModal] = useState(false)
   const [cciInput, setCciInput] = useState(state.cci || '')
+  const [showFullCCI, setShowFullCCI] = useState(false)
 
   const emitidos = useMemo(() => recibos.filter((r) => r.estado === 'emitido'), [recibos])
   const totalIngresos = useMemo(() => emitidos.reduce((s, r) => s + r.montoBruto, 0), [emitidos])
   const impuestoEstimado = useMemo(() => Math.max(0, totalIngresos - 7 * 5150) * 0.08, [totalIngresos])
 
   const handleSaveCCI = () => {
-    const clean = cciInput.replace(/\s/g, '')
+    const clean = sanitizeInput(cciInput).replace(/\s/g, '')
     if (clean.length !== 20 || !/^\d{20}$/.test(clean)) {
       vibrateError()
       return
@@ -78,12 +80,26 @@ export default function MyRucScreen({ navigation }: { navigation: any }) {
           accessibilityRole="button"
           accessibilityHint={t('cci_register_hint')}
         >
-          <View className="flex-row items-center">
+          <View className="flex-row items-center flex-1">
             <Text className="text-2xl mr-3">{'\uD83C\uDFE6'}</Text>
-            <View>
+            <View className="flex-1">
               <Text className="text-gray-800 dark:text-gray-200 font-semibold">{t('cci_register')}</Text>
-              <Text className="text-gray-500 dark:text-gray-400 text-xs">{state.cci ? `${t('cci_registered')}: ****${state.cci.slice(-4)}` : t('cci_not_registered')}</Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-xs">
+                {state.cci
+                  ? `${t('cci_registered')}: ${showFullCCI ? state.cci : '****' + state.cci.slice(-4)}`
+                  : t('cci_not_registered')}
+              </Text>
             </View>
+            {state.cci && (
+              <TouchableOpacity
+                className="ml-2 px-2 py-1"
+                onPress={(e) => { e.stopPropagation(); setShowFullCCI(!showFullCCI); vibrateLight() }}
+                accessibilityLabel={showFullCCI ? t('cci_hide_full') : t('cci_show_full')}
+                accessibilityRole="button"
+              >
+                <Text className="text-blue-500 text-xs font-semibold">{showFullCCI ? t('general_hide') : t('general_show')}</Text>
+              </TouchableOpacity>
+            )}
           </View>
           <Text className="text-gray-500 dark:text-gray-400 text-lg">{'\u203A'}</Text>
         </TouchableOpacity>

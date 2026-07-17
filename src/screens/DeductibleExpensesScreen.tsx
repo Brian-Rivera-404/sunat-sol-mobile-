@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, TouchableOpacity, ScrollView, TextInput, Image, Alert } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, TouchableOpacity, ScrollView, TextInput, Image, Alert, Platform } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, addExpense, removeExpense, fmt, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -19,6 +19,25 @@ const CATEGORIAS = [
   'otros',
 ]
 
+const CATEGORIA_KEYWORDS: Record<string, string[]> = {
+  capacitacion: ['curso', 'taller', 'capacitacion', 'seminario', 'diplomado', 'certificacion'],
+  salud: ['medico', 'doctor', 'clinica', 'hospital', 'farmacia', 'dental', 'medicina'],
+  educacion: ['colegio', 'universidad', 'instituto', 'academia', 'clases', 'estudio'],
+  movilidad: ['taxi', 'uber', 'pasaje', 'combustible', 'gasolina', 'estacionamiento', 'peaje'],
+  utiles: ['libreria', 'papeleria', 'lapiz', 'cuaderno', 'oficina', 'escritorio'],
+  equipamiento: ['computadora', 'laptop', 'monitor', 'teclado', 'mouse', 'impresora', 'celular'],
+  oficina_alquiler: ['alquiler', 'oficina', 'local', 'renta'],
+  oficina_servicios: ['luz', 'agua', 'internet', 'telefono', 'electricidad'],
+}
+
+function sugerirCategoria(texto: string): string | null {
+  const t = texto.toLowerCase()
+  for (const [cat, keywords] of Object.entries(CATEGORIA_KEYWORDS)) {
+    if (keywords.some((k) => t.includes(k))) return cat
+  }
+  return null
+}
+
 const EXPENSES_DB: Array<{ id: string; ruc: string; nombre: string; categoria: string }> = [
   { id: 'cat1', ruc: '20123456789', nombre: 'Centro de Capacitación Perú S.A.C.', categoria: 'capacitacion' },
   { id: 'cat2', ruc: '20123456790', nombre: 'Farmacia Universal S.A.', categoria: 'salud' },
@@ -34,6 +53,48 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
   const [descripcion, setDescripcion] = useState('')
   const [monto, setMonto] = useState('')
   const [categoria, setCategoria] = useState(CATEGORIAS[0])
+  const [comprobanteUri, setComprobanteUri] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (descripcion.trim().length >= 3) {
+      const sugerida = sugerirCategoria(descripcion)
+      if (sugerida && sugerida !== categoria) {
+        setCategoria(sugerida)
+      }
+    }
+  }, [descripcion])
+
+  const handlePickImage = async () => {
+    try {
+      const { launchImageLibraryAsync, MediaTypeOptions } = require('expo-image-picker')
+      const result = await launchImageLibraryAsync({
+        mediaTypes: MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 0.7,
+      })
+      if (!result.canceled && result.assets?.[0]) {
+        setComprobanteUri(result.assets[0].uri)
+      }
+    } catch {}
+  }
+
+  const handleTakePhoto = async () => {
+    try {
+      const { launchCameraAsync } = require('expo-image-picker')
+      const perm = await require('expo-image-picker').requestCameraPermissionsAsync()
+      if (!perm.granted) {
+        Alert.alert(t('general_error'), t('expenses_camera_perm'))
+        return
+      }
+      const result = await launchCameraAsync({
+        allowsEditing: true,
+        quality: 0.7,
+      })
+      if (!result.canceled && result.assets?.[0]) {
+        setComprobanteUri(result.assets[0].uri)
+      }
+    } catch {}
+  }
 
   const handleAdd = () => {
     const montoNum = parseFloat(monto)
@@ -53,7 +114,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
         id: `EXP-${Date.now()}`,
         monto: montoNum,
         categoria,
-        comprobanteUri: undefined,
+        comprobanteUri: comprobanteUri || undefined,
         establecimientoValidado: false,
         descripcion: descripcion.trim(),
         fecha: new Date().toISOString().split('T')[0],
@@ -64,6 +125,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
     setDescripcion('')
     setMonto('')
     setCategoria(CATEGORIAS[0])
+    setComprobanteUri(null)
   }
 
   return (
@@ -143,6 +205,33 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
                 </TouchableOpacity>
               ))}
             </View>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('expenses_comprobante')}</Text>
+            <View className="flex-row mb-4 space-x-3">
+              <TouchableOpacity
+                className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-lg py-3 items-center"
+                onPress={handlePickImage}
+                accessibilityLabel={t('expenses_comprobante_gallery')}
+                accessibilityRole="button"
+              >
+                <Text className="text-gray-700 dark:text-gray-300 text-sm font-semibold">{'\uD83D\uDDBC\uFE0F '}{t('expenses_comprobante_gallery')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-lg py-3 items-center"
+                onPress={handleTakePhoto}
+                accessibilityLabel={t('expenses_comprobante_camera')}
+                accessibilityRole="button"
+              >
+                <Text className="text-gray-700 dark:text-gray-300 text-sm font-semibold">{'\uD83D\uDCF7 '}{t('expenses_comprobante_camera')}</Text>
+              </TouchableOpacity>
+            </View>
+            {comprobanteUri && (
+              <View className="mb-4" accessibilityLabel={t('expenses_comprobante_attached')}>
+                <Image source={{ uri: comprobanteUri }} className="w-full h-32 rounded-lg mb-1" resizeMode="cover" />
+                <TouchableOpacity onPress={() => setComprobanteUri(null)} accessibilityLabel={t('general_delete')}>
+                  <Text className="text-red-500 text-xs text-center">{t('general_delete')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <TouchableOpacity
               className="bg-[#002f5d] rounded-lg py-3 items-center"
               onPress={handleAdd}
@@ -169,6 +258,11 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
                 </View>
                 <Text className="text-sm font-bold text-red-500">{fmt(exp.monto)}</Text>
               </View>
+              {exp.comprobanteUri && (
+                <View className="mt-2">
+                  <Image source={{ uri: exp.comprobanteUri }} className="w-full h-20 rounded-lg" resizeMode="cover" />
+                </View>
+              )}
               <View className="flex-row justify-between items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                 <Text className="text-xs text-gray-400 dark:text-gray-500">{formatearFecha(exp.fecha)}</Text>
                 <TouchableOpacity

@@ -12,6 +12,7 @@ const SECTIONS = [
       { labelKey: 'home_declarar', icon: '\uD83D\uDCCA', screen: 'Declarations' },
       { labelKey: 'annual_tax_title', icon: '\uD83C\uDFE6', screen: 'AnnualTax' },
       { labelKey: 'calendar_title', icon: '\uD83D\uDCC5', screen: 'TaxCalendar' },
+      { labelKey: 'simulator_title', icon: '\uD83D\uDD0D', screen: 'TaxSimulator' },
     ],
   },
   {
