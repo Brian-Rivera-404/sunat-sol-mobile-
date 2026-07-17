@@ -153,6 +153,7 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         ...action.payload,
+        screen: 'Home', // siempre Home, ignorar lo guardado
         recibos: action.payload.recibos ?? state.recibos,
         expenses: action.payload.expenses ?? state.expenses,
         declarations: action.payload.declarations ?? state.declarations,
