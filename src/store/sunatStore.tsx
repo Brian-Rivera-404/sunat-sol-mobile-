@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import type { DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings } from '../types/shared'
 
 const KEY = 'sunat_sol_data'
 
@@ -44,20 +45,46 @@ export interface State {
   darkMode: boolean
   biometricEnabled: boolean
   highContrast: boolean
+  expenses: DeductibleExpense[]
+  declarations: TaxDeclaration[]
+  conversations: AssistantConversation[]
+  assistantSettings: AssistantSettings
+  clients: Client[]
+  inbox: InboxMessage[]
+  onboardingSeen: boolean
+  sessionTimeoutMinutes: number
+  pinHash: string | null
+  cci: string | null
 }
 
 type Action =
-  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast'>> }
+  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci'>> }
   | { type: 'GO'; payload: string }
   | { type: 'SET_RECIBO_DATA'; payload: Partial<ReciboData> }
   | { type: 'ADD_RECIBO'; payload: Omit<Recibo, 'id'> }
   | { type: 'EMITIR_RECIBO' }
+  | { type: 'REVERT_RECIBO'; payload: string }
   | { type: 'MODAL'; payload: string | null }
   | { type: 'TOAST'; payload: string | null }
   | { type: 'SET_LANG'; payload: string }
   | { type: 'SET_DARK_MODE'; payload: boolean }
   | { type: 'SET_BIOMETRIC'; payload: boolean }
   | { type: 'SET_HIGH_CONTRAST'; payload: boolean }
+  | { type: 'ADD_EXPENSE'; payload: DeductibleExpense }
+  | { type: 'REMOVE_EXPENSE'; payload: string }
+  | { type: 'ADD_DECLARATION'; payload: TaxDeclaration }
+  | { type: 'ADD_CONVERSATION'; payload: AssistantConversation }
+  | { type: 'DELETE_CONVERSATION'; payload: string }
+  | { type: 'CLEAR_CONVERSATIONS' }
+  | { type: 'SET_ASSISTANT_SETTINGS'; payload: Partial<AssistantSettings> }
+  | { type: 'ADD_CLIENT'; payload: Client }
+  | { type: 'REMOVE_CLIENT'; payload: string }
+  | { type: 'SET_INBOX'; payload: InboxMessage[] }
+  | { type: 'MARK_INBOX_READ'; payload: string }
+  | { type: 'SET_ONBOARDING_SEEN'; payload: boolean }
+  | { type: 'SET_SESSION_TIMEOUT'; payload: number }
+  | { type: 'SET_PIN_HASH'; payload: string | null }
+  | { type: 'SET_CCI'; payload: string | null }
 
 const seedUser: User = {
   nombre: 'Juan Pérez García',
@@ -93,12 +120,42 @@ const seedState: State = {
   darkMode: false,
   biometricEnabled: false,
   highContrast: false,
+  expenses: [],
+  declarations: [
+    { id: 'DEC-001', periodo: '2026-06', estado: 'pagado', fechaLimite: '2026-07-15', monto: 1200 },
+    { id: 'DEC-002', periodo: '2026-07', estado: 'pendiente', fechaLimite: '2026-08-15', monto: 0 },
+  ],
+  conversations: [],
+  assistantSettings: { modality: 'text_voice', ttsSpeed: 'normal', useLocalOnly: true, language: 'es' },
+  clients: [
+    { id: 'c1', ruc: '20100070970', nombre: 'BANCO DE CRÉDITO DEL PERÚ S.A.', frecuente: true },
+    { id: 'c2', ruc: '20131694977', nombre: 'ALICORP S.A.A.', frecuente: true },
+    { id: 'c3', ruc: '20100047218', nombre: 'TELEFÓNICA DEL PERÚ S.A.A.', frecuente: true },
+  ],
+  inbox: [
+    { id: 'in1', titulo: 'Declaración pendiente', cuerpo: 'Tienes una declaración del período 2026-07 pendiente. Plazo: 15 de agosto.', fecha: '2026-07-10', leido: false, modulo: 'declaraciones' },
+    { id: 'in2', titulo: 'Recibo emitido', cuerpo: 'Se registró tu recibo E001-0030 correctamente.', fecha: '2026-06-19', leido: true, modulo: 'rhe' },
+  ],
+  onboardingSeen: false,
+  sessionTimeoutMinutes: 10,
+  pinHash: null,
+  cci: null,
 }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'LOAD':
-      return { ...state, ...action.payload, loaded: true }
+      return {
+        ...state,
+        ...action.payload,
+        recibos: action.payload.recibos ?? state.recibos,
+        expenses: action.payload.expenses ?? state.expenses,
+        declarations: action.payload.declarations ?? state.declarations,
+        conversations: action.payload.conversations ?? state.conversations,
+        clients: action.payload.clients ?? state.clients,
+        inbox: action.payload.inbox ?? state.inbox,
+        loaded: true,
+      }
     case 'GO':
       return { ...state, screen: action.payload }
     case 'SET_RECIBO_DATA':
@@ -124,7 +181,15 @@ function reducer(state: State, action: Action): State {
         formaPago: reciboData.formaPago,
         estado: 'emitido',
       }
-      return { ...state, recibos: [recibo, ...state.recibos], nextId: state.nextId + 1 }
+      return { ...state, recibos: [recibo, ...(state.recibos ?? [])], nextId: state.nextId + 1 }
+    }
+    case 'REVERT_RECIBO': {
+      return {
+        ...state,
+        recibos: (state.recibos ?? []).map((r) =>
+          r.id === action.payload ? { ...r, estado: 'revertido' as const } : r
+        ),
+      }
     }
     case 'MODAL':
       return { ...state, modalId: action.payload }
@@ -138,6 +203,36 @@ function reducer(state: State, action: Action): State {
       return { ...state, biometricEnabled: action.payload }
     case 'SET_HIGH_CONTRAST':
       return { ...state, highContrast: action.payload }
+    case 'ADD_EXPENSE':
+      return { ...state, expenses: [action.payload, ...(state.expenses ?? [])] }
+    case 'REMOVE_EXPENSE':
+      return { ...state, expenses: (state.expenses ?? []).filter((e) => e.id !== action.payload) }
+    case 'ADD_DECLARATION':
+      return { ...state, declarations: [action.payload, ...(state.declarations ?? [])] }
+    case 'ADD_CONVERSATION':
+      return { ...state, conversations: [action.payload, ...(state.conversations ?? [])] }
+    case 'DELETE_CONVERSATION':
+      return { ...state, conversations: (state.conversations ?? []).filter((c) => c.id !== action.payload) }
+    case 'CLEAR_CONVERSATIONS':
+      return { ...state, conversations: [] }
+    case 'SET_ASSISTANT_SETTINGS':
+      return { ...state, assistantSettings: { ...state.assistantSettings, ...action.payload } }
+    case 'ADD_CLIENT':
+      return { ...state, clients: [...(state.clients ?? []).filter((c) => c.ruc !== action.payload.ruc), action.payload] }
+    case 'REMOVE_CLIENT':
+      return { ...state, clients: (state.clients ?? []).filter((c) => c.id !== action.payload) }
+    case 'SET_INBOX':
+      return { ...state, inbox: action.payload }
+    case 'MARK_INBOX_READ':
+      return { ...state, inbox: (state.inbox ?? []).map((m) => (m.id === action.payload ? { ...m, leido: true } : m)) }
+    case 'SET_ONBOARDING_SEEN':
+      return { ...state, onboardingSeen: action.payload }
+    case 'SET_SESSION_TIMEOUT':
+      return { ...state, sessionTimeoutMinutes: action.payload }
+    case 'SET_PIN_HASH':
+      return { ...state, pinHash: action.payload }
+    case 'SET_CCI':
+      return { ...state, cci: action.payload }
     default:
       return state
   }
@@ -159,7 +254,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const raw = await AsyncStorage.getItem(KEY)
         if (raw) {
           const saved = JSON.parse(raw)
-          dispatch({ type: 'LOAD', payload: { user: saved.user, recibos: saved.recibos, nextId: saved.nextId, language: saved.language, darkMode: saved.darkMode, biometricEnabled: saved.biometricEnabled, highContrast: saved.highContrast } })
+          dispatch({ type: 'LOAD', payload: { user: saved.user, recibos: saved.recibos, nextId: saved.nextId, language: saved.language, darkMode: saved.darkMode, biometricEnabled: saved.biometricEnabled, highContrast: saved.highContrast, expenses: saved.expenses, declarations: saved.declarations, conversations: saved.conversations, assistantSettings: saved.assistantSettings, clients: saved.clients, inbox: saved.inbox, onboardingSeen: saved.onboardingSeen, sessionTimeoutMinutes: saved.sessionTimeoutMinutes, pinHash: saved.pinHash, cci: saved.cci } })
         } else {
           dispatch({ type: 'LOAD', payload: {} })
         }
@@ -173,11 +268,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!state.loaded) return
     const persist = async () => {
       try {
-        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast }))
+        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast, expenses: state.expenses, declarations: state.declarations, conversations: state.conversations, assistantSettings: state.assistantSettings, clients: state.clients, inbox: state.inbox, onboardingSeen: state.onboardingSeen, sessionTimeoutMinutes: state.sessionTimeoutMinutes, pinHash: state.pinHash, cci: state.cci }))
       } catch {}
     }
     persist()
-  }, [state.user, state.recibos, state.nextId, state.language, state.darkMode, state.biometricEnabled, state.highContrast, state.loaded])
+  }, [state.user, state.recibos, state.nextId, state.language, state.darkMode, state.biometricEnabled, state.highContrast, state.expenses, state.declarations, state.conversations, state.assistantSettings, state.clients, state.inbox, state.onboardingSeen, state.sessionTimeoutMinutes, state.pinHash, state.cci, state.loaded])
 
   return <StoreContext.Provider value={{ state, dispatch }}>{children}</StoreContext.Provider>
 }
@@ -198,6 +293,21 @@ export const emitirRecibo = () => ({ type: 'EMITIR_RECIBO' as const })
 export const showModal = (id: string) => ({ type: 'MODAL' as const, payload: id })
 export const hideModal = () => ({ type: 'MODAL' as const, payload: null })
 export const toastMsg = (msg: string) => ({ type: 'TOAST' as const, payload: msg })
+export const addExpense = (expense: DeductibleExpense) => ({ type: 'ADD_EXPENSE' as const, payload: expense })
+export const removeExpense = (id: string) => ({ type: 'REMOVE_EXPENSE' as const, payload: id })
+export const addDeclaration = (declaration: TaxDeclaration) => ({ type: 'ADD_DECLARATION' as const, payload: declaration })
+export const addConversation = (conversation: AssistantConversation) => ({ type: 'ADD_CONVERSATION' as const, payload: conversation })
+export const deleteConversation = (id: string) => ({ type: 'DELETE_CONVERSATION' as const, payload: id })
+export const clearConversations = () => ({ type: 'CLEAR_CONVERSATIONS' as const })
+export const setAssistantSettings = (settings: Partial<AssistantSettings>) => ({ type: 'SET_ASSISTANT_SETTINGS' as const, payload: settings })
+export const addClient = (client: Client) => ({ type: 'ADD_CLIENT' as const, payload: client })
+export const removeClient = (id: string) => ({ type: 'REMOVE_CLIENT' as const, payload: id })
+export const setInbox = (inbox: InboxMessage[]) => ({ type: 'SET_INBOX' as const, payload: inbox })
+export const markInboxRead = (id: string) => ({ type: 'MARK_INBOX_READ' as const, payload: id })
+export const setOnboardingSeen = (val: boolean) => ({ type: 'SET_ONBOARDING_SEEN' as const, payload: val })
+export const setSessionTimeout = (minutes: number) => ({ type: 'SET_SESSION_TIMEOUT' as const, payload: minutes })
+export const setPinHash = (hash: string | null) => ({ type: 'SET_PIN_HASH' as const, payload: hash })
+export const setCCI = (cci: string | null) => ({ type: 'SET_CCI' as const, payload: cci })
 
 export const RUC_DB: Record<string, string> = {
   '20100070970': 'BANCO DE CRÉDITO DEL PERÚ S.A.',

@@ -8,7 +8,7 @@ import HeaderBar from '../components/HeaderBar'
 export default function NotificacionesScreen({ navigation }: { navigation: any }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
-  const emitidos = state.recibos.filter(r => r.estado === 'emitido')
+  const emitidos = (state.recibos ?? []).filter(r => r.estado === 'emitido')
 
   const items = [
     { tipo: 'warning', icono: '\u26A0', titulo: t('notif_declaracion_pendiente'), desc: t('notif_declaracion_desc'), time: t('notif_hace_1_min') },

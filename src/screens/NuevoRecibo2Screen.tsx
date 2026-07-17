@@ -21,6 +21,7 @@ export default function NuevoRecibo2Screen({ navigation }: Props) {
   const { t } = useTranslate()
   const [formaPago, setFormaPago] = useState(state.reciboData.formaPago || 'transferencia')
   const [retencion, setRetencion] = useState(state.reciboData.retencion !== false)
+  const [showHelpTooltip, setShowHelpTooltip] = useState(false)
 
   const monto = state.reciboData.monto || 0
   const retencionMonto = retencion ? monto * 0.08 : 0
@@ -73,7 +74,18 @@ export default function NuevoRecibo2Screen({ navigation }: Props) {
 
         <View className="mt-4 mb-6">
           <View className="flex-row items-center justify-between">
-            <Text className="text-base font-semibold text-gray-700 dark:text-gray-300">{t('nuevo_recibo2_aplicar_retencion')}</Text>
+            <View className="flex-row items-center flex-1">
+              <Text className="text-base font-semibold text-gray-700 dark:text-gray-300 mr-2">{t('nuevo_recibo2_aplicar_retencion')}</Text>
+              <TouchableOpacity
+                onPress={() => setShowHelpTooltip(!showHelpTooltip)}
+                className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900 items-center justify-center"
+                accessibilityLabel={t('general_help')}
+                accessibilityRole="button"
+                accessibilityHint={t('general_help_hint')}
+              >
+                <Text className="text-blue-600 dark:text-blue-400 text-sm font-bold">?</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
               onPress={() => setRetencion(!retencion)}
               className={`w-14 h-7 rounded-full px-0.5 justify-center ${
@@ -91,6 +103,24 @@ export default function NuevoRecibo2Screen({ navigation }: Props) {
           <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {retencion ? t('nuevo_recibo2_retencion_on') : t('nuevo_recibo2_retencion_off')}
           </Text>
+          {showHelpTooltip && (
+            <View className="mt-3 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-xl px-4 py-3" accessibilityRole="alert" accessibilityLiveRegion="polite">
+              <Text className="text-blue-700 dark:text-blue-300 text-sm leading-5 mb-2">
+                {t('retencion_help_text')}
+              </Text>
+              <TouchableOpacity
+                className="bg-[#002f5d] rounded-lg py-2 px-4 self-start"
+                onPress={() => {
+                  setShowHelpTooltip(false)
+                  dispatch(go('AssistantChat'))
+                }}
+                accessibilityLabel={t('retencion_ask_more')}
+                accessibilityRole="button"
+              >
+                <Text className="text-white font-semibold text-xs">{t('retencion_ask_more')}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <View className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-5 py-5 mb-6" accessibilityLabel={`${t('nuevo_recibo2_resumen')}: ${t('nuevo_recibo2_monto_bruto')} ${fmt(monto)}, ${t('nuevo_recibo2_retencion')} ${retencion ? fmt(retencionMonto) : t('resumen_recibo_zero')}, ${t('nuevo_recibo2_neto')} ${fmt(neto)}`}>

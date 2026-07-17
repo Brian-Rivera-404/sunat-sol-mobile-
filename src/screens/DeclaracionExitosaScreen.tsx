@@ -16,7 +16,7 @@ export default function DeclaracionExitosaScreen({ navigation }: { navigation: a
   const { t } = useTranslate()
   const [orden] = React.useState(generarOrden)
 
-  const emitidos = useMemo(() => state.recibos.filter((r) => r.estado === 'emitido'), [state.recibos])
+  const emitidos = useMemo(() => (state.recibos ?? []).filter((r) => r.estado === 'emitido'), [state.recibos])
   const totalIngresos = useMemo(() => emitidos.reduce((s, r) => s + r.montoBruto, 0), [emitidos])
   const retenciones = useMemo(() => emitidos.reduce((s, r) => s + r.retencion, 0), [emitidos])
   const rentaNeta = Math.max(0, totalIngresos - 7 * 5150)

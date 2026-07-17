@@ -5,6 +5,33 @@ import { useStore, go, fmt, setDarkMode, setHighContrast } from '../store/sunatS
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 
+const SECTIONS = [
+  {
+    titleKey: 'home_section_taxes',
+    items: [
+      { labelKey: 'home_declarar', icon: '\uD83D\uDCCA', screen: 'Declarations' },
+      { labelKey: 'annual_tax_title', icon: '\uD83C\uDFE6', screen: 'AnnualTax' },
+      { labelKey: 'calendar_title', icon: '\uD83D\uDCC5', screen: 'TaxCalendar' },
+    ],
+  },
+  {
+    titleKey: 'home_section_activity',
+    items: [
+      { labelKey: 'home_mis_recibos', icon: '\uD83D\uDCC4', screen: 'MisRecibos' },
+      { labelKey: 'expenses_title', icon: '\uD83D\uDCCB', screen: 'DeductibleExpenses' },
+      { labelKey: 'home_reportes', icon: '\uD83D\uDCC8', screen: 'Reportes' },
+    ],
+  },
+  {
+    titleKey: 'home_section_account',
+    items: [
+      { labelKey: 'home_mi_ruc', icon: '\uD83C\uDFDB\uFE0F', screen: 'MyRuc' },
+      { labelKey: 'inbox_title', icon: '\uD83D\uDCE5', screen: 'Inbox' },
+      { labelKey: 'home_beneficios', icon: '\uD83C\uDF81', screen: 'Beneficios' },
+    ],
+  },
+]
+
 export default function HomeScreen({ navigation }: { navigation: any }) {
   const { state, dispatch } = useStore()
   const { t, switchLang, nextLangLabel } = useTranslate()
@@ -12,31 +39,13 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
   const firstName = state.user?.nombre ?? 'Usuario'
   const initial = firstName.charAt(0).toUpperCase()
 
-  const emitidos = (state.recibos ?? []).filter(
-    (r) => r.estado === 'emitido',
-  )
-  const totalIngresos = emitidos.reduce(
-    (sum, r) => sum + r.montoBruto,
-    0,
-  )
+  const emitidos = (state.recibos ?? []).filter((r) => r.estado === 'emitido')
+  const totalIngresos = emitidos.reduce((sum, r) => sum + r.montoBruto, 0)
   const reciboCount = emitidos.length
+  const unreadCount = (state.inbox ?? []).filter((m) => !m.leido).length
 
-  const gridItems = [
-    { label: t('home_mis_recibos'), icon: '\uD83D\uDCC4', screen: 'MisRecibos' },
-    { label: t('home_declarar'), icon: '\uD83D\uDCCA', screen: 'Declarar' },
-    { label: t('home_mi_ruc'), icon: '\uD83C\uDFDB\uFE0F', screen: 'MiRuc' },
-    { label: t('home_beneficios'), icon: '\uD83C\uDF81', screen: 'Beneficios' },
-  ]
-
-  const toggleDark = () => {
-    dispatch(setDarkMode(!state.darkMode))
-    vibrateLight()
-  }
-
-  const toggleContrast = () => {
-    dispatch(setHighContrast(!state.highContrast))
-    vibrateLight()
-  }
+  const toggleDark = () => { dispatch(setDarkMode(!state.darkMode)); vibrateLight() }
+  const toggleContrast = () => { dispatch(setHighContrast(!state.highContrast)); vibrateLight() }
 
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-900">
@@ -48,32 +57,39 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
             </View>
             <View>
               <Text className="text-blue-200 text-xs">{t('home_welcome')}</Text>
-              <Text className="text-white font-bold text-lg">
-                {t('home_welcome')}, {firstName}
-              </Text>
+              <Text className="text-white font-bold text-lg">{t('home_welcome')}, {firstName}</Text>
             </View>
           </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Notificaciones')}
-            className="relative"
-            accessibilityLabel={t('notif_title')}
-            accessibilityRole="button"
-            accessibilityHint="Muestra tus notificaciones y alertas"
-          >
-            <Text className="text-2xl">{'\uD83D\uDD14'}</Text>
-            {reciboCount > 0 && (
-              <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-                <Text className="text-white text-xs font-bold">{reciboCount}</Text>
-              </View>
-            )}
-          </TouchableOpacity>
+          <View className="flex-row">
+            <TouchableOpacity
+              onPress={() => dispatch(go('AssistantChat'))}
+              className="mr-3"
+              accessibilityLabel={t('assistant_title')}
+              accessibilityRole="button"
+              accessibilityHint={t('assistant_access_hint')}
+            >
+              <Text className="text-2xl">{'\uD83E\uDD16'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Inbox')}
+              className="relative"
+              accessibilityLabel={t('inbox_title')}
+              accessibilityRole="button"
+              accessibilityHint="Muestra tus notificaciones y alertas"
+            >
+              <Text className="text-2xl">{'\uD83D\uDD14'}</Text>
+              {unreadCount > 0 && (
+                <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+                  <Text className="text-white text-xs font-bold">{unreadCount}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View className="bg-white/20 rounded-xl p-4">
           <Text className="text-blue-200 text-sm">{t('home_ingresos_label')}</Text>
-          <Text className="text-white font-bold text-3xl mt-1">
-            {fmt(totalIngresos)}
-          </Text>
+          <Text className="text-white font-bold text-3xl mt-1">{fmt(totalIngresos)}</Text>
           <Text className="text-blue-200 text-xs mt-1">
             {reciboCount} recibo{reciboCount !== 1 ? 's' : ''} emitido{reciboCount !== 1 ? 's' : ''}
           </Text>
@@ -92,38 +108,26 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           <Text className="text-white font-bold text-base">{t('home_emitir')}</Text>
         </TouchableOpacity>
 
-        <View className="flex-row flex-wrap justify-between mb-6">
-          {gridItems.map((item) => (
-            <TouchableOpacity
-              key={item.screen}
-              className="bg-white dark:bg-gray-800 rounded-xl p-4 w-[48%] mb-3 items-center shadow-sm"
-              onPress={() => { navigation.navigate(item.screen); vibrateLight() }}
-              accessibilityLabel={item.label}
-              accessibilityRole="button"
-              accessibilityHint={`Abre la sección de ${item.label.toLowerCase()}`}
-            >
-              <Text className="text-3xl mb-1">{item.icon}</Text>
-              <Text className="text-gray-800 dark:text-gray-200 font-semibold text-sm">{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <TouchableOpacity
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 flex-row items-center justify-between mb-4 shadow-sm"
-          onPress={() => { navigation.navigate('Reportes'); vibrateLight() }}
-          accessibilityLabel={t('home_reportes')}
-          accessibilityRole="button"
-          accessibilityHint="Muestra el resumen anual, ingresos por mes y principales clientes"
-        >
-          <View className="flex-row items-center">
-            <Text className="text-2xl mr-3">{'\uD83D\uDCC8'}</Text>
-            <View>
-              <Text className="text-gray-800 dark:text-gray-200 font-semibold">{t('home_reportes')}</Text>
-              <Text className="text-gray-500 dark:text-gray-400 text-xs">{t('home_reportes_sub')}</Text>
+        {SECTIONS.map((section) => (
+          <View key={section.titleKey} className="mb-4">
+            <Text className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t(section.titleKey)}</Text>
+            <View className="flex-row flex-wrap justify-between">
+              {section.items.map((item) => (
+                <TouchableOpacity
+                  key={item.screen}
+                  className="bg-white dark:bg-gray-800 rounded-xl p-4 w-[48%] mb-3 items-center shadow-sm"
+                  onPress={() => { dispatch(go(item.screen)); vibrateLight() }}
+                  accessibilityLabel={t(item.labelKey)}
+                  accessibilityRole="button"
+                  accessibilityHint={`Abre la sección de ${t(item.labelKey).toLowerCase()}`}
+                >
+                  <Text className="text-3xl mb-1">{item.icon}</Text>
+                  <Text className="text-gray-800 dark:text-gray-200 font-semibold text-sm text-center">{t(item.labelKey)}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
-          <Text className="text-gray-500 dark:text-gray-400 text-lg">{'\u203A'}</Text>
-        </TouchableOpacity>
+        ))}
 
         <View className="border-t border-gray-200 dark:border-gray-700 pt-4 pb-8">
           <View className="flex-row justify-center space-x-4 mb-2">

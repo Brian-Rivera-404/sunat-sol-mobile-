@@ -29,7 +29,8 @@ type Props = { navigation: NativeStackNavigationProp<any> }
 export default function ReciboEmitidoScreen({ navigation }: Props) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
-  const recibo = state.recibos[state.recibos.length - 1]
+  const recibos = state.recibos ?? []
+  const recibo = recibos[recibos.length - 1]
 
   useEffect(() => { vibrateSuccess() }, [])
 

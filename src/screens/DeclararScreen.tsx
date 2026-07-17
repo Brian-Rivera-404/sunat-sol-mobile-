@@ -14,7 +14,7 @@ export default function DeclararScreen({ navigation }: { navigation: any }) {
   const { t } = useTranslate()
   const [acepto, setAcepto] = useState(false)
 
-  const emitidos = useMemo(() => state.recibos.filter((r) => r.estado === 'emitido'), [state.recibos])
+  const emitidos = useMemo(() => (state.recibos ?? []).filter((r) => r.estado === 'emitido'), [state.recibos])
 
   const totalIngresos = useMemo(() => emitidos.reduce((s, r) => s + r.montoBruto, 0), [emitidos])
   const rentaNeta = useMemo(() => Math.max(0, totalIngresos - DEDUCCION), [totalIngresos])

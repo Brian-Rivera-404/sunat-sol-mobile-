@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react'
-import { View, TouchableOpacity, ScrollView, RefreshControl } from 'react-native'
+import { View, TouchableOpacity, ScrollView, RefreshControl, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useStore, go, fmt, formatearFecha, showModal } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
-import { vibrateLight } from '../utils/haptics'
+import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 
 const FORMA_PAGO_LABEL: Record<string, string> = {
@@ -17,11 +17,13 @@ const FORMA_PAGO_LABEL: Record<string, string> = {
 const ESTADO_COLOR: Record<string, string> = {
   emitido: 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-400',
   anulado: 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-400',
+  revertido: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-400',
 }
 
 const ESTADO_LABEL: Record<string, string> = {
   emitido: 'Emitido',
   anulado: 'Anulado',
+  revertido: 'Revertido',
 }
 
 type Props = { navigation: NativeStackNavigationProp<any> }
@@ -30,12 +32,46 @@ export default function MisRecibosScreen({ navigation }: Props) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const [refreshing, setRefreshing] = useState(false)
-  const emitidos = state.recibos.filter((r) => r.estado === 'emitido')
+  const emitidos = (state.recibos ?? []).filter((r) => r.estado === 'emitido')
+  const revertidos = (state.recibos ?? []).filter((r) => r.estado === 'revertido')
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     setTimeout(() => setRefreshing(false), 800)
   }, [])
+
+  const handleRevert = (reciboId: string) => {
+    Alert.alert(
+      t('revert_title'),
+      t('revert_first_confirm'),
+      [
+        { text: t('general_cancelar'), style: 'cancel' },
+        {
+          text: t('revert_continue'),
+          style: 'destructive',
+          onPress: () => {
+            Alert.alert(
+              t('revert_second_title'),
+              t('revert_second_confirm'),
+              [
+                { text: t('general_cancelar'), style: 'cancel' },
+                {
+                  text: t('revert_confirm_final'),
+                  style: 'destructive',
+                  onPress: () => {
+                    dispatch({ type: 'REVERT_RECIBO', payload: reciboId } as any)
+                    vibrateSuccess()
+                  },
+                },
+              ],
+              { cancelable: true }
+            )
+          },
+        },
+      ],
+      { cancelable: true }
+    )
+  }
 
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-900">
@@ -99,18 +135,54 @@ export default function MisRecibosScreen({ navigation }: Props) {
               </View>
               <View className="flex-row justify-between items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                 <Text className="text-xs text-gray-500 dark:text-gray-400">{FORMA_PAGO_LABEL[recibo.formaPago] || recibo.formaPago}</Text>
+                <View className="flex-row">
+                  <TouchableOpacity
+                    onPress={() => { vibrateLight(); dispatch(showModal(recibo.id)) }}
+                    className="bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-1.5 mr-2"
+                    accessibilityLabel={`${t('mis_recibos_ver_detalle')} ${recibo.id}`}
+                    accessibilityRole="button"
+                    accessibilityHint={t('mis_recibos_ver_detalle_hint')}
+                  >
+                    <Text className="text-[#002f5d] dark:text-blue-300 text-xs font-semibold">{t('mis_recibos_ver_detalle')}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View className="flex-row justify-between items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                <Text className="text-xs text-red-500 dark:text-red-400">{'\u26A0\uFE0F'} {t('revert_plazo')}</Text>
                 <TouchableOpacity
-                  onPress={() => { vibrateLight(); dispatch(showModal(recibo.id)) }}
-                  className="bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-1.5"
-                  accessibilityLabel={`${t('mis_recibos_ver_detalle')} ${recibo.id}`}
+                  className="bg-red-50 dark:bg-red-900 rounded-lg px-4 py-1.5"
+                  onPress={() => handleRevert(recibo.id)}
+                  accessibilityLabel={`${t('revert_button')} ${recibo.id}`}
                   accessibilityRole="button"
-                  accessibilityHint={t('mis_recibos_ver_detalle_hint')}
+                  accessibilityHint={t('revert_button_hint')}
                 >
-                  <Text className="text-[#002f5d] dark:text-blue-300 text-xs font-semibold">{t('mis_recibos_ver_detalle')}</Text>
+                  <Text className="text-red-600 dark:text-red-400 text-xs font-semibold">{t('revert_button')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
           ))}
+
+          {revertidos.length > 0 && (
+            <View className="mb-4">
+              <Text className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 mt-2">{t('revert_reverted_list')}</Text>
+              {revertidos.map((recibo) => (
+                <View
+                  key={recibo.id}
+                  className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-3 mb-2 shadow-sm opacity-60"
+                  accessibilityLabel={`${t('mis_recibos_recibo')} ${recibo.id}, ${t('estado_revertido')}`}
+                >
+                  <View className="flex-row justify-between items-center">
+                    <Text className="text-sm font-bold text-gray-500">{recibo.id}</Text>
+                    <View className="px-2 py-0.5 rounded-full bg-yellow-100 dark:bg-yellow-900">
+                      <Text className="text-yellow-700 dark:text-yellow-400 text-xs font-semibold">{t('estado_revertido')}</Text>
+                    </View>
+                  </View>
+                  <Text className="text-xs text-gray-400 dark:text-gray-500 mt-1">{recibo.cliente}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
           <View className="h-6" />
         </ScrollView>
       )}

@@ -7,7 +7,7 @@ import { useTranslate } from '../i18n/useTranslate'
 export default function ModalRecibo() {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
-  const recibo = state.recibos.find(r => r.id === state.modalId)
+  const recibo = (state.recibos ?? []).find(r => r.id === state.modalId)
   if (!recibo) return null
 
   const ret = recibo.montoBruto - recibo.montoNeto

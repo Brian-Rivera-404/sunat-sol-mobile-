@@ -17,10 +17,21 @@ import ResumenReciboScreen from './src/screens/ResumenReciboScreen'
 import ReciboEmitidoScreen from './src/screens/ReciboEmitidoScreen'
 import MisRecibosScreen from './src/screens/MisRecibosScreen'
 import DeclararScreen from './src/screens/DeclararScreen'
-import MiRucScreen from './src/screens/MiRucScreen'
+import MyRucScreen from './src/screens/MyRucScreen'
 import BeneficiosScreen from './src/screens/BeneficiosScreen'
 import ReportesScreen from './src/screens/ReportesScreen'
 import DeclaracionExitosaScreen from './src/screens/DeclaracionExitosaScreen'
+import DeclarationsScreen from './src/screens/DeclarationsScreen'
+import AnnualTaxScreen from './src/screens/AnnualTaxScreen'
+import TaxCalendarScreen from './src/screens/TaxCalendarScreen'
+import DeductibleExpensesScreen from './src/screens/DeductibleExpensesScreen'
+import ValidarEstablecimientosScreen from './src/screens/ValidarEstablecimientosScreen'
+import InboxScreen from './src/screens/InboxScreen'
+import TaxSimulatorScreen from './src/screens/TaxSimulatorScreen'
+import AssistantOnboardingScreen from './src/screens/AssistantOnboardingScreen'
+import AssistantChatScreen from './src/screens/AssistantChatScreen'
+import AssistantHistoryScreen from './src/screens/AssistantHistoryScreen'
+import AssistantSettingsScreen from './src/screens/AssistantSettingsScreen'
 import ModalRecibo from './src/components/ModalRecibo'
 import Toast from './src/components/Toast'
 
@@ -58,10 +69,21 @@ function AppNavigator() {
       ReciboEmitido: 'Recibo emitido',
       MisRecibos: 'Mis recibos',
       Declarar: 'Declarar impuestos',
-      MiRuc: 'Mi RUC',
+      MyRuc: 'Mi RUC',
       Beneficios: 'Beneficios tributarios',
       Reportes: 'Reportes',
       DeclaracionExitosa: 'Declaración exitosa',
+      Declarations: 'Declaraciones y pagos',
+      AnnualTax: 'Renta anual',
+      TaxCalendar: 'Calendario tributario',
+      DeductibleExpenses: 'Gastos deducibles',
+      ValidarEstablecimientos: 'Validar establecimientos',
+      Inbox: 'Buzón electrónico',
+      TaxSimulator: 'Simulador de impuestos',
+      AssistantOnboarding: 'Asistente',
+      AssistantChat: 'Asistente tributario',
+      AssistantHistory: 'Historial del asistente',
+      AssistantSettings: 'Ajustes del asistente',
     }
     AccessibilityInfo.announceForAccessibility(names[routeName] || routeName)
   }, [])
@@ -94,10 +116,21 @@ function AppNavigator() {
           <Stack.Screen name="ReciboEmitido" component={ReciboEmitidoScreen} />
           <Stack.Screen name="MisRecibos" component={MisRecibosScreen} />
           <Stack.Screen name="Declarar" component={DeclararScreen} />
-          <Stack.Screen name="MiRuc" component={MiRucScreen} />
+          <Stack.Screen name="MyRuc" component={MyRucScreen} />
           <Stack.Screen name="Beneficios" component={BeneficiosScreen} />
           <Stack.Screen name="Reportes" component={ReportesScreen} />
           <Stack.Screen name="DeclaracionExitosa" component={DeclaracionExitosaScreen} />
+          <Stack.Screen name="Declarations" component={DeclarationsScreen} />
+          <Stack.Screen name="AnnualTax" component={AnnualTaxScreen} />
+          <Stack.Screen name="TaxCalendar" component={TaxCalendarScreen} />
+          <Stack.Screen name="DeductibleExpenses" component={DeductibleExpensesScreen} />
+          <Stack.Screen name="ValidarEstablecimientos" component={ValidarEstablecimientosScreen} />
+          <Stack.Screen name="Inbox" component={InboxScreen} />
+          <Stack.Screen name="TaxSimulator" component={TaxSimulatorScreen} />
+          <Stack.Screen name="AssistantOnboarding" component={AssistantOnboardingScreen} />
+          <Stack.Screen name="AssistantChat" component={AssistantChatScreen} />
+          <Stack.Screen name="AssistantHistory" component={AssistantHistoryScreen} />
+          <Stack.Screen name="AssistantSettings" component={AssistantSettingsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
 

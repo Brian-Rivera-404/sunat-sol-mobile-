@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import { View, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -6,6 +6,7 @@ import { useStore, go, fmt, emitirRecibo } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import * as Speech from 'expo-speech'
 
 const FORMA_PAGO_LABEL: Record<string, string> = {
   transferencia: 'Transferencia',
@@ -22,6 +23,36 @@ export default function ResumenReciboScreen({ navigation }: Props) {
   const { ruc, cliente, monto, formaPago, retencion } = state.reciboData
   const retencionMonto = retencion ? monto * 0.08 : 0
   const neto = monto - retencionMonto
+  const [summaryFullyRead, setSummaryFullyRead] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+
+  const resumenTexto =
+    `${t('resumen_recibo_monto_bruto')}: ${fmt(monto)}. ` +
+    `${t('resumen_recibo_retencion')}: ${fmt(retencionMonto)}. ` +
+    `${t('resumen_recibo_neto')}: ${fmt(neto)}. ` +
+    `${t('resumen_recibo_forma_pago')}: ${FORMA_PAGO_LABEL[formaPago] || formaPago}.`
+
+  const sugerenciaRetencion = retencionMonto * 0.08
+  const sugerenciaTexto = sugerenciaRetencion > 0
+    ? `${t('resumen_apartado')}: ${fmt(sugerenciaRetencion)} (8%)`
+    : null
+
+  function handleEscucharResumen() {
+    setSummaryFullyRead(false)
+    setIsSpeaking(true)
+    Speech.speak(resumenTexto, {
+      rate: state.assistantSettings.ttsSpeed === 'fast' ? 0.9 : state.assistantSettings.ttsSpeed === 'slow' ? 0.4 : 0.6,
+      language: state.language,
+      onDone: () => {
+        setSummaryFullyRead(true)
+        setIsSpeaking(false)
+      },
+      onError: () => {
+        setSummaryFullyRead(true)
+        setIsSpeaking(false)
+      },
+    })
+  }
 
   function handleConfirmar() {
     Alert.alert(
@@ -56,7 +87,7 @@ export default function ResumenReciboScreen({ navigation }: Props) {
         <Text className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1" accessibilityRole="header">{t('resumen_recibo_verificar')}</Text>
         <Text className="text-gray-500 dark:text-gray-400 mb-6">{t('resumen_recibo_revisa')}</Text>
 
-        <View className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-5 py-5 mb-6 shadow-sm" accessibilityLabel={`${t('resumen_recibo_resumen')}: RUC ${ruc}, ${t('resumen_recibo_cliente')} ${cliente}, ${t('resumen_recibo_monto_bruto')} ${fmt(monto)}, ${t('resumen_recibo_retencion')} ${fmt(retencionMonto)}, ${t('resumen_recibo_forma_pago')} ${FORMA_PAGO_LABEL[formaPago] || formaPago}, ${t('resumen_recibo_neto')} ${fmt(neto)}`}>
+        <View className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-5 py-5 mb-4 shadow-sm" accessibilityLabel={`${t('resumen_recibo_resumen')}: RUC ${ruc}, ${t('resumen_recibo_cliente')} ${cliente}, ${t('resumen_recibo_monto_bruto')} ${fmt(monto)}, ${t('resumen_recibo_retencion')} ${fmt(retencionMonto)}, ${t('resumen_recibo_forma_pago')} ${FORMA_PAGO_LABEL[formaPago] || formaPago}, ${t('resumen_recibo_neto')} ${fmt(neto)}`}>
           <View className="flex-row justify-between mb-3" accessibilityLabel={`RUC: ${ruc}`}>
             <Text className="text-gray-500 dark:text-gray-400">RUC</Text>
             <Text className="text-gray-800 dark:text-gray-200 font-medium">{ruc}</Text>
@@ -85,10 +116,30 @@ export default function ResumenReciboScreen({ navigation }: Props) {
           </View>
         </View>
 
-        <View className="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-xl px-4 py-4 mb-5" accessibilityRole="alert" accessibilityLiveRegion="assertive" importantForAccessibility="yes">
+        {sugerenciaTexto && (
+          <View className="bg-green-50 dark:bg-green-900 border border-green-300 dark:border-green-700 rounded-xl px-4 py-3 mb-4" accessibilityRole="alert">
+            <Text className="text-green-700 dark:text-green-300 text-sm leading-5">
+              {'\uD83D\uDCA1'} {sugerenciaTexto}
+            </Text>
+            <Text className="text-green-600 dark:text-green-400 text-xs mt-1">{t('resumen_apartado_info')}</Text>
+          </View>
+        )}
+
+        <View className="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-xl px-4 py-4 mb-4" accessibilityRole="alert" accessibilityLiveRegion="assertive" importantForAccessibility="yes">
           <Text className="text-amber-800 dark:text-amber-200 font-bold text-sm mb-1">{'\u26A0\uFE0F'} {t('resumen_recibo_alerta_title')}</Text>
           <Text className="text-amber-700 dark:text-amber-300 text-sm leading-5">{t('resumen_recibo_alerta_body')}</Text>
         </View>
+
+        <TouchableOpacity
+          className="bg-[#002f5d] rounded-lg py-4 items-center mb-3"
+          onPress={handleEscucharResumen}
+          activeOpacity={0.8}
+          accessibilityLabel={t('resumen_listen')}
+          accessibilityRole="button"
+          accessibilityHint={t('resumen_listen_hint')}
+        >
+          <Text className="text-white font-bold text-base">{isSpeaking ? '\uD83C\uDF99\uFE0F ' : '\uD83D\uDD0A '}{t('resumen_listen')}</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           className="bg-[#002f5d] rounded-lg py-4 items-center mb-3"
