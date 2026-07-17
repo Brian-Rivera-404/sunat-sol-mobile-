@@ -27,7 +27,7 @@ export default function BeneficiosScreen({ navigation }: { navigation: any }) {
   const { t } = useTranslate()
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity
           className="mr-3 py-2.5"
@@ -36,7 +36,7 @@ export default function BeneficiosScreen({ navigation }: { navigation: any }) {
           accessibilityRole="button"
           accessibilityHint={t('general_volver_hint')}
         >
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('beneficios_title')}</Text>
       </HeaderBar>
@@ -48,7 +48,7 @@ export default function BeneficiosScreen({ navigation }: { navigation: any }) {
 
         <View className="gap-4 mb-10">
           {BENEFICIOS.map((b, i) => (
-            <View key={i} className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm" accessibilityLabel={`${b.title}, ${b.description}, ${b.amount}${b.tag ? `, ${b.tag}` : ''}`}>
+            <View key={i} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm" accessibilityLabel={`${b.title}, ${b.description}, ${b.amount}${b.tag ? `, ${b.tag}` : ''}`}>
               <View className="flex-row items-start">
                 <View className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900 items-center justify-center mr-3">
                   <Text className="text-xl" accessibilityElementsHidden={true}>{b.icon}</Text>
@@ -63,7 +63,7 @@ export default function BeneficiosScreen({ navigation }: { navigation: any }) {
                     ) : null}
                   </View>
                   <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-4">{b.description}</Text>
-                  <Text className="text-sm font-bold text-[#002f5d] dark:text-blue-300 mt-2">{b.amount}</Text>
+                  <Text className="text-xl font-extrabold mt-2" style={{ color: '#0A2240' }}>{b.amount}</Text>
                 </View>
               </View>
             </View>

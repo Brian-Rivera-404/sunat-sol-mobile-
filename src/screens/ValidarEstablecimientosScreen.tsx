@@ -45,10 +45,10 @@ export default function ValidarEstablecimientosScreen({ navigation }: { navigati
   }, [search])
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900" keyboardShouldPersistTaps="handled">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900" keyboardShouldPersistTaps="handled">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('validate_business_title')}</Text>
       </HeaderBar>
@@ -75,7 +75,7 @@ export default function ValidarEstablecimientosScreen({ navigation }: { navigati
           </View>
         ) : (
           filtered.map((e) => (
-            <View key={e.ruc} className="bg-white dark:bg-gray-800 rounded-xl p-4 mb-3 shadow-sm" accessibilityLabel={`${e.nombre}, ${t('validate_business_cat_' + e.categoria)}, RUC: ${e.ruc}, ${t('validate_business_validated')}`}>
+            <View key={e.ruc} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm" accessibilityLabel={`${e.nombre}, ${t('validate_business_cat_' + e.categoria)}, RUC: ${e.ruc}, ${t('validate_business_validated')}`}>
               <View className="flex-row items-center">
                 <Text className="text-2xl mr-3">{CATEGORIA_ICONS[e.categoria] || '\uD83D\uDCCC'}</Text>
                 <View className="flex-1">

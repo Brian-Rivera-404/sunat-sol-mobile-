@@ -39,22 +39,22 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: an
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('assistant_settings_title')}</Text>
       </HeaderBar>
 
       <View className="px-4 pt-6">
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+          <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('assistant_settings_modality')}</Text>
           <View className="flex-row justify-between">
             {MODALIDADES.map((m) => (
               <TouchableOpacity
                 key={m.key}
-                className={`flex-1 items-center py-3 mx-1 rounded-xl ${settings.modality === m.key ? 'bg-[#002f5d]' : 'bg-gray-100 dark:bg-gray-700'}`}
+                className={`flex-1 items-center py-3 mx-1 rounded-xl ${settings.modality === m.key ? 'bg-[#1B4FBF]' : 'bg-gray-100 dark:bg-gray-700'}`}
                 onPress={() => setModality(m.key)}
                 accessibilityLabel={`${t('assistant_settings_modality_' + m.key)}${settings.modality === m.key ? ', ' + t('general_selected') : ''}`}
                 accessibilityRole="button"
@@ -69,13 +69,13 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: an
           </View>
         </View>
 
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('assistant_settings_tts_speed')}</Text>
           <View className="flex-row justify-between">
             {VELOCIDADES.map((v) => (
               <TouchableOpacity
                 key={v.key}
-                className={`flex-1 items-center py-3 mx-1 rounded-xl ${settings.ttsSpeed === v.key ? 'bg-[#002f5d]' : 'bg-gray-100 dark:bg-gray-700'}`}
+                className={`flex-1 items-center py-3 mx-1 rounded-xl ${settings.ttsSpeed === v.key ? 'bg-[#1B4FBF]' : 'bg-gray-100 dark:bg-gray-700'}`}
                 onPress={() => setSpeed(v.key)}
                 accessibilityLabel={`${t('assistant_settings_speed_' + v.key)}${settings.ttsSpeed === v.key ? ', ' + t('general_selected') : ''}`}
                 accessibilityRole="button"
@@ -90,7 +90,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: an
           </View>
         </View>
 
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <View className="flex-row items-center justify-between">
             <View className="flex-1 mr-4">
               <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t('assistant_settings_local')}</Text>
@@ -98,7 +98,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: an
             </View>
             <TouchableOpacity
               onPress={toggleLocal}
-              className={`w-14 h-7 rounded-full px-0.5 justify-center ${settings.useLocalOnly ? 'bg-[#002f5d] items-end' : 'bg-gray-300 dark:bg-gray-600 items-start'}`}
+              className={`w-14 h-7 rounded-full px-0.5 justify-center ${settings.useLocalOnly ? 'bg-[#1B4FBF] items-end' : 'bg-gray-300 dark:bg-gray-600 items-start'}`}
               accessibilityLabel={`${t('assistant_settings_local')}: ${settings.useLocalOnly ? t('general_active') : t('general_inactive')}`}
               accessibilityRole="switch"
               accessibilityState={{ checked: settings.useLocalOnly }}
@@ -108,7 +108,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: an
           </View>
         </View>
 
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('lang_switch')}</Text>
           <TouchableOpacity
             className="flex-row items-center justify-center py-3 bg-gray-100 dark:bg-gray-700 rounded-xl"
@@ -121,7 +121,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: an
         </View>
 
         <TouchableOpacity
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 flex-row items-center justify-between shadow-sm mb-10"
+          className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between shadow-sm mb-2.5"
           onPress={() => { vibrateLight(); dispatch(go('AssistantHistory')) }}
           accessibilityLabel={t('assistant_history_title')}
           accessibilityRole="button"

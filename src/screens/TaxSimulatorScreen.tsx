@@ -43,16 +43,16 @@ export default function TaxSimulatorScreen({ navigation }: { navigation: any }) 
   const referenciaEstimada = totalIngresos > 0 ? REFERENCIA_MERCADO : 0
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900" keyboardShouldPersistTaps="handled">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900" keyboardShouldPersistTaps="handled">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('simulator_title')}</Text>
       </HeaderBar>
 
       <View className="px-4 pt-6">
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('simulator_projection')}</Text>
           <InfoRow label={t('simulator_promedio')} value={fmt(promedioMensual)} />
           <InfoRow label={t('simulator_projected_annual')} value={fmt(proyeccionAnual)} />
@@ -72,7 +72,7 @@ export default function TaxSimulatorScreen({ navigation }: { navigation: any }) 
           </View>
         )}
 
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('simulator_simulate')}</Text>
           <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('simulator_simulate_desc')}</Text>
           <View className="flex-row items-center border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 mb-3">
@@ -88,7 +88,7 @@ export default function TaxSimulatorScreen({ navigation }: { navigation: any }) 
             />
           </View>
           <TouchableOpacity
-            className={`self-start px-4 py-2 rounded-lg mb-3 ${simRetencion ? 'bg-[#002f5d]' : 'bg-gray-200 dark:bg-gray-700'}`}
+            className={`self-start px-4 py-3.5 rounded-xl mb-3 ${simRetencion ? 'bg-[#002f5d]' : 'bg-gray-200 dark:bg-gray-700'}`}
             onPress={() => setSimRetencion(!simRetencion)}
             accessibilityLabel={t('simulator_withhold_toggle')}
             accessibilityRole="switch"

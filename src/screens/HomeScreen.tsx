@@ -185,16 +185,6 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </View>
       </ScrollView>
 
-      {/* Floating AI button */}
-      <TouchableOpacity
-        className="absolute bottom-5 right-4 w-[58] h-[58] rounded-full items-center justify-center z-40 shadow-lg"
-        style={{ backgroundColor: '#6366F1' }}
-        onPress={() => { dispatch(go('AssistantChat')); vibrateLight() }}
-        accessibilityLabel={t('assistant_title')}
-        accessibilityRole="button"
-      >
-        <Text className="text-white text-2xl">{'\u2726'}</Text>
-      </TouchableOpacity>
     </View>
   )
 }

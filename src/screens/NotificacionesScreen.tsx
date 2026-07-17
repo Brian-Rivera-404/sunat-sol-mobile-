@@ -27,7 +27,7 @@ export default function NotificacionesScreen({ navigation }: { navigation: any }
   }
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={handleBack} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('notif_volver_hint')}>
           <Text className="text-white text-2xl">{'\u2039'}</Text>
@@ -41,7 +41,7 @@ export default function NotificacionesScreen({ navigation }: { navigation: any }
         {items.map((item, i) => (
           <View
             key={i}
-            className="bg-white dark:bg-gray-800 rounded-xl p-4 mb-3 flex-row items-start shadow-sm"
+            className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 flex-row items-start shadow-sm"
             accessibilityLabel={`${item.titulo}: ${item.desc}`}
           >
             <View className={`w-8 h-8 rounded-full items-center justify-center mr-3 ${item.tipo === 'warning' ? 'bg-yellow-100 dark:bg-yellow-900' : item.tipo === 'success' ? 'bg-green-100 dark:bg-green-900' : 'bg-blue-100 dark:bg-blue-900'}`}>

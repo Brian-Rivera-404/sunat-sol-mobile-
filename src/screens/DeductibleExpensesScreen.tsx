@@ -19,6 +19,8 @@ const CATEGORIAS = [
   'otros',
 ]
 
+const UIT = 5150
+
 const CATEGORIA_KEYWORDS: Record<string, string[]> = {
   capacitacion: ['curso', 'taller', 'capacitacion', 'seminario', 'diplomado', 'certificacion'],
   salud: ['medico', 'doctor', 'clinica', 'hospital', 'farmacia', 'dental', 'medicina'],
@@ -54,6 +56,8 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
   const [monto, setMonto] = useState('')
   const [categoria, setCategoria] = useState(CATEGORIAS[0])
   const [comprobanteUri, setComprobanteUri] = useState<string | null>(null)
+
+  const totalGastos = (state.expenses ?? []).reduce((s, e) => s + e.monto, 0)
 
   useEffect(() => {
     if (descripcion.trim().length >= 3) {
@@ -129,19 +133,29 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('expenses_title')}</Text>
       </HeaderBar>
 
       <View className="px-4 pt-6">
-        <View className="flex-row justify-between items-center mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+          <View className="flex-row justify-between items-center mb-2">
+            <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{t('expenses_used')}</Text>
+            <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(totalGastos)} / S/ {fmt(3 * UIT)}</Text>
+          </View>
+          <View className="h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <View className="h-2.5 bg-[#002f5d] rounded-full" style={{ width: `${Math.min(100, (totalGastos / (3 * UIT)) * 100)}%` }} />
+          </View>
+        </View>
+
+        <View className="flex-row justify-between items-center mb-3">
           <Text className="text-gray-500 dark:text-gray-400 text-sm">{(state.expenses ?? []).length} {t('expenses_count')}</Text>
           <TouchableOpacity
-            className="bg-[#002f5d] rounded-lg px-5 py-2.5"
+            className="bg-[#002f5d] rounded-xl px-5 py-3.5 items-center"
             onPress={() => { vibrateLight(); setShowForm(!showForm) }}
             accessibilityLabel={t('expenses_add')}
             accessibilityRole="button"
@@ -152,7 +166,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
         </View>
 
         <TouchableOpacity
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 flex-row items-center justify-between mb-4 shadow-sm"
+          className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between mb-2.5 shadow-sm"
           onPress={() => { vibrateLight(); dispatch(go('ValidarEstablecimientos')) }}
           accessibilityLabel={t('expenses_validate_business')}
           accessibilityRole="button"
@@ -169,7 +183,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
         </TouchableOpacity>
 
         {showForm && (
-          <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4" accessibilityRole="none">
+          <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm" accessibilityRole="none">
             <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3">{t('expenses_new')}</Text>
             <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('expenses_description')}</Text>
             <TextInput
@@ -208,7 +222,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
             <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('expenses_comprobante')}</Text>
             <View className="flex-row mb-4 space-x-3">
               <TouchableOpacity
-                className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-lg py-3 items-center"
+                className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-xl py-3.5 items-center"
                 onPress={handlePickImage}
                 accessibilityLabel={t('expenses_comprobante_gallery')}
                 accessibilityRole="button"
@@ -216,7 +230,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
                 <Text className="text-gray-700 dark:text-gray-300 text-sm font-semibold">{'\uD83D\uDDBC\uFE0F '}{t('expenses_comprobante_gallery')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-lg py-3 items-center"
+                className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-xl py-3.5 items-center border border-dashed border-gray-400 dark:border-gray-500"
                 onPress={handleTakePhoto}
                 accessibilityLabel={t('expenses_comprobante_camera')}
                 accessibilityRole="button"
@@ -233,7 +247,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
               </View>
             )}
             <TouchableOpacity
-              className="bg-[#002f5d] rounded-lg py-3 items-center"
+              className="bg-[#002f5d] rounded-xl py-3.5 items-center"
               onPress={handleAdd}
               accessibilityLabel={t('expenses_save')}
               accessibilityRole="button"
@@ -250,13 +264,16 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: a
           </View>
         ) : (
           (state.expenses ?? []).map((exp) => (
-            <View key={exp.id} className="bg-white dark:bg-gray-800 rounded-xl p-4 mb-3 shadow-sm" accessibilityLabel={`${t('expenses_description')}: ${exp.descripcion}, ${t('expenses_amount')}: ${fmt(exp.monto)}, ${t('expenses_category')}: ${t('expenses_cat_' + exp.categoria)}, ${formatearFecha(exp.fecha)}`}>
+            <View key={exp.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm" accessibilityLabel={`${t('expenses_description')}: ${exp.descripcion}, ${t('expenses_amount')}: ${fmt(exp.monto)}, ${t('expenses_category')}: ${t('expenses_cat_' + exp.categoria)}, ${formatearFecha(exp.fecha)}`}>
               <View className="flex-row justify-between items-start mb-1">
-                <View className="flex-1 mr-2">
-                  <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{exp.descripcion}</Text>
-                  <Text className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('expenses_cat_' + exp.categoria)}</Text>
+                <View className="flex-row flex-1 mr-2">
+                  <Text className="text-lg mr-2">{exp.establecimientoValidado ? '\u2705' : '\u274C'}</Text>
+                  <View className="flex-1">
+                    <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{exp.descripcion}</Text>
+                    <Text className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('expenses_cat_' + exp.categoria)}</Text>
+                  </View>
                 </View>
-                <Text className="text-sm font-bold text-red-500">{fmt(exp.monto)}</Text>
+                <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(exp.monto)}</Text>
               </View>
               {exp.comprobanteUri && (
                 <View className="mt-2">

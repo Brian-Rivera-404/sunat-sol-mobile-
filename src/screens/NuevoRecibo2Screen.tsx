@@ -34,15 +34,26 @@ export default function NuevoRecibo2Screen({ navigation }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1 bg-white dark:bg-gray-900" keyboardShouldPersistTaps="handled">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900" keyboardShouldPersistTaps="handled">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('NuevoRecibo1'))} className="py-2.5 mr-3" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint="Regresa al paso 1">
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold">{t('nuevo_recibo_step2')}</Text>
       </HeaderBar>
 
-      <View className="px-4 pt-6">
+      <View className="px-4 pt-4">
+        <View className="flex-row mb-2">
+          <View className="flex-1 h-1 bg-blue-500 rounded-full mr-1" />
+          <View className="flex-1 h-1 bg-blue-500 rounded-full ml-1" />
+        </View>
+        <View className="flex-row justify-between">
+          <Text className="text-xs text-blue-600 font-medium">Datos del cliente</Text>
+          <Text className="text-xs text-blue-600 font-medium">Confirmación</Text>
+        </View>
+      </View>
+
+      <View className="px-4 pt-4">
         <Text className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1" accessibilityRole="header">{t('nuevo_recibo2_forma_pago')}</Text>
         <Text className="text-gray-500 dark:text-gray-400 mb-5">{t('nuevo_recibo2_selecciona')}</Text>
 
@@ -123,7 +134,7 @@ export default function NuevoRecibo2Screen({ navigation }: Props) {
           )}
         </View>
 
-        <View className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-5 py-5 mb-6" accessibilityLabel={`${t('nuevo_recibo2_resumen')}: ${t('nuevo_recibo2_monto_bruto')} ${fmt(monto)}, ${t('nuevo_recibo2_retencion')} ${retencion ? fmt(retencionMonto) : t('resumen_recibo_zero')}, ${t('nuevo_recibo2_neto')} ${fmt(neto)}`}>
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 shadow-sm mb-6" accessibilityLabel={`${t('nuevo_recibo2_resumen')}: ${t('nuevo_recibo2_monto_bruto')} ${fmt(monto)}, ${t('nuevo_recibo2_retencion')} ${retencion ? fmt(retencionMonto) : t('resumen_recibo_zero')}, ${t('nuevo_recibo2_neto')} ${fmt(neto)}`}>
           <Text className="text-base font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('nuevo_recibo2_resumen')}</Text>
           <View className="flex-row justify-between mb-2">
             <Text className="text-gray-500 dark:text-gray-400">{t('nuevo_recibo2_monto_bruto')}</Text>
@@ -133,15 +144,15 @@ export default function NuevoRecibo2Screen({ navigation }: Props) {
             <Text className="text-gray-500 dark:text-gray-400">{t('nuevo_recibo2_retencion')} (8%)</Text>
             <Text className="text-red-500 dark:text-red-400 font-medium">-{fmt(retencionMonto)}</Text>
           </View>
-          <View className="h-px bg-gray-300 dark:bg-gray-600 my-2" />
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-2" />
           <View className="flex-row justify-between">
             <Text className="text-gray-800 dark:text-gray-100 font-bold">{t('nuevo_recibo2_neto')}</Text>
-            <Text className="text-[#002f5d] dark:text-blue-300 font-bold text-lg">{fmt(neto)}</Text>
+            <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(neto)}</Text>
           </View>
         </View>
 
         <TouchableOpacity
-          className="bg-[#002f5d] rounded-lg py-4 items-center mb-4"
+          className="bg-[#002f5d] rounded-xl py-3.5 items-center mb-10"
           onPress={handleVerResumen}
           activeOpacity={0.8}
           accessibilityLabel={t('nuevo_recibo2_ver_resumen')}

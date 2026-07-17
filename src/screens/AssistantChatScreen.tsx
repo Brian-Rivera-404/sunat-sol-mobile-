@@ -169,10 +169,10 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
   const lastAssistantMsg = messages.filter((m) => m.sender === 'assistant').slice(-1)[0]
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold flex-1">{t('assistant_title')}</Text>
         <TouchableOpacity onPress={() => dispatch(go('AssistantSettings'))} className="ml-2 py-2.5" accessibilityLabel={t('assistant_settings')} accessibilityRole="button">
@@ -195,8 +195,8 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
             <View
               className={`rounded-2xl px-4 py-3 ${
                 msg.sender === 'user'
-                  ? 'bg-[#002f5d] rounded-tr-sm'
-                  : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-tl-sm'
+                  ? 'bg-[#1B4FBF] rounded-tr-sm'
+                  : 'bg-white dark:bg-gray-800 rounded-[18px] shadow-sm'
               }`}
             >
               <Text
@@ -231,7 +231,7 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
           </View>
         ))}
         {isProcessing && (
-          <View className="self-start mb-3 bg-white dark:bg-gray-800 rounded-2xl rounded-tl-sm px-4 py-3 border border-gray-200 dark:border-gray-700">
+          <View className="self-start mb-3 bg-white dark:bg-gray-800 rounded-[18px] p-4 shadow-sm">
             <Text className="text-gray-500 dark:text-gray-400 text-sm">{t('general_cargando')}...</Text>
           </View>
         )}
@@ -242,7 +242,7 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
           {FAQ_CHIPS.map((chip) => (
             <TouchableOpacity
               key={chip}
-              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full px-4 py-2 mr-2 mb-2"
+              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full px-4 py-2 mr-2 mb-2 shadow-sm"
               onPress={() => handleSend(t(chip))}
               accessibilityLabel={t(chip)}
               accessibilityRole="button"
@@ -282,7 +282,7 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
           />
           <TouchableOpacity
             className={`w-12 h-12 rounded-full items-center justify-center ${
-              isListening ? 'bg-red-500' : isProcessing ? 'bg-gray-300 dark:bg-gray-600' : 'bg-[#002f5d]'
+              isListening ? 'bg-red-500' : isProcessing ? 'bg-gray-300 dark:bg-gray-600' : 'bg-[#1B4FBF]'
             }`}
             onPress={handleVoice}
             disabled={isProcessing}
@@ -295,7 +295,7 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className="w-12 h-12 rounded-full bg-[#002f5d] items-center justify-center ml-2"
+            className="w-12 h-12 rounded-full bg-[#1B4FBF] items-center justify-center ml-2"
             onPress={() => handleSend()}
             disabled={!inputText.trim() || isProcessing}
             accessibilityLabel={t('assistant_send')}

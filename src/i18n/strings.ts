@@ -56,6 +56,10 @@ const strings: Record<string, Record<string, string>> = {
     home_mi_ruc: 'Mi RUC',
     home_beneficios: 'Beneficios',
     home_reportes: 'Reportes e historial',
+    bottomnav_home: 'Inicio',
+    bottomnav_recibos: 'Recibos',
+    bottomnav_declarar: 'Declarar',
+    bottomnav_buzon: 'Buz\u00F3n',
     // Notificaciones
     notif_title: 'Notificaciones',
     notif_count: 'notificaciones',
@@ -306,6 +310,7 @@ const strings: Record<string, Record<string, string>> = {
     // Expenses
     expenses_title: 'Gastos Deducibles',
     expenses_count: 'gastos registrados',
+    expenses_used: 'Usado',
     expenses_add: 'Agregar gasto',
     expenses_add_hint: 'Abrir formulario para registrar un nuevo gasto',
     expenses_new: 'Nuevo gasto',
@@ -570,6 +575,10 @@ const strings: Record<string, Record<string, string>> = {
     home_mi_ruc: 'My Tax ID',
     home_beneficios: 'Benefits',
     home_reportes: 'Reports & History',
+    bottomnav_home: 'Home',
+    bottomnav_recibos: 'Receipts',
+    bottomnav_declarar: 'Declare',
+    bottomnav_buzon: 'Inbox',
     // Notificaciones
     notif_title: 'Notifications',
     notif_count: 'notifications',
@@ -820,6 +829,7 @@ const strings: Record<string, Record<string, string>> = {
     // Expenses
     expenses_title: 'Deductible Expenses',
     expenses_count: 'expenses registered',
+    expenses_used: 'Used',
     expenses_add: 'Add expense',
     expenses_add_hint: 'Open form to register a new expense',
     expenses_new: 'New expense',

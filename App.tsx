@@ -1,11 +1,13 @@
 import './src/styles/global.css'
 import React, { useEffect, useRef, useCallback } from 'react'
-import { View, ActivityIndicator, AccessibilityInfo, Appearance } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator, AccessibilityInfo, Appearance } from 'react-native'
 import { Text } from './src/components/AccessibleText'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { StoreProvider, useStore } from './src/store/sunatStore'
+import { StoreProvider, useStore, go } from './src/store/sunatStore'
+import { useTranslate } from './src/i18n/useTranslate'
+import { vibrateLight } from './src/utils/haptics'
 
 // Polyfill: setColorScheme no existe en react-native-web
 if (typeof Appearance.setColorScheme !== 'function') {
@@ -39,6 +41,7 @@ import AssistantHistoryScreen from './src/screens/AssistantHistoryScreen'
 import AssistantSettingsScreen from './src/screens/AssistantSettingsScreen'
 import ModalRecibo from './src/components/ModalRecibo'
 import Toast from './src/components/Toast'
+import BottomNav from './src/components/BottomNav'
 
 const Stack = createNativeStackNavigator()
 
@@ -48,8 +51,9 @@ const screenOptions = {
 }
 
 function AppNavigator() {
-  const { state } = useStore()
+  const { state, dispatch } = useStore()
   const navigationRef = useRef<NavigationContainerRef<any>>(null)
+  const { t } = useTranslate()
 
   useEffect(() => {
     if (navigationRef.current && state.screen && state.screen !== 'Login') {
@@ -102,6 +106,8 @@ function AppNavigator() {
     )
   }
 
+  const showAI = state.screen !== 'Login' && state.screen !== 'Register'
+
   return (
     <View className="flex-1" accessibilityLanguage="es">
       <NavigationContainer
@@ -138,6 +144,20 @@ function AppNavigator() {
           <Stack.Screen name="AssistantSettings" component={AssistantSettingsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
+
+      <BottomNav />
+
+      {showAI && (
+        <TouchableOpacity
+          className="absolute bottom-20 right-4 w-[58] h-[58] rounded-full items-center justify-center shadow-lg z-40"
+          style={{ backgroundColor: '#6366F1' }}
+          onPress={() => { dispatch(go('AssistantChat')); vibrateLight() }}
+          accessibilityLabel={t('assistant_title')}
+          accessibilityRole="button"
+        >
+          <Text className="text-white text-2xl">{'\u2726'}</Text>
+        </TouchableOpacity>
+      )}
 
       {state.modalId && <ModalRecibo />}
       <Toast />

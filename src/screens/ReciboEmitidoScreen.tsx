@@ -36,7 +36,7 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
 
   if (!recibo) {
     return (
-      <View className="flex-1 bg-white dark:bg-gray-900 items-center justify-center px-4">
+      <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900 items-center justify-center px-4">
         <Text className="text-gray-500 dark:text-gray-400">{t('recibo_emitido_no_encontrado')}</Text>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mt-4" accessibilityLabel={t('general_ir_inicio')} accessibilityRole="button" accessibilityHint={t('recibo_emitido_ir_inicio_hint')}>
           <Text className="text-blue-600 dark:text-blue-400">{t('general_ir_inicio')}</Text>
@@ -46,7 +46,7 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <View className="flex-1 items-center">
           <Text className="text-white text-lg font-bold" accessibilityRole="header">{t('recibo_emitido_title')}</Text>
@@ -62,7 +62,7 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
       </View>
 
       <View className="px-4">
-        <View className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-5 py-5 mb-6 shadow-sm" accessibilityLabel={`${t('recibo_emitido_recibo')} ${recibo.id}, ${t('recibo_emitido_fecha')} ${formatearFecha(recibo.fecha)}, RUC ${recibo.ruc}, ${t('recibo_emitido_cliente')} ${recibo.cliente}, ${t('recibo_emitido_monto_bruto')} ${fmt(recibo.montoBruto)}, ${t('recibo_emitido_neto')} ${fmt(recibo.montoNeto)}, ${t('recibo_emitido_estado')} ${ESTADO_LABEL[recibo.estado] || recibo.estado}`}>
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 shadow-sm mb-6" accessibilityLabel={`${t('recibo_emitido_recibo')} ${recibo.id}, ${t('recibo_emitido_fecha')} ${formatearFecha(recibo.fecha)}, RUC ${recibo.ruc}, ${t('recibo_emitido_cliente')} ${recibo.cliente}, ${t('recibo_emitido_monto_bruto')} ${fmt(recibo.montoBruto)}, ${t('recibo_emitido_neto')} ${fmt(recibo.montoNeto)}, ${t('recibo_emitido_estado')} ${ESTADO_LABEL[recibo.estado] || recibo.estado}`}>
           <View className="items-center mb-4">
             <Text className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('recibo_emitido_codigo')}</Text>
             <Text className="text-xl font-bold text-[#002f5d] dark:text-blue-300 mt-1">{recibo.id}</Text>
@@ -95,10 +95,10 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
             <Text className="text-gray-500 dark:text-gray-400">{t('recibo_emitido_forma_pago')}</Text>
             <Text className="text-gray-800 dark:text-gray-200 font-medium">{FORMA_PAGO_LABEL[recibo.formaPago] || recibo.formaPago}</Text>
           </View>
-          <View className="h-px bg-gray-300 dark:bg-gray-600 my-1" />
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
           <View className="flex-row justify-between mt-2 mb-3" accessibilityLabel={`${t('recibo_emitido_neto')}: ${fmt(recibo.montoNeto)}`}>
             <Text className="text-gray-800 dark:text-gray-100 font-bold text-base">{t('recibo_emitido_neto')}</Text>
-            <Text className="text-[#002f5d] dark:text-blue-300 font-bold text-lg">{fmt(recibo.montoNeto)}</Text>
+            <Text className="text-xl font-extrabold" style={{ color: '#0A2240' }}>{fmt(recibo.montoNeto)}</Text>
           </View>
           <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
           <View className="flex-row justify-between mt-3" accessibilityLabel={`${t('recibo_emitido_estado')}: ${ESTADO_LABEL[recibo.estado] || recibo.estado}`}>
@@ -112,7 +112,7 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
         </View>
 
         <TouchableOpacity
-          className="bg-[#002f5d] rounded-lg py-4 items-center mb-3"
+          className="bg-[#002f5d] rounded-xl py-3.5 items-center mb-3"
           onPress={() => dispatch(go('Home'))}
           activeOpacity={0.8}
           accessibilityLabel={t('general_ir_inicio')}
@@ -123,13 +123,14 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => dispatch(go('MisRecibos'))}
-          className="items-center py-3 mb-10"
+          className="bg-white dark:bg-gray-800 rounded-xl py-3.5 items-center mb-10 border border-[#002f5d]"
+          onPress={() => dispatch(go('NuevoRecibo1'))}
+          activeOpacity={0.8}
           accessibilityLabel={t('recibo_emitido_ver_recibos')}
           accessibilityRole="button"
           accessibilityHint={t('recibo_emitido_ver_recibos_hint')}
         >
-          <Text className="text-blue-600 dark:text-blue-400 text-sm"><Text accessibilityElementsHidden={true}>{'\uD83D\uDCCB'}</Text> {t('recibo_emitido_ver_recibos')}</Text>
+          <Text className="text-[#002f5d] font-bold text-base">Emitir otro recibo</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

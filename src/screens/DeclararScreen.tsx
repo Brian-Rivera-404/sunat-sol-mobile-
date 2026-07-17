@@ -23,7 +23,7 @@ export default function DeclararScreen({ navigation }: { navigation: any }) {
   const saldoAPagar = Math.max(0, impuesto - retenciones)
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity
           className="mr-3 py-2.5"
@@ -32,7 +32,7 @@ export default function DeclararScreen({ navigation }: { navigation: any }) {
           accessibilityRole="button"
           accessibilityHint={t('general_volver_hint')}
         >
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold">{t('declarar_title')}</Text>
       </HeaderBar>
@@ -40,7 +40,7 @@ export default function DeclararScreen({ navigation }: { navigation: any }) {
       <View className="px-4 pt-6">
         <Text className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">{t('declarar_anual')}</Text>
 
-        <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
           <InfoRow label={t('declarar_ingresos')} value={fmt(totalIngresos)} />
           <InfoRow label={t('declarar_deduccion')} value={fmt(DEDUCCION)} />
           <InfoRow label={t('declarar_renta_neta')} value={fmt(rentaNeta)} />
@@ -70,7 +70,7 @@ export default function DeclararScreen({ navigation }: { navigation: any }) {
         </View>
 
         <TouchableOpacity
-          className={`rounded-xl py-4 items-center mb-10 ${acepto ? 'bg-[#002f5d]' : 'bg-gray-300 dark:bg-gray-600'}`}
+          className={`rounded-xl py-4 items-center mb-10 ${acepto ? 'bg-[#1B4FBF]' : 'bg-gray-300 dark:bg-gray-600'}`}
           onPress={() => {
             Alert.alert(
               t('declarar_confirmar_title'),

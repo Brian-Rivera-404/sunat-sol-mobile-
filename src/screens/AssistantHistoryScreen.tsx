@@ -36,10 +36,10 @@ export default function AssistantHistoryScreen({ navigation }: { navigation: any
   }
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2190'}</Text>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold flex-1" accessibilityRole="header">{t('assistant_history_title')}</Text>
         {state.conversations.length > 0 && (
@@ -62,7 +62,7 @@ export default function AssistantHistoryScreen({ navigation }: { navigation: any
               {conversations.map((conv) => (
                 <TouchableOpacity
                   key={conv.id}
-                  className="bg-white dark:bg-gray-800 rounded-xl p-4 mb-2 shadow-sm"
+                  className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm"
                   onPress={() => {
                     dispatch(addConversation(conv))
                     dispatch(go('AssistantChat'))

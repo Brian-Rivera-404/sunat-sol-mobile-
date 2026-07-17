@@ -26,7 +26,7 @@ export default function AssistantOnboardingScreen({ navigation }: { navigation: 
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <Text className="text-white text-lg font-bold flex-1 text-center" accessibilityRole="header">{t('assistant_onboarding_title')}</Text>
       </HeaderBar>
@@ -36,8 +36,8 @@ export default function AssistantOnboardingScreen({ navigation }: { navigation: 
         <Text className="text-sm text-gray-500 dark:text-gray-400 text-center mb-8">{t('assistant_welcome_desc')}</Text>
 
         {TARJETAS.map((tjr) => (
-          <View key={tjr.key} className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-4 flex-row items-center" accessibilityLabel={t('assistant_onboarding_' + tjr.key)}>
-            <View className="w-12 h-12 rounded-full bg-[#002f5d] dark:bg-blue-700 items-center justify-center mr-4">
+          <View key={tjr.key} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm flex-row items-center" accessibilityLabel={t('assistant_onboarding_' + tjr.key)}>
+            <View className="w-12 h-12 rounded-full bg-[#1B4FBF] dark:bg-blue-700 items-center justify-center mr-4">
               <Text className="text-2xl">{tjr.icon}</Text>
             </View>
             <View className="flex-1">
@@ -58,14 +58,14 @@ export default function AssistantOnboardingScreen({ navigation }: { navigation: 
           accessibilityRole="switch"
           accessibilityState={{ checked: noVolver }}
         >
-          <View className={`w-5 h-5 rounded border-2 mr-2 items-center justify-center ${noVolver ? 'bg-[#002f5d] border-[#002f5d]' : 'border-gray-400'}`}>
+          <View className={`w-5 h-5 rounded border-2 mr-2 items-center justify-center ${noVolver ? 'bg-[#1B4FBF] border-[#1B4FBF]' : 'border-gray-400'}`}>
             {noVolver && <Text className="text-white text-xs font-bold">{'\u2713'}</Text>}
           </View>
           <Text className="text-sm text-gray-600 dark:text-gray-400">{t('assistant_dont_show')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          className="bg-[#002f5d] rounded-lg py-4 items-center mb-10"
+          className="bg-[#002f5d] rounded-xl py-4 items-center mb-10"
           onPress={handleEntendido}
           accessibilityLabel={t('assistant_got_it')}
           accessibilityRole="button"
