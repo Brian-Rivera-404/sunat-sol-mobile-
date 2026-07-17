@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect, ReactNode } fr
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 import { secureSaveCCI, secureGetCCI, secureSavePinHash, secureGetPinHash } from '../services/secureStorage'
-import type { DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings } from '../types/shared'
+import type { RHEReceipt, DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings } from '../types/shared'
 
 const KEY = 'sunat_sol_data'
 
@@ -12,18 +12,6 @@ interface User {
   email: string
   tel: string
   direccion: string
-}
-
-export interface Recibo {
-  id: string
-  ruc: string
-  cliente: string
-  fecha: string
-  montoBruto: number
-  retencion: number
-  montoNeto: number
-  formaPago: string
-  estado: string
 }
 
 interface ReciboData {
@@ -37,7 +25,7 @@ interface ReciboData {
 export interface State {
   screen: string
   user: User
-  recibos: Recibo[]
+  recibos: RHEReceipt[]
   nextId: number
   reciboData: ReciboData
   toast: string | null
@@ -63,7 +51,7 @@ type Action =
   | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci'>> }
   | { type: 'GO'; payload: string }
   | { type: 'SET_RECIBO_DATA'; payload: Partial<ReciboData> }
-  | { type: 'ADD_RECIBO'; payload: Omit<Recibo, 'id'> }
+  | { type: 'ADD_RECIBO'; payload: Omit<RHEReceipt, 'id'> }
   | { type: 'EMITIR_RECIBO' }
   | { type: 'REVERT_RECIBO'; payload: string }
   | { type: 'MODAL'; payload: string | null }
@@ -96,7 +84,12 @@ const seedUser: User = {
   direccion: 'Av. Arequipa 1234, Lince, Lima',
 }
 
-const seedRecibos: Recibo[] = [
+/*
+ * Mapeo prototipo → nativo (RECIBOS)
+ *   bruto → montoBruto   ret → retencion   neto → montoNeto
+ *   pago  → formaPago    estado → estado
+ */
+const seedRecibos: RHEReceipt[] = [
   { id: 'E001-0030', ruc: '20100070970', cliente: 'BANCO DE CRÉDITO DEL PERÚ S.A.', fecha: '2026-06-19', montoBruto: 111111, retencion: 8888.88, montoNeto: 102222.12, formaPago: 'cheque', estado: 'emitido' },
   { id: 'E001-0029', ruc: '20100070970', cliente: 'BANCO DE CRÉDITO DEL PERÚ S.A.', fecha: '2026-06-14', montoBruto: 2500, retencion: 200, montoNeto: 2300, formaPago: 'transferencia', estado: 'emitido' },
   { id: 'E001-0028', ruc: '20131694977', cliente: 'ALICORP S.A.A.', fecha: '2026-06-04', montoBruto: 1800, retencion: 144, montoNeto: 1656, formaPago: 'transferencia', estado: 'emitido' },
@@ -122,12 +115,23 @@ const seedState: State = {
   darkMode: false,
   biometricEnabled: false,
   highContrast: false,
+  /*
+   * Mapeo prototipo → nativo (GASTOS)
+   *   desc   → descripcion              amount → monto
+   *   type   → categoria (mapeo semántico: Hospedaje→otros, Restaurante→otros, etc.)
+   *   valid  → establecimientoValidado  date → fecha (YYYY-MM-DD)
+   */
   expenses: [
     { id: 'EXP-001', monto: 380, categoria: 'otros', establecimientoValidado: true, descripcion: 'Hotel Casa Andina Select Miraflores · Hospedaje', fecha: '2026-07-10' },
     { id: 'EXP-002', monto: 145, categoria: 'otros', establecimientoValidado: true, descripcion: 'Restaurante La Mar · Restaurante', fecha: '2026-07-08' },
     { id: 'EXP-003', monto: 2200, categoria: 'oficina_alquiler', establecimientoValidado: true, descripcion: 'Alquiler Oficina San Isidro · Arrendamiento', fecha: '2026-07-01' },
     { id: 'EXP-004', monto: 80, categoria: 'otros', establecimientoValidado: false, descripcion: 'Ferretería Central Lima · Otro', fecha: '2026-07-05' },
   ],
+  /*
+   * Mapeo prototipo → nativo (DECLARACIONES)
+   *   periodo → periodo   monto → monto
+   *   estado  → estado    fecha → fechaLimite
+   */
   declarations: [
     { id: 'DEC-004', periodo: '2026-06', estado: 'pendiente', fechaLimite: '2026-07-18', monto: 1890 },
     { id: 'DEC-003', periodo: '2026-05', estado: 'pagado', fechaLimite: '2026-06-16', monto: 2340 },
@@ -141,6 +145,11 @@ const seedState: State = {
     { id: 'c2', ruc: '20131694977', nombre: 'ALICORP S.A.A.', frecuente: true },
     { id: 'c3', ruc: '20100047218', nombre: 'TELEFÓNICA DEL PERÚ S.A.A.', frecuente: true },
   ],
+  /*
+   * Mapeo prototipo → nativo (INBOX)
+   *   titulo → titulo   cuerpo → cuerpo   fecha → fecha   leido → leido
+   *   tag    → modulo (Alerta→declaraciones, Éxito→rhe)
+   */
   inbox: [
     { id: 'in1', titulo: 'Declaración PDT 616 — jun 2026', cuerpo: 'Tienes plazo hasta el 18 de julio. Evita multas declarando a tiempo.', fecha: '2026-07-15', leido: false, modulo: 'declaraciones' },
     { id: 'in2', titulo: 'CCI registrada exitosamente', cuerpo: 'Tu cuenta BCP terminada en ****4521 fue registrada para devoluciones tributarias.', fecha: '2026-07-10', leido: true, modulo: 'rhe' },
@@ -181,7 +190,7 @@ function reducer(state: State, action: Action): State {
       const ret = reciboData.retencion ? reciboData.monto * 0.08 : 0
       const nro = String(state.nextId).padStart(4, '0')
       const id = `E001-${nro}`
-      const recibo: Recibo = {
+      const recibo: RHEReceipt = {
         id,
         ruc: reciboData.ruc,
         cliente: reciboData.cliente,

@@ -1,10 +1,19 @@
+/*
+ * Mapeo prototipo → tipo nativo (RECIBOS)
+ *   bruto → montoBruto
+ *   ret   → retencion
+ *   neto  → montoNeto
+ *   pago  → formaPago
+ *   estado → estado (emitido / revertido / anulado)
+ */
 export type RHEReceipt = {
   id: string
   ruc: string
   cliente: string
   fecha: string
-  monto: number
+  montoBruto: number
   retencion: number
+  montoNeto: number
   formaPago: string
   estado: 'emitido' | 'revertido' | 'anulado'
 }

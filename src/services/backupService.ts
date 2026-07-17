@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Sharing from 'expo-sharing'
 import * as FileSystem from 'expo-file-system/legacy'
 import { useStore } from '../store/sunatStore'
+import type { RHEReceipt, DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings } from '../types/shared'
 
 const BACKUP_KEY = 'sunat_sol_backup'
 const STORE_KEY = 'sunat_sol_data'
@@ -16,63 +17,14 @@ export type BackupData = {
     tel: string
     direccion: string
   }
-  recibos: Array<{
-    id: string
-    ruc: string
-    cliente: string
-    fecha: string
-    montoBruto: number
-    retencion: number
-    montoNeto: number
-    formaPago: string
-    estado: string
-  }>
+  recibos: RHEReceipt[]
   nextId: number
-  expenses: Array<{
-    id: string
-    monto: number
-    categoria: string
-    comprobanteUri?: string
-    establecimientoValidado: boolean
-    descripcion: string
-    fecha: string
-  }>
-  declarations: Array<{
-    id: string
-    periodo: string
-    estado: 'pendiente' | 'pagado' | 'vencido'
-    fechaLimite: string
-    monto: number
-  }>
-  conversations: Array<{
-    id: string
-    pregunta: string
-    respuesta: string
-    moduloDeOrigen: string
-    modo: 'local' | 'remote'
-    fecha: string
-    lowConfidence?: boolean
-  }>
-  assistantSettings: {
-    modality: 'text_only' | 'text_voice' | 'hands_free'
-    ttsSpeed: 'slow' | 'normal' | 'fast'
-    useLocalOnly: boolean
-    language: 'es' | 'en'
-  }
-  clients: Array<{
-    id: string
-    ruc: string
-    nombre: string
-    frecuente: boolean
-  }>
-  inbox: Array<{
-    id: string
-    titulo: string
-    cuerpo: string
-    fecha: string
-    leido: boolean
-    modulo: string
-  }>
+  expenses: DeductibleExpense[]
+  declarations: TaxDeclaration[]
+  conversations: AssistantConversation[]
+  assistantSettings: AssistantSettings
+  clients: Client[]
+  inbox: InboxMessage[]
   onboardingSeen: boolean
   sessionTimeoutMinutes: number
   language: string
