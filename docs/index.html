@@ -6,79 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>SUNAT SOL</title>
     <style id="expo-reset">
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        overflow: hidden;
-        background: #1a1a2e;
-      }
-      #root {
-        display: flex;
-        height: 100%;
-        flex: 1;
+      html, body { height: 100%; margin: 0; padding: 0; }
+      body { overflow: hidden; }
+      #root { display: flex; height: 100%; flex: 1; }
+      @media (min-width: 768px) {
+        body { background: #f0f0f0; display: flex; align-items: center; justify-content: center; }
+        #root { width: 390px; height: 844px; border-radius: 40px; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.2); }
       }
     </style>
-    <style>
-      .phone-frame-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100vw;
-        height: 100vh;
-        background: #1a1a2e;
-      }
-      .phone-frame {
-        width: 390px;
-        height: 844px;
-        background: #fff;
-        border-radius: 44px;
-        overflow: hidden;
-        box-shadow:
-          0 0 0 2px #333,
-          0 0 0 4px #555,
-          0 0 60px rgba(0,0,0,0.5);
-        position: relative;
-        display: flex;
-        flex-direction: column;
-      }
-      .phone-notch {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 160px;
-        height: 30px;
-        background: #1a1a2e;
-        border-radius: 0 0 16px 16px;
-        z-index: 10;
-      }
-      @media (max-width: 480px) {
-        .phone-frame {
-          width: 100vw;
-          height: 100vh;
-          border-radius: 0;
-          box-shadow: none;
-          display: block;
-        }
-        .phone-notch {
-          display: none;
-        }
-      }
-    </style>
-  <link rel="preload" href="./_expo/static/css/web-fdddccd7b9860d362322c5cab019791e.css" as="style"><link rel="stylesheet" href="./_expo/static/css/web-fdddccd7b9860d362322c5cab019791e.css"><link rel="icon" href="./favicon.ico" /></head>
+  <link rel="preload" href="./_expo/static/css/web-d76d969530ed22e86b86bb160b8ab309.css" as="style"><link rel="stylesheet" href="./_expo/static/css/web-d76d969530ed22e86b86bb160b8ab309.css"><link rel="icon" href="./favicon.ico" /></head>
 
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div class="phone-frame-wrapper">
-      <div class="phone-frame">
-        <div class="phone-notch"></div>
-        <div id="root"></div>
-      </div>
-    </div>
-  <script src="./_expo/static/js/web/index-5c03ecc8d544c22096f483dbd973d39e.js" defer></script>
+    <div id="root"></div>
+  <script src="./_expo/static/js/web/index-41740152941cccc95984c1ba415f85d1.js" defer></script>
+  <script>document.addEventListener('click',function(){sessionStorage.setItem('_activity',Date.now())})</script>
 </body>
 </html>
