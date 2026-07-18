@@ -102,7 +102,7 @@ export default function DevolucionScreen({ navigation }: Props) {
                 {t('devolucion_solicitar')}
               </Text>
             </TouchableOpacity>
-            <View className="h-10" />
+            <View className="h-12" />
           </>
         )}
       </ScrollView>

@@ -23,7 +23,7 @@ export default function TextField({ label, error, prefix, rightElement, style, .
         }}
       >
         {prefix && (
-          <Text className="text-gray-500 dark:text-gray-400 font-bold mr-1">{prefix}</Text>
+          <Text className="text-gray-500 dark:text-gray-400 font-bold mr-2">{prefix}</Text>
         )}
         <TextInput
           className="flex-1 text-sm text-gray-900 dark:text-gray-100 py-3"

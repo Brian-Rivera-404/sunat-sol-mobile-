@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react'
 import { View, TouchableOpacity, Animated } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Text } from './AccessibleText'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useStore, go } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
@@ -58,14 +59,14 @@ function NavItem({ item, isActive, unreadCount, onPress, label }: { item: typeof
     >
       <Animated.View style={{ transform: [{ scale }] }}>
         {item.id === 'Inbox' && unreadCount > 0 && (
-          <View className="absolute -top-0.5 -right-1 w-2.5 h-2.5 rounded-full z-10 border-2 border-white dark:border-gray-800" style={{ backgroundColor: '#E85E1E' }} />
+          <View className="absolute -top-1 -right-1.5 w-3 h-3 rounded-full z-10 border-2 border-white dark:border-gray-800" style={{ backgroundColor: '#E85E1E' }} />
         )}
         <Ionicons
           name={(isActive ? item.iconActive : item.icon) as any}
           size={24}
           color={isActive ? C.blue : C.s400}
         />
-        <Text className="text-[10.5px] font-bold mt-0.5 text-center" style={{ color: isActive ? C.blue : C.s400 }}>{label}</Text>
+        <Text className="text-[10.5px] font-bold mt-1 text-center" style={{ color: isActive ? C.blue : C.s400 }}>{label}</Text>
       </Animated.View>
       {isActive && (
         <View className="absolute bottom-0 w-8 h-[3] rounded-t-sm" style={{ backgroundColor: '#1B4FBF' }} />
@@ -77,13 +78,14 @@ function NavItem({ item, isActive, unreadCount, onPress, label }: { item: typeof
 export default function BottomNav() {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
+  const insets = useSafeAreaInsets()
   const active = state.screen
   const unreadCount = (state.inbox ?? []).filter((m) => !m.leido).length
 
   if (!MAIN_SCREENS.includes(active)) return null
 
   return (
-    <View className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex-row" style={{ paddingBottom: 0 }}>
+    <View className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex-row" style={{ paddingBottom: insets.bottom }}>
       {NAV_ITEMS.map((item) => (
         <NavItem
           key={item.id}

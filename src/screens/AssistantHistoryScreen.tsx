@@ -66,7 +66,7 @@ export default function AssistantHistoryScreen({ navigation }: { navigation: Scr
               {conversations.map((conv) => (
                 <TouchableOpacity
                   key={conv.id}
-                  className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm"
+                  className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm"
                   onPress={() => {
                     dispatch(addConversation(conv))
                     dispatch(go('AssistantChat'))
@@ -76,7 +76,7 @@ export default function AssistantHistoryScreen({ navigation }: { navigation: Scr
                   accessibilityRole="button"
                   accessibilityHint={t('assistant_history_tap_restore')}
                 >
-                  <View className="flex-row justify-between items-start mb-1">
+                  <View className="flex-row justify-between items-start mb-1.5">
                     <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100 flex-1 mr-2" numberOfLines={2}>{conv.pregunta}</Text>
                     <TouchableOpacity
                       className="bg-red-50 dark:bg-red-900 px-2 py-1 rounded-lg"

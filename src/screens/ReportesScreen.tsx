@@ -134,7 +134,7 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('reportes_title')}</Text>
       </HeaderBar>
       <View className="px-4 pt-6">
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('reportes_resumen_anual')}</Text>
           <InfoRow label={t('declarar_ingresos')} value={fmt(totalIngresos)} />
           <InfoRow label={t('reportes_recibos_emitidos')} value={String(emitidos.length)} />
@@ -142,7 +142,7 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
           <InfoRow label={t('simulator_withholdings')} value={fmt(totalRetenciones)} />
           <InfoRow label={t('simulator_expenses')} value={fmt(totalGastos)} />
         </View>
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-4" accessibilityRole="header">{t('reportes_ingresos_mes')}</Text>
           <View className="flex-row items-end h-32 gap-1">
             {ingresosPorMes.map((monto, i) => {
@@ -156,7 +156,7 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
             })}
           </View>
         </View>
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('reportes_principales_clientes')}</Text>
           {topClientes.map((c, i) => (
             <View key={i} className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-b-0" accessibilityLabel={i + 1 + '. ' + c.nombre + ', ' + c.count + ' recibos, total ' + fmt(c.total)}>
@@ -172,7 +172,7 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
           ))}
         </View>
         {totalIngresos > 0 && (
-          <View className="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-[18px] px-4 py-3 mb-2.5" accessibilityRole="alert">
+          <View className="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-[18px] px-4 py-3 mb-3" accessibilityRole="alert">
             <Text className="text-amber-800 dark:text-amber-200 text-xs leading-5">
               {'\u2139\uFE0F'} {t('simulator_market_ref')}: ~{Math.round(REFERENCIA_MERCADO * 100)}% ({fmt(totalIngresos * REFERENCIA_MERCADO)})
             </Text>
@@ -213,7 +213,7 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
           </View>
           <View className="flex-1">
             <Text className="text-gray-800 dark:text-gray-200 font-bold text-sm">{t('reportes_send_accountant')}</Text>
-            <Text className="text-gray-400 text-xs mt-0.5">{t('reportes_send_accountant_desc')}</Text>
+            <Text className="text-gray-400 text-xs mt-1">{t('reportes_send_accountant_desc')}</Text>
           </View>
           <Text className="text-gray-300 text-[22px]">{'\u203A'}</Text>
         </TouchableOpacity>
@@ -224,7 +224,7 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <View className="flex-row justify-between items-center py-1.5" accessibilityLabel={label + ': ' + value}>
+    <View className="flex-row justify-between items-center py-2.5" accessibilityLabel={label + ': ' + value}>
       <Text className="text-sm text-gray-600 dark:text-gray-400">{label}</Text>
       <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{value}</Text>
     </View>

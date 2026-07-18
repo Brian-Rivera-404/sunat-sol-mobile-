@@ -66,7 +66,7 @@ export default function MyRucScreen({ navigation }: { navigation: ScreenNav }) {
           </View>
           <View className="flex-1">
             <Text className="text-base font-extrabold" style={{ color: C.navy }}>{user?.nombre || ''}</Text>
-            <Text className="text-xs font-bold mt-0.5" style={{ color: '#16A34A' }}>{'\u25CF'} {t('miruc_estado_value')}</Text>
+            <Text className="text-xs font-bold mt-1" style={{ color: '#16A34A' }}>{'\u25CF'} {t('miruc_estado_value')}</Text>
           </View>
         </View>
 
@@ -76,7 +76,7 @@ export default function MyRucScreen({ navigation }: { navigation: ScreenNav }) {
             <View
               key={f.label}
               className="flex-row justify-between items-center px-4"
-              style={{ paddingVertical: 10, borderBottomWidth: i < fields.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}
+              style={{ paddingVertical: 14, borderBottomWidth: i < fields.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}
             >
               <Text className="text-xs" style={{ color: C.s500 }}>{f.label}</Text>
               <Text className="text-xs font-semibold text-right max-w-[58%]" style={{ color: '#1E293B' }}>{f.value}</Text>
@@ -87,7 +87,7 @@ export default function MyRucScreen({ navigation }: { navigation: ScreenNav }) {
         {/* CCI toggle */}
         {state.cci && (
           <TouchableOpacity
-            className="mt-2 mb-1 px-1 py-2"
+            className="mt-3 mb-2 px-1 py-2"
             onPress={() => setShowFullCCI(!showFullCCI)}
             accessibilityLabel={showFullCCI ? t('cci_hide_full') : t('cci_show_full')}
             accessibilityRole="button"

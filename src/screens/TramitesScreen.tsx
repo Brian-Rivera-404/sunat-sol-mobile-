@@ -75,17 +75,17 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
             const s = TRAMITE_STATUS[tr.estado] ?? { color: C.s500, bg: C.s100, labelKey: tr.estado }
             return (
               <FadeInView key={tr.id} delay={idx * 50}>
-              <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5" style={SHADOWS.card}>
-                <View className="flex-row justify-between items-start mb-2">
+              <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3" style={SHADOWS.card}>
+                <View className="flex-row justify-between items-start mb-2.5">
                   <View className="flex-1 mr-2">
                     <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{tr.tipo}</Text>
-                    <Text className="text-xs text-gray-400 mt-0.5">{tr.descripcion}</Text>
+                    <Text className="text-xs text-gray-400 mt-1">{tr.descripcion}</Text>
                   </View>
                   <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
                     <Text className="text-xs font-bold" style={{ color: s.color }}>{t(s.labelKey)}</Text>
                   </View>
                 </View>
-                <View className="flex-row items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+                <View className="flex-row items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
                   <Text className="text-xs text-gray-400">{t('tramites_presentacion')}: {formatearFecha(tr.fechaPresentacion)}</Text>
                   {tr.observacion && (
                     <TouchableOpacity
@@ -103,14 +103,14 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
             )
           })
         )}
-        <View className="h-10" />
+        <View className="h-12" />
       </ScrollView>
 
       <Modal visible={showForm} transparent animationType="slide">
         <View className="flex-1 justify-end bg-black/50">
           <View className="bg-white dark:bg-gray-800 rounded-t-3xl p-6 pb-10">
             <Text className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">{t('tramites_new')}</Text>
-            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('tramites_type')}</Text>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('tramites_type')}</Text>
             <TextInput
               className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100 mb-4"
               value={tipo}
@@ -118,7 +118,7 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
               placeholder="Ej: Suspensión de Retenciones"
               accessibilityLabel={t('tramites_type')}
             />
-            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('register_name')}</Text>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('register_name')}</Text>
             <TextInput
               className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100 mb-6"
               value={descripcion}

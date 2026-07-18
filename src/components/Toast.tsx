@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { View, Animated, AccessibilityInfo } from 'react-native'
 import { Text } from './AccessibleText'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useStore } from '../store/sunatStore'
 
 export default function Toast() {
   const { state } = useStore()
+  const insets = useSafeAreaInsets()
   const opacity = useRef(new Animated.Value(0)).current
   const [reduceMotion, setReduceMotion] = useState(false)
 
@@ -29,8 +31,8 @@ export default function Toast() {
 
   return (
     <Animated.View
-      className="absolute bottom-8 left-6 right-6 bg-gray-800 dark:bg-gray-700 rounded-xl py-3 px-4 z-50"
-      style={{ opacity }}
+      className="absolute left-6 right-6 bg-gray-800 dark:bg-gray-700 rounded-xl py-3 px-4 z-50"
+      style={{ opacity, bottom: 56 + insets.bottom + 12 }}
       accessible={true}
           accessibilityRole="alert"
           accessibilityLiveRegion="polite"

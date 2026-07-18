@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useStore, go } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateSuccess, vibrateError } from '../utils/haptics'
@@ -12,6 +13,7 @@ type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Register'>
 export default function RegisterScreen({ navigation }: { navigation: ScreenNav }) {
   const { dispatch } = useStore()
   const { t } = useTranslate()
+  const insets = useSafeAreaInsets()
   const [nombre, setNombre] = useState('')
   const [dni, setDni] = useState('')
   const [email, setEmail] = useState('')
@@ -55,6 +57,7 @@ export default function RegisterScreen({ navigation }: { navigation: ScreenNav }
     <KeyboardAvoidingView
       className="flex-1 bg-[#002f5d]"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={{ paddingTop: insets.top }}
     >
       <ScrollView
         className="flex-1"
@@ -77,7 +80,7 @@ export default function RegisterScreen({ navigation }: { navigation: ScreenNav }
           <Field label={t('register_phone')} value={tel} onChange={setTel} keyboardType="phone-pad" hint={t('register_phone_example')} />
 
           <View className="mb-3">
-            <Text className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">{t('register_pass')}</Text>
+            <Text className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">{t('register_pass')}</Text>
             <View className="flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-lg">
               <TextInput
                 className="flex-1 px-4 py-3 text-base text-gray-900 dark:text-gray-100"
@@ -141,7 +144,7 @@ function Field({ label, value, onChange, error, keyboardType, autoCapitalize, se
 }) {
   return (
     <View className="mb-3">
-      <Text className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">{label}</Text>
+      <Text className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">{label}</Text>
       <TextInput
         className={`bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-3 text-base ${error ? 'border border-red-300' : ''} text-gray-900 dark:text-gray-100`}
         value={value}

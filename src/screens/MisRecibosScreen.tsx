@@ -135,13 +135,13 @@ export default function MisRecibosScreen({ navigation }: Props) {
           {filtered.map((recibo, idx) => (
             <FadeInView key={recibo.id} delay={idx * 50}>
             <View
-              className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5"
+               className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3"
               style={SHADOWS.card}
             >
               <View className="flex-row justify-between items-start mb-2.5">
                 <View className="flex-1 mr-2">
                   <Text className="text-sm font-bold text-gray-800 dark:text-gray-200">{recibo.cliente}</Text>
-                  <Text className="text-xs text-gray-400 mt-0.5">#{recibo.id} · {formatearFecha(recibo.fecha)}</Text>
+                  <Text className="text-xs text-gray-400 mt-1">#{recibo.id} · {formatearFecha(recibo.fecha)}</Text>
                 </View>
                 <StatusPill status={recibo.estado} />
               </View>
@@ -189,11 +189,11 @@ export default function MisRecibosScreen({ navigation }: Props) {
 
           {revertidos.length > 0 && (
             <View className="mb-4">
-              <Text className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 mt-4">{t('revert_reverted_list')}</Text>
+              <Text className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-3 mt-5">{t('revert_reverted_list')}</Text>
               {revertidos.map((recibo, idx) => (
                 <FadeInView key={recibo.id} delay={idx * 50}>
                 <View
-                  className="bg-white dark:bg-gray-800 rounded-[18px] p-3 mb-2 opacity-60"
+                  className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 opacity-60"
                   style={SHADOWS.card}
                 >
                   <View className="flex-row justify-between items-center">
@@ -209,7 +209,7 @@ export default function MisRecibosScreen({ navigation }: Props) {
             </View>
           )}
 
-          <View className="h-6" />
+          <View className="h-8" />
         </ScrollView>
       )}
     </View>

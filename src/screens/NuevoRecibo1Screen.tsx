@@ -65,13 +65,13 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
       </View>
 
       <ScrollView className="flex-1 px-4 pt-4" keyboardShouldPersistTaps="handled">
-        <Text className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1" accessibilityRole="header">{t('nuevo_recibo_title')}</Text>
+        <Text className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2" accessibilityRole="header">{t('nuevo_recibo_title')}</Text>
         <Text className="text-gray-500 dark:text-gray-400 mb-6">{t('nuevo_recibo_subtitle')}</Text>
 
         <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 shadow-sm mb-4">
-          <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{t('nuevo_recibo_ruc_label')}</Text>
+          <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('nuevo_recibo_ruc_label')}</Text>
           <TextInput
-            className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base mb-1 text-gray-900 dark:text-gray-100"
+            className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base mb-2 text-gray-900 dark:text-gray-100"
             placeholder={t('nuevo_recibo_ruc_placeholder')}
             keyboardType="number-pad"
             maxLength={11}
@@ -80,7 +80,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
             accessibilityLabel={t('nuevo_recibo_ruc_label')}
             accessibilityHint={t('nuevo_recibo_ruc_hint')}
           />
-          <Text className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('nuevo_recibo_ruc_example')}</Text>
+          <Text className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('nuevo_recibo_ruc_example')}</Text>
           {ruc.length === 11 && (
             cliente ? (
               <View className="bg-green-50 dark:bg-green-900 border border-green-300 dark:border-green-700 rounded-lg px-4 py-3 mb-3 flex-row items-center">
@@ -103,7 +103,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
 
           <View className="h-px bg-gray-200 dark:bg-gray-600 my-4" />
 
-          <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{t('nuevo_recibo_monto_label')}</Text>
+          <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('nuevo_recibo_monto_label')}</Text>
           <View className="flex-row items-center border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 bg-white dark:bg-gray-800 mb-4">
             <Text className="text-gray-500 dark:text-gray-400 font-bold mr-2">S/</Text>
             <TextInput
@@ -118,7 +118,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
           </View>
 
           <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('nuevo_recibo2_forma_pago')}</Text>
-          <View className="flex-row flex-wrap justify-between mb-2">
+          <View className="flex-row flex-wrap justify-between mb-3">
             {FORMA_PAGO.map((fp) => {
               const selected = formaPago === fp.key
               return (
@@ -134,7 +134,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
                   accessibilityState={{ selected }}
                   accessibilityHint={t('nuevo_recibo2_select_hint') + ' ' + fp.label.toLowerCase()}
                 >
-                  <Text className="text-2xl mb-1" accessibilityElementsHidden={true}>{fp.icon}</Text>
+                  <Text className="text-2xl mb-2" accessibilityElementsHidden={true}>{fp.icon}</Text>
                   <Text className={`font-semibold ${selected ? 'text-[#002f5d] dark:text-blue-300' : 'text-gray-700 dark:text-gray-300'}`}>
                     {fp.label}
                   </Text>
@@ -144,7 +144,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
             })}
           </View>
 
-          <View className="mb-2">
+          <View className="mb-3">
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center flex-1">
                 <Text className="text-base font-semibold text-gray-700 dark:text-gray-300 mr-2">{t('nuevo_recibo2_aplicar_retencion')}</Text>
@@ -207,7 +207,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
               <Text className="text-gray-500 dark:text-gray-400">{t('nuevo_recibo2_retencion')} (8%)</Text>
               <Text className="text-red-500 dark:text-red-400 font-medium">-{fmt(retencionMonto)}</Text>
             </View>
-            <View className="h-px bg-gray-200 dark:bg-gray-600 my-2" />
+            <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
             <View className="flex-row justify-between">
               <Text className="text-gray-800 dark:text-gray-100 font-bold">{t('nuevo_recibo2_neto')}</Text>
               <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(neto)}</Text>
@@ -215,7 +215,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
           </View>
         )}
 
-        <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg px-4 py-3">
+        <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg px-4 py-3 mt-4">
           <Text className="text-blue-700 dark:text-blue-300 text-sm">
             <Text accessibilityElementsHidden={true}>{'\uD83D\uDCA1'}</Text>
             {' '}{t('nuevo_recibo_monto_info')}

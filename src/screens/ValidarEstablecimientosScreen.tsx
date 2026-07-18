@@ -79,7 +79,7 @@ export default function ValidarEstablecimientosScreen({ navigation }: { navigati
           </View>
         ) : (
           filtered.map((e) => (
-            <View key={e.ruc} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm" accessibilityLabel={`${e.nombre}, ${t('validate_business_cat_' + e.categoria)}, RUC: ${e.ruc}, ${t('validate_business_validated')}`}>
+            <View key={e.ruc} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm" accessibilityLabel={`${e.nombre}, ${t('validate_business_cat_' + e.categoria)}, RUC: ${e.ruc}, ${t('validate_business_validated')}`}>
               <View className="flex-row items-center">
                 <Text className="text-2xl mr-3">{CATEGORIA_ICONS[e.categoria] || '\uD83D\uDCCC'}</Text>
                 <View className="flex-1">
@@ -94,7 +94,7 @@ export default function ValidarEstablecimientosScreen({ navigation }: { navigati
             </View>
           ))
         )}
-        <View className="h-10" />
+        <View className="h-12" />
       </View>
     </ScrollView>
   )

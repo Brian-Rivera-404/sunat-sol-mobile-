@@ -25,7 +25,7 @@ export default function TaxSimulatorScreen() {
       </HeaderBar>
 
       <View className="px-4 pt-6">
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('simulator_simulate')}</Text>
           <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('simulator_simulate_desc')}</Text>
           <View className="flex-row items-center border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 mb-3">
@@ -62,7 +62,7 @@ export default function TaxSimulatorScreen() {
           )}
         </View>
 
-        <View className="h-10" />
+        <View className="h-12" />
       </View>
     </ScrollView>
   )
@@ -70,7 +70,7 @@ export default function TaxSimulatorScreen() {
 
 function InfoRow({ label, value, isBold }: { label: string; value: string; isBold?: boolean }) {
   return (
-    <View className="flex-row justify-between items-center py-1.5" accessibilityLabel={`${label}: ${value}`}>
+    <View className="flex-row justify-between items-center py-2.5" accessibilityLabel={`${label}: ${value}`}>
       <Text className={`text-sm text-gray-600 dark:text-gray-400 flex-1 ${isBold ? 'font-bold' : ''}`}>{label}</Text>
       <Text className={`text-sm text-gray-900 dark:text-gray-100 ${isBold ? 'font-bold' : ''}`}>{value}</Text>
     </View>

@@ -38,7 +38,7 @@ export default function DeclaracionExitosaScreen({ navigation }: { navigation: S
 
       <View className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm mb-6" accessibilityLabel={`${t('declaracion_exitosa_title')}. ${t('declaracion_orden')}: ${orden}, ${t('declaracion_ejercicio')}, ${t('declarar_ingresos')}: ${fmt(totalIngresos)}, ${t('declarar_retenciones')}: ${fmt(retenciones)}, ${t('declarar_saldo')}: ${fmt(saldoAPagar)}`}>
         <View className="items-center mb-4">
-          <Text className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('declaracion_orden')}</Text>
+          <Text className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('declaracion_orden')}</Text>
           <Text className="text-lg font-bold text-gray-900 dark:text-gray-100 tracking-wider">{orden}</Text>
         </View>
 
@@ -51,7 +51,7 @@ export default function DeclaracionExitosaScreen({ navigation }: { navigation: S
         <View className="border-t border-gray-100 dark:border-gray-700 pt-3">
           <VoucherRow label={t('declarar_ingresos')} value={fmt(totalIngresos)} />
           <VoucherRow label={t('declarar_retenciones')} value={fmt(retenciones)} />
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
           <VoucherRow label={t('declarar_saldo')} value={fmt(saldoAPagar)} isBold />
         </View>
       </View>
@@ -71,7 +71,7 @@ export default function DeclaracionExitosaScreen({ navigation }: { navigation: S
 
 function VoucherRow({ label, value, isBold }: { label: string; value: string; isBold?: boolean }) {
   return (
-    <View className="flex-row justify-between items-center py-1.5" accessibilityLabel={`${label}: ${value}`}>
+    <View className="flex-row justify-between items-center py-2.5" accessibilityLabel={`${label}: ${value}`}>
       <Text className={`text-sm text-gray-600 dark:text-gray-400 ${isBold ? 'font-bold' : ''}`}>{label}</Text>
       <Text className={`text-sm text-gray-900 dark:text-gray-100 ${isBold ? 'font-bold' : ''}`}>{value}</Text>
     </View>

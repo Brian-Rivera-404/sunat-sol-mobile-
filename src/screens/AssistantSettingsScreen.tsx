@@ -52,7 +52,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
       </HeaderBar>
 
       <View className="px-4 pt-6">
-          <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+          <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('assistant_settings_modality')}</Text>
           <View className="flex-row justify-between">
             {MODALIDADES.map((m) => (
@@ -64,7 +64,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
                 accessibilityRole="button"
                 accessibilityState={{ selected: settings.modality === m.key }}
               >
-                <Text className={`text-2xl mb-1`}>{m.icon}</Text>
+                <Text className={`text-2xl mb-2`}>{m.icon}</Text>
                 <Text className={`text-xs font-semibold ${settings.modality === m.key ? 'text-white' : 'text-gray-600 dark:text-gray-400'}`}>
                   {t('assistant_settings_modality_' + m.key)}
                 </Text>
@@ -73,7 +73,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
           </View>
         </View>
 
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('assistant_settings_tts_speed')}</Text>
           <View className="flex-row justify-between">
             {VELOCIDADES.map((v) => (
@@ -85,7 +85,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
                 accessibilityRole="button"
                 accessibilityState={{ selected: settings.ttsSpeed === v.key }}
               >
-                <Text className={`text-2xl mb-1`}>{v.icon}</Text>
+                <Text className={`text-2xl mb-2`}>{v.icon}</Text>
                 <Text className={`text-xs font-semibold ${settings.ttsSpeed === v.key ? 'text-white' : 'text-gray-600 dark:text-gray-400'}`}>
                   {t('assistant_settings_speed_' + v.key)}
                 </Text>
@@ -94,7 +94,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
           </View>
         </View>
 
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <View className="flex-row items-center justify-between">
             <View className="flex-1 mr-4">
               <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t('assistant_settings_local')}</Text>
@@ -112,7 +112,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
           </View>
         </View>
 
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('lang_switch')}</Text>
           <TouchableOpacity
             className="flex-row items-center justify-center py-3 bg-gray-100 dark:bg-gray-700 rounded-xl"
@@ -125,7 +125,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
         </View>
 
         <TouchableOpacity
-          className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between shadow-sm mb-2.5"
+          className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between shadow-sm mb-3"
           onPress={() => { vibrateLight(); dispatch(go('AssistantHistory')) }}
           accessibilityLabel={t('assistant_history_title')}
           accessibilityRole="button"
@@ -139,6 +139,7 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
           </View>
           <Text className="text-gray-500 dark:text-gray-400 text-lg">{'\u203A'}</Text>
         </TouchableOpacity>
+        <View className="h-12" />
       </View>
     </ScrollView>
   )

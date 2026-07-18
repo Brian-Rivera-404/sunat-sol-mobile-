@@ -151,8 +151,8 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
       </HeaderBar>
 
       <View className="px-4 pt-6">
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5" style={SHADOWS.card}>
-          <View className="flex-row justify-between items-center mb-2">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3" style={SHADOWS.card}>
+          <View className="flex-row justify-between items-center mb-2.5">
             <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{t('expenses_used')}</Text>
             <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(totalGastos)} / S/ {fmt(3 * UIT)}</Text>
           </View>
@@ -163,7 +163,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
 
         {/* Fotografiar comprobante — prototype parity */}
         <PressableScale
-          className="bg-white dark:bg-gray-800 rounded-[16px] py-3.5 px-4 flex-row items-center justify-center mb-2.5"
+          className="bg-white dark:bg-gray-800 rounded-[16px] py-3.5 px-4 flex-row items-center justify-center mb-3"
           style={{ ...SHADOWS.card, borderWidth: 2, borderStyle: 'dashed', borderColor: '#CBD5E1' }}
           onPress={handlePickImage}
           accessibilityLabel={t('expenses_scan_receipt')}
@@ -186,7 +186,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
         </View>
 
         <PressableScale
-          className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between mb-2.5"
+          className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between mb-3"
           style={SHADOWS.card}
           onPress={() => { vibrateLight(); dispatch(go('ValidarEstablecimientos')) }}
           accessibilityLabel={t('expenses_validate_business')}
@@ -203,7 +203,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
         </PressableScale>
 
         {showForm && (
-          <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5" style={SHADOWS.card} accessibilityRole="none">
+          <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3" style={SHADOWS.card} accessibilityRole="none">
             <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3">{t('expenses_new')}</Text>
             <TextField
               label={t('expenses_description')}
@@ -218,7 +218,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
               keyboardType="decimal-pad"
               placeholder="0.00"
             />
-            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('expenses_category')}</Text>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('expenses_category')}</Text>
             <View className="flex-row flex-wrap mb-4">
               {CATEGORIAS.map((cat) => (
                 <TouchableOpacity
@@ -233,7 +233,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
                 </TouchableOpacity>
               ))}
             </View>
-            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('expenses_comprobante')}</Text>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('expenses_comprobante')}</Text>
             <View className="flex-row mb-4 space-x-3">
               <TouchableOpacity
                 className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-xl py-3.5 items-center"
@@ -279,12 +279,12 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
           (state.expenses ?? []).map((exp, idx) => (
             <FadeInView key={exp.id} delay={idx * 50}>
             <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5" style={SHADOWS.card} accessibilityLabel={`${t('expenses_description')}: ${exp.descripcion}, ${t('expenses_amount')}: ${fmt(exp.monto)}, ${t('expenses_category')}: ${t('expenses_cat_' + exp.categoria)}, ${formatearFecha(exp.fecha)}`}>
-              <View className="flex-row justify-between items-start mb-1">
+              <View className="flex-row justify-between items-start mb-1.5">
                 <View className="flex-row flex-1 mr-2">
-                  <Ionicons name={exp.establecimientoValidado ? 'checkmark-circle' : 'close-circle'} size={20} color={exp.establecimientoValidado ? C.green : C.red} style={{ marginRight: 8 }} />
+                  <Ionicons name={exp.establecimientoValidado ? 'checkmark-circle' : 'close-circle'} size={20} color={exp.establecimientoValidado ? C.green : C.red} style={{ marginRight: 10 }} />
                   <View className="flex-1">
                     <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{exp.descripcion}</Text>
-                    <Text className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('expenses_cat_' + exp.categoria)}</Text>
+                    <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('expenses_cat_' + exp.categoria)}</Text>
                   </View>
                 </View>
                 <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(exp.monto)}</Text>
@@ -294,7 +294,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
                   <Image source={{ uri: exp.comprobanteUri }} className="w-full h-20 rounded-lg" resizeMode="cover" />
                 </View>
               )}
-              <View className="flex-row justify-between items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+              <View className="flex-row justify-between items-center mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <Text className="text-xs text-gray-400 dark:text-gray-500">{formatearFecha(exp.fecha)}</Text>
                 <TouchableOpacity
                   className="bg-red-50 dark:bg-red-900 px-3 py-1 rounded-lg"
@@ -309,7 +309,7 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
             </FadeInView>
           ))
         )}
-        <View className="h-10" />
+        <View className="h-12" />
       </View>
     </ScrollView>
   )

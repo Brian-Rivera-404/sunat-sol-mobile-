@@ -50,7 +50,7 @@ export default function ModalRecibo() {
 
 function DetailRow({ label, value, isBold }: { label: string; value: string; isBold?: boolean }) {
   return (
-    <View className="flex-row justify-between py-2">
+    <View className="flex-row justify-between py-3">
       <Text className="text-sm text-gray-500 dark:text-gray-400">{label}</Text>
       <Text className={`text-sm text-gray-900 dark:text-gray-100 ${isBold ? 'font-bold' : ''}`}>{value}</Text>
     </View>

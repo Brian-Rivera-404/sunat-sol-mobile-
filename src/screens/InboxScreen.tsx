@@ -68,7 +68,7 @@ export default function InboxScreen({ navigation }: { navigation: ScreenNav }) {
           sorted.map((msg, idx) => (
               <FadeInView key={msg.id} delay={idx * 50}>
               <TouchableOpacity
-                className={`bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5`}
+                className={`bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3`}
                 style={{ ...SHADOWS.card, borderLeftWidth: 4, borderLeftColor: getBorderColor(msg.modulo), opacity: msg.leido ? 0.8 : 1 }}
               onPress={() => {
                 if (!msg.leido) dispatch(markInboxRead(msg.id))
@@ -79,21 +79,21 @@ export default function InboxScreen({ navigation }: { navigation: ScreenNav }) {
               accessibilityRole="button"
               accessibilityHint={t('inbox_tap_ask_hint')}
             >
-              <View className="flex-row justify-between items-start mb-1">
+              <View className="flex-row justify-between items-start mb-2">
                 <View className="flex-1 mr-2">
-                  <View className="flex-row items-center mb-1">
+                  <View className="flex-row items-center mb-1.5">
                     {!msg.leido && <View className="w-2 h-2 rounded-full bg-[#0A2240] mr-2" />}
                     <Text className={`text-sm font-semibold flex-1 ${!msg.leido ? 'text-gray-800 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'}`}>{msg.titulo}</Text>
                   </View>
                   <Text className={`text-xs mt-1 ${!msg.leido ? 'text-gray-600 dark:text-gray-400' : 'text-gray-400 dark:text-gray-500'}`}>{msg.cuerpo}</Text>
                 </View>
                 <View className="items-end">
-                  <Text className="text-xs text-gray-400 dark:text-gray-500 mb-1">{formatearFecha(msg.fecha)}</Text>
+                  <Text className="text-xs text-gray-400 dark:text-gray-500 mb-1.5">{formatearFecha(msg.fecha)}</Text>
                   <TagBadge modulo={msg.modulo} />
                 </View>
               </View>
               {!msg.leido && (
-                <View className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                <View className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                   <View className="flex-row items-center">
                     <Text className="text-xs text-[#0A2240] dark:text-blue-400 font-semibold">{t('inbox_ask_assistant')}</Text>
                     <Ionicons name="chevron-forward" size={14} color="#0A2240" style={{ marginLeft: 2 }} />
@@ -104,7 +104,7 @@ export default function InboxScreen({ navigation }: { navigation: ScreenNav }) {
               </FadeInView>
           ))
         )}
-        <View className="h-10" />
+        <View className="h-12" />
       </View>
     </ScrollView>
   )

@@ -59,7 +59,7 @@ export default function AnnualTaxScreen() {
 
       <View className="px-4 pt-6">
         {/* Progress card with circle */}
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <View className="flex-row justify-between items-center mb-3.5">
             <View>
               <Text className="text-xs" style={{ color: C.s500 }}>{t('annual_tax_campaign')}</Text>
@@ -82,7 +82,7 @@ export default function AnnualTaxScreen() {
         </View>
 
         {/* Checklist — prototype parity */}
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] shadow-sm mb-2.5 overflow-hidden">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] shadow-sm mb-3 overflow-hidden">
           {RENTA_CHECK.map((item, i) => {
             const done = i < pasosCompletados
             return (
@@ -98,7 +98,7 @@ export default function AnnualTaxScreen() {
         </View>
 
         {/* Deadline info box */}
-        <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-[16px] px-4 py-3 flex-row gap-2.5 mb-2.5" accessibilityRole="alert">
+        <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-[16px] px-4 py-3 flex-row gap-2.5 mb-3" accessibilityRole="alert">
           <Text className="text-lg">{'\uD83D\uDCC5'}</Text>
           <Text className="text-xs leading-5 flex-1" style={{ color: '#1E40AF' }}><Text className="font-bold">{t('annual_tax_deadline')}:</Text> {t('annual_tax_deadline_desc')}</Text>
         </View>
@@ -109,15 +109,15 @@ export default function AnnualTaxScreen() {
           <InfoRow label={t('declarar_ingresos')} value={fmt(totalIngresos)} />
           <InfoRow label={t('annual_tax_deductions')} value={fmt(deduccion7UIT + totalGastos)} />
           <InfoRow label={t('annual_tax_net_income')} value={fmt(rentaNeta)} />
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-2" />
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
           <InfoRow label={t('annual_tax_estimated_tax')} value={fmt(impuestoEstimado)} />
           <InfoRow label={t('declarar_retenciones')} value={fmt(totalRetenciones)} />
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-2" />
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
           <InfoRow label={t('annual_tax_balance')} value={fmt(saldoAPagar)} isBold />
         </View>
 
         {/* Presentar declaración */}
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('declarar_anual')}</Text>
           <Text className="text-xs text-gray-500 dark:text-gray-400 mb-4 leading-4">
             {t('declarar_info')}
@@ -170,7 +170,7 @@ export default function AnnualTaxScreen() {
 
 function InfoRow({ label, value, isBold }: { label: string; value: string; isBold?: boolean }) {
   return (
-    <View className="flex-row justify-between items-center py-1.5" accessibilityLabel={`${label}: ${value}`}>
+    <View className="flex-row justify-between items-center py-2.5" accessibilityLabel={`${label}: ${value}`}>
       <Text className="text-sm" style={{ color: C.s500 }}>{label}</Text>
       <Text className={`text-xl font-extrabold ${isBold ? '' : ''}`} style={{ color: C.navy }}>{value}</Text>
     </View>

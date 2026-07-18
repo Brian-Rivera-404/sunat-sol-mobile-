@@ -2,7 +2,7 @@ import './src/styles/global.css'
 import React, { useEffect, useRef, useCallback } from 'react'
 import { View, TouchableOpacity, ActivityIndicator, AccessibilityInfo, Appearance } from 'react-native'
 import { Text } from './src/components/AccessibleText'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { StoreProvider, useStore, go } from './src/store/sunatStore'
@@ -53,6 +53,7 @@ function AppNavigator() {
   const { state, dispatch } = useStore()
   const navigationRef = useRef<NavigationContainerRef<RootStackParamList>>(null)
   const { t } = useTranslate()
+  const insets = useSafeAreaInsets()
 
   useEffect(() => {
     if (navigationRef.current && state.screen) {
@@ -106,7 +107,7 @@ function AppNavigator() {
   const showAI = state.screen !== 'Register'
 
   return (
-    <View className="flex-1" accessibilityLanguage="es">
+    <View className="flex-1" accessibilityLanguage="es" style={{ paddingBottom: insets.bottom }}>
       <NavigationContainer
         ref={navigationRef}
         onStateChange={(navState) => {
@@ -144,8 +145,8 @@ function AppNavigator() {
 
       {showAI && (
         <TouchableOpacity
-          className="absolute bottom-20 right-4 w-[58] h-[58] rounded-full items-center justify-center shadow-lg z-40"
-          style={{ backgroundColor: '#6366F1' }}
+          className="absolute right-4 w-[58] h-[58] rounded-full items-center justify-center shadow-lg z-40"
+          style={{ backgroundColor: '#6366F1', bottom: 56 + insets.bottom + 12 }}
           onPress={() => { dispatch(go('AssistantChat')); vibrateLight() }}
           accessibilityLabel={t('assistant_title')}
           accessibilityRole="button"

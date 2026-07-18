@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, setDarkMode, setHighContrast } from '../store/sunatStore'
@@ -36,6 +37,7 @@ const BOTTOM_CARDS = [
 export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
   const { state, dispatch } = useStore()
   const { t, switchLang, nextLangLabel } = useTranslate()
+  const insets = useSafeAreaInsets()
 
   const firstName = state.user?.nombre ?? 'Usuario'
   const initial = firstName.charAt(0).toUpperCase()
@@ -55,7 +57,7 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}
         contentContainerClassName="pb-20">
         {/* Header */}
-        <LinearGradient colors={['#0A2240', '#0D3060']} className="pt-14 pb-9 px-5 rounded-b-[28px]">
+        <LinearGradient colors={['#0A2240', '#0D3060']} className="pb-9 px-5 rounded-b-[28px]" style={{ paddingTop: insets.top + 20 }}>
           <View className="flex-row items-center justify-between mb-5">
             <View>
               <Text className="text-white/55 text-xs">{t('home_welcome')}</Text>
@@ -81,12 +83,12 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
 
           {/* Income card */}
           <View className="bg-white/9 rounded-[20px] p-[18px] border border-white/12">
-            <Text className="text-white/55 text-xs mb-1">{t('home_ingresos_label')}</Text>
+            <Text className="text-white/55 text-xs mb-2">{t('home_ingresos_label')}</Text>
             <Text className="text-3xl font-extrabold tracking-tight" style={{ color: '#C8A84E' }}>{fmt(totalIngresos)}</Text>
-            <Text className="text-white/40 text-xs mt-0.5">
+            <Text className="text-white/40 text-xs mt-1.5">
               {reciboCount} recibo{reciboCount !== 1 ? 's' : ''} emitido{reciboCount !== 1 ? 's' : ''}
             </Text>
-            <View className="h-[1] bg-white/10 my-3.5" />
+            <View className="h-[1] bg-white/10 my-4" />
             <View className="flex-row justify-between">
               <View>
                 <Text className="text-white/45 text-xs">{t('home_retenido')}</Text>
@@ -115,19 +117,19 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
         </View>
 
         {/* Module grid */}
-        <View className="px-5 pt-3">
+        <View className="px-5 pt-4">
           <Text className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">{t('home_servicios')}</Text>
           <View className="flex-row flex-wrap gap-2.5">
             {MODULES.map((m) => (
               <PressableScale
                 key={m.id}
-                className="bg-white dark:bg-gray-800 rounded-[18px] pt-[14] pb-[10] px-2 items-center w-[30%] flex-grow"
+                className="bg-white dark:bg-gray-800 rounded-[18px] py-3 px-3 items-center w-[30%] flex-grow"
                 style={SHADOWS.card}
                 onPress={() => { dispatch(go(m.id)); vibrateLight() }}
                 accessibilityLabel={t(m.labelKey)}
                 accessibilityRole="button"
               >
-                <View className="w-11 h-11 rounded-[14] items-center justify-center mb-2" style={{ backgroundColor: m.bg }}>
+                  <View className="w-11 h-11 rounded-[14] items-center justify-center mb-2.5" style={{ backgroundColor: m.bg }}>
                   <Ionicons name={m.icon as any} size={22} color={C.navy} />
                 </View>
                 <Text className="text-gray-800 dark:text-gray-200 font-bold text-xs text-center leading-tight">{t(m.labelKey)}</Text>
@@ -141,7 +143,7 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
           {BOTTOM_CARDS.map((c) => (
             <PressableScale
               key={c.id}
-              className="bg-white dark:bg-gray-800 rounded-[18px] p-[14] flex-row items-center mb-2.5"
+              className="bg-white dark:bg-gray-800 rounded-[18px] p-[14] flex-row items-center mb-3"
               style={SHADOWS.card}
               onPress={() => { dispatch(go(c.id)); vibrateLight() }}
               accessibilityLabel={t(c.labelKey)}
@@ -155,14 +157,14 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
               </View>
               <View className="flex-1">
                 <Text className="text-gray-800 dark:text-gray-200 font-bold text-sm">{t(c.labelKey)}</Text>
-                <Text className="text-gray-400 text-xs mt-0.5">{t(c.subKey)}</Text>
+                <Text className="text-gray-400 text-xs mt-1">{t(c.subKey)}</Text>
               </View>
               <Ionicons name="chevron-forward" size={22} color={C.s400} />
             </PressableScale>
           ))}
 
           {/* Settings footer */}
-          <View className="border-t border-gray-200 dark:border-gray-700 mt-4 pt-4">
+          <View className="border-t border-gray-200 dark:border-gray-700 mt-5 pt-4">
             <View className="flex-row justify-center space-x-4">
               <TouchableOpacity
                 className="flex-row items-center py-2 px-4"
@@ -170,25 +172,25 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
                 accessibilityLabel={`${t('lang_switch')}: ${nextLangLabel}`}
                 accessibilityRole="button"
               >
-                <Ionicons name="language" size={18} color={C.s500} style={{ marginRight: 4 }} />
+                <Ionicons name="language" size={18} color={C.s500} style={{ marginRight: 8 }} />
                 <Text className="text-gray-500 dark:text-gray-400 text-sm">{nextLangLabel}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="flex-row items-center py-2 px-4"
+                className="flex-row items-center py-2.5 px-4"
                 onPress={toggleDark}
                 accessibilityLabel={state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}
                 accessibilityRole="button"
               >
-                <Ionicons name={state.darkMode ? 'moon' : 'sunny'} size={18} color={C.s500} style={{ marginRight: 4 }} />
+                <Ionicons name={state.darkMode ? 'moon' : 'sunny'} size={18} color={C.s500} style={{ marginRight: 8 }} />
                 <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="flex-row items-center py-2 px-4"
+                className="flex-row items-center py-2.5 px-4"
                 onPress={toggleContrast}
                 accessibilityLabel={state.highContrast ? 'Desactivar alto contraste' : 'Activar alto contraste'}
                 accessibilityRole="button"
               >
-                <Ionicons name={state.highContrast ? 'eye-off' : 'eye'} size={18} color={C.s500} style={{ marginRight: 4 }} />
+                <Ionicons name={state.highContrast ? 'eye-off' : 'eye'} size={18} color={C.s500} style={{ marginRight: 8 }} />
                 <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.highContrast ? 'Alto contraste ON' : t('home_alto_contraste')}</Text>
               </TouchableOpacity>
             </View>
