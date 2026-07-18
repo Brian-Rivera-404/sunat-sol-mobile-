@@ -1,11 +1,13 @@
 import React, { useMemo } from 'react'
 import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, formatearFecha, markInboxRead } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
-import { C } from '../styles/theme'
+import { FadeInView } from '../components/AnimatedHelpers'
+import { C, SHADOWS } from '../styles/theme'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
 
@@ -40,7 +42,7 @@ export default function InboxScreen({ navigation }: { navigation: ScreenNav }) {
     <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2039'}</Text>
+          <Ionicons name="chevron-back" size={28} color="#FFF" />
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('inbox_title')}</Text>
         {unreadCount > 0 && (
@@ -59,15 +61,15 @@ export default function InboxScreen({ navigation }: { navigation: ScreenNav }) {
 
         {sorted.length === 0 ? (
           <View className="items-center justify-center py-16">
-            <Text className="text-5xl mb-4">{'\uD83D\uDCE5'}</Text>
+            <Ionicons name="mail-open-outline" size={56} color={C.s300} style={{ marginBottom: 16 }} />
             <Text className="text-gray-400 dark:text-gray-400">{t('inbox_empty')}</Text>
           </View>
         ) : (
-          sorted.map((msg) => (
+          sorted.map((msg, idx) => (
+              <FadeInView key={msg.id} delay={idx * 50}>
               <TouchableOpacity
-                key={msg.id}
-                className={`bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm`}
-                style={{ borderLeftWidth: 4, borderLeftColor: getBorderColor(msg.modulo), opacity: msg.leido ? 0.8 : 1 }}
+                className={`bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5`}
+                style={{ ...SHADOWS.card, borderLeftWidth: 4, borderLeftColor: getBorderColor(msg.modulo), opacity: msg.leido ? 0.8 : 1 }}
               onPress={() => {
                 if (!msg.leido) dispatch(markInboxRead(msg.id))
                 dispatch(go('AssistantChat'))
@@ -92,10 +94,14 @@ export default function InboxScreen({ navigation }: { navigation: ScreenNav }) {
               </View>
               {!msg.leido && (
                 <View className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                  <Text className="text-xs text-[#0A2240] dark:text-blue-400 font-semibold">{t('inbox_ask_assistant')} {'\u203A'}</Text>
+                  <View className="flex-row items-center">
+                    <Text className="text-xs text-[#0A2240] dark:text-blue-400 font-semibold">{t('inbox_ask_assistant')}</Text>
+                    <Ionicons name="chevron-forward" size={14} color="#0A2240" style={{ marginLeft: 2 }} />
+                  </View>
                 </View>
               )}
             </TouchableOpacity>
+              </FadeInView>
           ))
         )}
         <View className="h-10" />

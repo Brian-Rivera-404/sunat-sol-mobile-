@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, formatearFecha, addTramite } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess, vibrateError } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
-import { C } from '../styles/theme'
+import { FadeInView } from '../components/AnimatedHelpers'
+import { C, SHADOWS } from '../styles/theme'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
 
@@ -49,7 +51,7 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
     <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2039'}</Text>
+          <Ionicons name="chevron-back" size={28} color="#FFF" />
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold flex-1" accessibilityRole="header">{t('tramites_title')}</Text>
         <TouchableOpacity
@@ -58,21 +60,22 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
           accessibilityLabel={t('tramites_new')}
           accessibilityRole="button"
         >
-          <Text className="text-white font-bold text-xs">{'\u2795'}</Text>
+          <Ionicons name="add" size={20} color="#FFF" />
         </TouchableOpacity>
       </HeaderBar>
 
       <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
         {tramites.length === 0 ? (
           <View className="items-center justify-center py-20">
-            <Text className="text-5xl mb-4">{'\uD83D\uDCCB'}</Text>
+            <Ionicons name="clipboard-outline" size={56} color={C.s300} style={{ marginBottom: 16 }} />
             <Text className="text-gray-500 dark:text-gray-400 text-center">{t('tramites_empty')}</Text>
           </View>
         ) : (
-          tramites.map((tr) => {
+          tramites.map((tr, idx) => {
             const s = TRAMITE_STATUS[tr.estado] ?? { color: C.s500, bg: C.s100, labelKey: tr.estado }
             return (
-              <View key={tr.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+              <FadeInView key={tr.id} delay={idx * 50}>
+              <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5" style={SHADOWS.card}>
                 <View className="flex-row justify-between items-start mb-2">
                   <View className="flex-1 mr-2">
                     <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{tr.tipo}</Text>
@@ -90,11 +93,13 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
                       onPress={() => { vibrateLight() }}
                       accessibilityLabel={`${t('tramites_observacion')}: ${tr.observacion}`}
                     >
-                      <Text className="text-amber-700 dark:text-amber-300 text-xs font-semibold">{'\uD83D\uDCDD'} {t('tramites_observacion')}</Text>
+                      <Ionicons name="document-text-outline" size={14} color="#D97706" style={{ marginRight: 2 }} />
+                      <Text className="text-amber-700 dark:text-amber-300 text-xs font-semibold">{t('tramites_observacion')}</Text>
                     </TouchableOpacity>
                   )}
                 </View>
               </View>
+              </FadeInView>
             )
           })
         )}

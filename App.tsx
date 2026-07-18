@@ -17,15 +17,11 @@ if (typeof Appearance.setColorScheme !== 'function') {
 
 import RegisterScreen from './src/screens/RegisterScreen'
 import HomeScreen from './src/screens/HomeScreen'
-import NotificacionesScreen from './src/screens/NotificacionesScreen'
 import NuevoRecibo1Screen from './src/screens/NuevoRecibo1Screen'
-import NuevoRecibo2Screen from './src/screens/NuevoRecibo2Screen'
 import ResumenReciboScreen from './src/screens/ResumenReciboScreen'
 import ReciboEmitidoScreen from './src/screens/ReciboEmitidoScreen'
 import MisRecibosScreen from './src/screens/MisRecibosScreen'
-import DeclararScreen from './src/screens/DeclararScreen'
 import MyRucScreen from './src/screens/MyRucScreen'
-import BeneficiosScreen from './src/screens/BeneficiosScreen'
 import ReportesScreen from './src/screens/ReportesScreen'
 import DeclaracionExitosaScreen from './src/screens/DeclaracionExitosaScreen'
 import DeclarationsScreen from './src/screens/DeclarationsScreen'
@@ -41,7 +37,7 @@ import AssistantHistoryScreen from './src/screens/AssistantHistoryScreen'
 import AssistantSettingsScreen from './src/screens/AssistantSettingsScreen'
 import TaxDebtScreen from './src/screens/TaxDebtScreen'
 import TramitesScreen from './src/screens/TramitesScreen'
-import OrientacionScreen from './src/screens/OrientacionScreen'
+import DevolucionScreen from './src/screens/DevolucionScreen'
 import ModalRecibo from './src/components/ModalRecibo'
 import Toast from './src/components/Toast'
 import BottomNav from './src/components/BottomNav'
@@ -73,15 +69,11 @@ function AppNavigator() {
     const names: Record<string, string> = {
       Register: 'Crear cuenta',
       Home: 'Inicio',
-      Notificaciones: 'Notificaciones',
-      NuevoRecibo1: 'Nuevo recibo, paso 1',
-      NuevoRecibo2: 'Nuevo recibo, paso 2',
+      NuevoRecibo1: 'Nuevo recibo',
       ResumenRecibo: 'Resumen de recibo',
       ReciboEmitido: 'Recibo emitido',
       MisRecibos: 'Mis recibos',
-      Declarar: 'Declarar impuestos',
       MyRuc: 'Mi RUC',
-      Beneficios: 'Beneficios tributarios',
       Reportes: 'Reportes',
       DeclaracionExitosa: 'Declaración exitosa',
       Declarations: 'Declaraciones y pagos',
@@ -97,7 +89,7 @@ function AppNavigator() {
       AssistantSettings: 'Ajustes del asistente',
       TaxDebt: 'Deuda tributaria',
       Tramites: 'Trámites y solicitudes',
-      Orientacion: 'Orientación tributaria',
+      Devolucion: 'Devolución de impuestos',
     }
     AccessibilityInfo.announceForAccessibility(names[routeName] || routeName)
   }, [])
@@ -124,15 +116,11 @@ function AppNavigator() {
         <Stack.Navigator screenOptions={screenOptions} initialRouteName="Home">
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Notificaciones" component={NotificacionesScreen} />
           <Stack.Screen name="NuevoRecibo1" component={NuevoRecibo1Screen} />
-          <Stack.Screen name="NuevoRecibo2" component={NuevoRecibo2Screen} />
           <Stack.Screen name="ResumenRecibo" component={ResumenReciboScreen} />
           <Stack.Screen name="ReciboEmitido" component={ReciboEmitidoScreen} />
           <Stack.Screen name="MisRecibos" component={MisRecibosScreen} />
-          <Stack.Screen name="Declarar" component={DeclararScreen} />
           <Stack.Screen name="MyRuc" component={MyRucScreen} />
-          <Stack.Screen name="Beneficios" component={BeneficiosScreen} />
           <Stack.Screen name="Reportes" component={ReportesScreen} />
           <Stack.Screen name="DeclaracionExitosa" component={DeclaracionExitosaScreen} />
           <Stack.Screen name="Declarations" component={DeclarationsScreen} />
@@ -148,7 +136,7 @@ function AppNavigator() {
           <Stack.Screen name="AssistantSettings" component={AssistantSettingsScreen} />
           <Stack.Screen name="TaxDebt" component={TaxDebtScreen} />
           <Stack.Screen name="Tramites" component={TramitesScreen} />
-          <Stack.Screen name="Orientacion" component={OrientacionScreen} />
+          <Stack.Screen name="Devolucion" component={DevolucionScreen} />
         </Stack.Navigator>
       </NavigationContainer>
 

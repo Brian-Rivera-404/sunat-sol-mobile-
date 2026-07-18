@@ -7,17 +7,31 @@ import { useStore, go, RUC_DB, setReciboData } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateError } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
 
 type Props = { navigation: NativeStackNavigationProp<RootStackParamList, 'NuevoRecibo1'> }
+
+const FORMA_PAGO = [
+  { key: 'transferencia', label: 'Transferencia', icon: '\uD83C\uDFE6' },
+  { key: 'efectivo', label: 'Efectivo', icon: '\uD83D\uDCB5' },
+  { key: 'cheque', label: 'Cheque', icon: '\uD83D\uDCC4' },
+  { key: 'deposito', label: 'Dep\u00F3sito', icon: '\uD83C\uDFE5' },
+]
 
 export default function NuevoRecibo1Screen({ navigation }: Props) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
   const [ruc, setRuc] = useState('')
   const [monto, setMonto] = useState('')
+  const [formaPago, setFormaPago] = useState('transferencia')
+  const [retencion, setRetencion] = useState(true)
+  const [showHelpTooltip, setShowHelpTooltip] = useState(false)
 
   const cliente = ruc.length === 11 ? RUC_DB[ruc] || null : null
   const rucValido = ruc.length === 11 && cliente !== null
+  const montoNum = parseFloat(monto) || 0
+  const retencionMonto = retencion ? montoNum * 0.08 : 0
+  const neto = montoNum - retencionMonto
 
   function handleContinuar() {
     if (ruc.length !== 11 || !cliente) {
@@ -25,15 +39,14 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
       vibrateError()
       return
     }
-    const montoNum = parseFloat(monto)
     if (isNaN(montoNum) || montoNum <= 0) {
       alert(t('nuevo_recibo_invalid_monto'))
       vibrateError()
       return
     }
-    dispatch(setReciboData({ ruc, cliente, monto: montoNum }))
+    dispatch(setReciboData({ ruc, cliente, monto: montoNum, formaPago, retencion }))
     vibrateLight()
-    dispatch(go('NuevoRecibo2'))
+    dispatch(go('ResumenRecibo'))
   }
 
   return (
@@ -47,12 +60,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
 
       <View className="px-4 pt-4">
         <View className="flex-row mb-2">
-          <View className="flex-1 h-1 bg-blue-500 rounded-full mr-1" />
-          <View className="flex-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full ml-1" />
-        </View>
-        <View className="flex-row justify-between">
-          <Text className="text-xs text-blue-600 font-medium">Datos del cliente</Text>
-          <Text className="text-xs text-gray-400">Confirmación</Text>
+          <View className="flex-1 h-1 bg-blue-500 rounded-full" />
         </View>
       </View>
 
@@ -60,7 +68,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
         <Text className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1" accessibilityRole="header">{t('nuevo_recibo_title')}</Text>
         <Text className="text-gray-500 dark:text-gray-400 mb-6">{t('nuevo_recibo_subtitle')}</Text>
 
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 shadow-sm mb-4">
           <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{t('nuevo_recibo_ruc_label')}</Text>
           <TextInput
             className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base mb-1 text-gray-900 dark:text-gray-100"
@@ -96,7 +104,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
           <View className="h-px bg-gray-200 dark:bg-gray-600 my-4" />
 
           <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{t('nuevo_recibo_monto_label')}</Text>
-          <View className="flex-row items-center border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 bg-white dark:bg-gray-800">
+          <View className="flex-row items-center border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 bg-white dark:bg-gray-800 mb-4">
             <Text className="text-gray-500 dark:text-gray-400 font-bold mr-2">S/</Text>
             <TextInput
               className="flex-1 text-base text-gray-900 dark:text-gray-100"
@@ -108,9 +116,106 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
               accessibilityHint={t('nuevo_recibo_monto_hint')}
             />
           </View>
+
+          <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('nuevo_recibo2_forma_pago')}</Text>
+          <View className="flex-row flex-wrap justify-between mb-2">
+            {FORMA_PAGO.map((fp) => {
+              const selected = formaPago === fp.key
+              return (
+                <TouchableOpacity
+                  key={fp.key}
+                  onPress={() => setFormaPago(fp.key)}
+                  className={`w-[48%] rounded-xl px-4 py-5 mb-3 items-center border-2 ${
+                    selected ? 'border-[#002f5d] bg-blue-50 dark:bg-blue-900' : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800'
+                  }`}
+                  activeOpacity={0.7}
+                  accessibilityLabel={`${fp.label}, ${selected ? t('nuevo_recibo2_selected') : t('nuevo_recibo2_not_selected')}`}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  accessibilityHint={t('nuevo_recibo2_select_hint') + ' ' + fp.label.toLowerCase()}
+                >
+                  <Text className="text-2xl mb-1" accessibilityElementsHidden={true}>{fp.icon}</Text>
+                  <Text className={`font-semibold ${selected ? 'text-[#002f5d] dark:text-blue-300' : 'text-gray-700 dark:text-gray-300'}`}>
+                    {fp.label}
+                  </Text>
+                  {selected && <Text className="text-[#002f5d] dark:text-blue-300 text-lg mt-1" accessibilityElementsHidden={true}>{'\u25CF'}</Text>}
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+
+          <View className="mb-2">
+            <View className="flex-row items-center justify-between">
+              <View className="flex-row items-center flex-1">
+                <Text className="text-base font-semibold text-gray-700 dark:text-gray-300 mr-2">{t('nuevo_recibo2_aplicar_retencion')}</Text>
+                <TouchableOpacity
+                  onPress={() => setShowHelpTooltip(!showHelpTooltip)}
+                  className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900 items-center justify-center"
+                  accessibilityLabel={t('general_help')}
+                  accessibilityRole="button"
+                  accessibilityHint={t('general_help_hint')}
+                >
+                  <Text className="text-blue-600 dark:text-blue-400 text-sm font-bold">?</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                onPress={() => setRetencion(!retencion)}
+                className={`w-14 h-7 rounded-full px-0.5 justify-center ${
+                  retencion ? 'bg-[#002f5d] items-end' : 'bg-gray-300 dark:bg-gray-600 items-start'
+                }`}
+                activeOpacity={0.8}
+                accessibilityLabel={`${t('nuevo_recibo2_aplicar_retencion')}, ${retencion ? t('nuevo_recibo2_activado') : t('nuevo_recibo2_desactivado')}`}
+                accessibilityRole="switch"
+                accessibilityState={{ checked: retencion }}
+                accessibilityHint={t('nuevo_recibo2_toggle_hint')}
+              >
+                <View className="w-6 h-6 rounded-full bg-white shadow-sm" />
+              </TouchableOpacity>
+            </View>
+            <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {retencion ? t('nuevo_recibo2_retencion_on') : t('nuevo_recibo2_retencion_off')}
+            </Text>
+            {showHelpTooltip && (
+              <View className="mt-3 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-xl px-4 py-3" accessibilityRole="alert" accessibilityLiveRegion="polite">
+                <Text className="text-blue-700 dark:text-blue-300 text-sm leading-5 mb-2">
+                  {t('retencion_help_text')}
+                </Text>
+                <TouchableOpacity
+                  className="bg-[#002f5d] rounded-lg py-2 px-4 self-start"
+                  onPress={() => {
+                    setShowHelpTooltip(false)
+                    dispatch(go('AssistantChat'))
+                  }}
+                  accessibilityLabel={t('retencion_ask_more')}
+                  accessibilityRole="button"
+                >
+                  <Text className="text-white font-semibold text-xs">{t('retencion_ask_more')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
         </View>
 
-        <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg px-4 py-3 mt-6">
+        {montoNum > 0 && (
+          <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 shadow-sm mb-4" accessibilityLabel={`${t('nuevo_recibo2_resumen')}: ${t('nuevo_recibo2_monto_bruto')} S/ ${montoNum}, ${t('nuevo_recibo2_retencion')} ${retencion ? fmt(retencionMonto) : t('resumen_recibo_zero')}, ${t('nuevo_recibo2_neto')} S/ ${neto}`}>
+            <Text className="text-base font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('nuevo_recibo2_resumen')}</Text>
+            <View className="flex-row justify-between mb-2">
+              <Text className="text-gray-500 dark:text-gray-400">{t('nuevo_recibo2_monto_bruto')}</Text>
+              <Text className="text-gray-800 dark:text-gray-200 font-medium">{fmt(montoNum)}</Text>
+            </View>
+            <View className="flex-row justify-between mb-2">
+              <Text className="text-gray-500 dark:text-gray-400">{t('nuevo_recibo2_retencion')} (8%)</Text>
+              <Text className="text-red-500 dark:text-red-400 font-medium">-{fmt(retencionMonto)}</Text>
+            </View>
+            <View className="h-px bg-gray-200 dark:bg-gray-600 my-2" />
+            <View className="flex-row justify-between">
+              <Text className="text-gray-800 dark:text-gray-100 font-bold">{t('nuevo_recibo2_neto')}</Text>
+              <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(neto)}</Text>
+            </View>
+          </View>
+        )}
+
+        <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg px-4 py-3">
           <Text className="text-blue-700 dark:text-blue-300 text-sm">
             <Text accessibilityElementsHidden={true}>{'\uD83D\uDCA1'}</Text>
             {' '}{t('nuevo_recibo_monto_info')}
@@ -130,4 +235,8 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
       </ScrollView>
     </KeyboardAvoidingView>
   )
+}
+
+function fmt(n: number): string {
+  return 'S/ ' + Number(n).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }

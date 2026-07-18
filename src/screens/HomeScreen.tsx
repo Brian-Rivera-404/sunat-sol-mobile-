@@ -1,33 +1,36 @@
 import React from 'react'
 import { View, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { Ionicons } from '@expo/vector-icons'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, setDarkMode, setHighContrast } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
+import { PressableScale } from '../components/AnimatedHelpers'
+import Button from '../components/Button'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
 
-import { C } from '../styles/theme'
+import { C, SHADOWS, TYPOGRAPHY, SPACING, RADIUS } from '../styles/theme'
 
 type HomeNav = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
 const MODULES = [
-  { id: 'MisRecibos' as const, labelKey: 'home_mis_recibos', icon: '\uD83D\uDCC4', bg: '#EEF2FF' },
-  { id: 'Declarations' as const, labelKey: 'home_declarar', icon: '\uD83D\uDCCA', bg: '#EEF2FF' },
-  { id: 'MyRuc' as const, labelKey: 'home_mi_ruc', icon: '\uD83C\uF3DB\uFE0F', bg: '#EEF2FF' },
-  { id: 'DeductibleExpenses' as const, labelKey: 'expenses_title', icon: '\uD83E\uDDFE', bg: '#FFF7ED' },
-  { id: 'AnnualTax' as const, labelKey: 'annual_tax_title', icon: '\uD83D\uDCCA', bg: '#F0FDF4' },
-  { id: 'Beneficios' as const, labelKey: 'home_beneficios', icon: '\uD83C\uDF81', bg: '#F5F3FF' },
-  { id: 'TaxDebt' as const, labelKey: 'taxdebt_title', icon: '\uD83D\uDCB0', bg: '#FEF2F2' },
-  { id: 'Tramites' as const, labelKey: 'tramites_title', icon: '\uD83D\uDCDD', bg: '#F0F9FF' },
-  { id: 'Orientacion' as const, labelKey: 'orientacion_title', icon: '\uD83D\uDCD6', bg: '#FFFBEB' },
+  { id: 'MisRecibos' as const, labelKey: 'home_mis_recibos', icon: 'document-text', bg: '#E8EDF5' },
+  { id: 'Declarations' as const, labelKey: 'home_declarar', icon: 'bar-chart', bg: '#E8EDF5' },
+  { id: 'MyRuc' as const, labelKey: 'home_mi_ruc', icon: 'business', bg: '#E8EDF5' },
+  { id: 'DeductibleExpenses' as const, labelKey: 'expenses_title', icon: 'receipt', bg: '#F5F0E8' },
+  { id: 'AnnualTax' as const, labelKey: 'annual_tax_title', icon: 'calendar', bg: '#E8F5ED' },
+  { id: 'Devolucion' as const, labelKey: 'menu_devolucion', icon: 'cash', bg: '#E8F5ED' },
+  { id: 'TaxDebt' as const, labelKey: 'taxdebt_title', icon: 'warning', bg: '#F5E8E8' },
+  { id: 'Tramites' as const, labelKey: 'tramites_title', icon: 'clipboard', bg: '#E8EFF5' },
+  { id: 'TaxSimulator' as const, labelKey: 'simulator_title', icon: 'calculator', bg: '#F5F0E0' },
 ]
 
 const BOTTOM_CARDS = [
-  { id: 'Reportes' as const, labelKey: 'home_reportes', icon: '\uD83D\uDCC8', subKey: 'home_reportes_sub', accent: '#1B4FBF' },
-  { id: 'Inbox' as const, labelKey: 'inbox_title', icon: '\uD83D\uDCEB', subKey: 'inbox_subtitle', accent: '#E85E1E' },
-  { id: 'TaxCalendar' as const, labelKey: 'calendar_title', icon: '\uD83D\uDCC5', subKey: 'calendar_subtitle', accent: '#D97706' },
+  { id: 'Reportes' as const, labelKey: 'home_reportes', icon: 'trending-up', subKey: 'home_reportes_sub', accent: '#1B4FBF' },
+  { id: 'Inbox' as const, labelKey: 'inbox_title', icon: 'mail', subKey: 'inbox_subtitle', accent: '#E85E1E' },
+  { id: 'TaxCalendar' as const, labelKey: 'calendar_title', icon: 'calendar', subKey: 'calendar_subtitle', accent: '#D97706' },
 ]
 
 export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
@@ -65,7 +68,7 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
                 accessibilityLabel={t('inbox_title')}
                 accessibilityRole="button"
               >
-                <Text className="text-lg">{'\uD83D\uDD14'}</Text>
+                <Ionicons name="notifications-outline" size={22} color="#FFF" />
                 {unreadCount > 0 && (
                   <View className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full border-2" style={{ backgroundColor: '#E85E1E', borderColor: '#0A2240' }} />
                 )}
@@ -79,19 +82,19 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
           {/* Income card */}
           <View className="bg-white/9 rounded-[20px] p-[18px] border border-white/12">
             <Text className="text-white/55 text-xs mb-1">{t('home_ingresos_label')}</Text>
-            <Text className="text-3xl font-extrabold tracking-tight" style={{ color: C.gold }}>{fmt(totalIngresos)}</Text>
+            <Text className="text-3xl font-extrabold tracking-tight" style={{ color: '#C8A84E' }}>{fmt(totalIngresos)}</Text>
             <Text className="text-white/40 text-xs mt-0.5">
               {reciboCount} recibo{reciboCount !== 1 ? 's' : ''} emitido{reciboCount !== 1 ? 's' : ''}
             </Text>
             <View className="h-[1] bg-white/10 my-3.5" />
-            <View className="flex-row gap-5">
+            <View className="flex-row justify-between">
               <View>
                 <Text className="text-white/45 text-xs">{t('home_retenido')}</Text>
                 <Text className="text-white/90 text-sm font-bold">{fmt(totalRetenido)}</Text>
               </View>
               <View>
                 <Text className="text-white/45 text-xs">{t('home_neto')}</Text>
-                <Text className="text-sm font-bold" style={{ color: C.gold }}>{fmt(totalNeto)}</Text>
+                <Text className="text-sm font-bold" style={{ color: '#C8A84E' }}>{fmt(totalNeto)}</Text>
               </View>
               <View>
                 <Text className="text-white/45 text-xs">{t('home_declarado')}</Text>
@@ -102,16 +105,13 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
         </LinearGradient>
 
         {/* CTA */}
-        <View className="px-5 -mt-[22] mb-2">
-          <TouchableOpacity
-            onPress={() => { dispatch(go('NuevoRecibo1')); vibrateLight() }}
-            accessibilityLabel={t('home_emitir')}
-            accessibilityRole="button"
-          >
-            <LinearGradient colors={['#1B4FBF', '#2563EB']} className="rounded-[18px] py-[15] items-center flex-row justify-center shadow-lg">
-              <Text className="text-white font-extrabold text-base">{'\u2795'} {t('home_emitir')}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+        <View className="px-5 mt-4 mb-4">
+          <Button
+            title={t('home_emitir')}
+            onPress={() => dispatch(go('NuevoRecibo1'))}
+            icon={<Ionicons name="add-circle" size={22} color="#FFF" />}
+            variant="secondary"
+          />
         </View>
 
         {/* Module grid */}
@@ -119,18 +119,19 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
           <Text className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">{t('home_servicios')}</Text>
           <View className="flex-row flex-wrap gap-2.5">
             {MODULES.map((m) => (
-              <TouchableOpacity
+              <PressableScale
                 key={m.id}
-                className="bg-white dark:bg-gray-800 rounded-[18px] pt-[14] pb-[10] px-2 items-center w-[30%] flex-grow shadow-sm"
+                className="bg-white dark:bg-gray-800 rounded-[18px] pt-[14] pb-[10] px-2 items-center w-[30%] flex-grow"
+                style={SHADOWS.card}
                 onPress={() => { dispatch(go(m.id)); vibrateLight() }}
                 accessibilityLabel={t(m.labelKey)}
                 accessibilityRole="button"
               >
                 <View className="w-11 h-11 rounded-[14] items-center justify-center mb-2" style={{ backgroundColor: m.bg }}>
-                  <Text className="text-[22px]">{m.icon}</Text>
+                  <Ionicons name={m.icon as any} size={22} color={C.navy} />
                 </View>
                 <Text className="text-gray-800 dark:text-gray-200 font-bold text-xs text-center leading-tight">{t(m.labelKey)}</Text>
-              </TouchableOpacity>
+              </PressableScale>
             ))}
           </View>
         </View>
@@ -138,15 +139,16 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
         {/* Bottom cards */}
         <View className="px-5 pt-4 pb-8">
           {BOTTOM_CARDS.map((c) => (
-            <TouchableOpacity
+            <PressableScale
               key={c.id}
-              className="bg-white dark:bg-gray-800 rounded-[18px] p-[14] flex-row items-center mb-2.5 shadow-sm"
+              className="bg-white dark:bg-gray-800 rounded-[18px] p-[14] flex-row items-center mb-2.5"
+              style={SHADOWS.card}
               onPress={() => { dispatch(go(c.id)); vibrateLight() }}
               accessibilityLabel={t(c.labelKey)}
               accessibilityRole="button"
             >
               <View className="w-[46] h-[46] rounded-[14] items-center justify-center mr-3.5 relative" style={{ backgroundColor: `${c.accent}18` }}>
-                <Text className="text-[22px]">{c.icon}</Text>
+                <Ionicons name={c.icon as any} size={24} color={c.accent} />
                 {c.id === 'Inbox' && unreadCount > 0 && (
                   <View className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full border-2 border-white" style={{ backgroundColor: '#E85E1E' }} />
                 )}
@@ -155,8 +157,8 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
                 <Text className="text-gray-800 dark:text-gray-200 font-bold text-sm">{t(c.labelKey)}</Text>
                 <Text className="text-gray-400 text-xs mt-0.5">{t(c.subKey)}</Text>
               </View>
-              <Text className="text-gray-300 text-[22px]">{'\u203A'}</Text>
-            </TouchableOpacity>
+              <Ionicons name="chevron-forward" size={22} color={C.s400} />
+            </PressableScale>
           ))}
 
           {/* Settings footer */}
@@ -168,7 +170,7 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
                 accessibilityLabel={`${t('lang_switch')}: ${nextLangLabel}`}
                 accessibilityRole="button"
               >
-                <Text className="text-gray-500 text-sm mr-1">{'\uD83C\uDF10'}</Text>
+                <Ionicons name="language" size={18} color={C.s500} style={{ marginRight: 4 }} />
                 <Text className="text-gray-500 dark:text-gray-400 text-sm">{nextLangLabel}</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -177,7 +179,7 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
                 accessibilityLabel={state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}
                 accessibilityRole="button"
               >
-                <Text className="text-gray-500 text-sm mr-1">{state.darkMode ? '\uD83C\uDF19' : '\u2600\uFE0F'}</Text>
+                <Ionicons name={state.darkMode ? 'moon' : 'sunny'} size={18} color={C.s500} style={{ marginRight: 4 }} />
                 <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -186,7 +188,7 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
                 accessibilityLabel={state.highContrast ? 'Desactivar alto contraste' : 'Activar alto contraste'}
                 accessibilityRole="button"
               >
-                <Text className="text-gray-500 text-sm mr-1">{state.highContrast ? '\uD83C\uDF0D' : '\uD83D\uDD0D'}</Text>
+                <Ionicons name={state.highContrast ? 'eye-off' : 'eye'} size={18} color={C.s500} style={{ marginRight: 4 }} />
                 <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.highContrast ? 'Alto contraste ON' : t('home_alto_contraste')}</Text>
               </TouchableOpacity>
             </View>

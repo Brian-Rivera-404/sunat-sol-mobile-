@@ -1,5 +1,5 @@
 ﻿import React, { useMemo } from 'react'
-import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Alert, Linking, Platform } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, formatearFecha, MESES } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -187,6 +187,36 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
             <Text className="text-white font-bold text-sm">{'\uD83D\uDCCA'} {t('reportes_export_excel')}</Text>
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center mb-10 shadow-sm"
+          onPress={() => {
+            const body = encodeURIComponent(
+              `Reporte tributario SUNAT SOL\n\n` +
+              `${t('declarar_ingresos')}: ${fmt(totalIngresos)}\n` +
+              `${t('reportes_recibos_emitidos')}: ${emitidos.length}\n` +
+              `${t('reportes_promedio')}: ${fmt(promedio)}\n` +
+              `${t('simulator_withholdings')}: ${fmt(totalRetenciones)}\n` +
+              `${t('simulator_expenses')}: ${fmt(totalGastos)}\n\n` +
+              `${t('reportes_generated')}: ${new Date().toLocaleDateString()}`
+            )
+            const url = Platform.OS === 'android'
+              ? `https://wa.me/51999000000?text=${body}`
+              : `mailto:?subject=${encodeURIComponent(t('reportes_title'))}&body=${body}`
+            Linking.openURL(url).catch(() => Alert.alert(t('assistant_contact_error')))
+          }}
+          accessibilityLabel={t('reportes_send_accountant')}
+          accessibilityRole="button"
+        >
+          <View className="w-[46] h-[46] rounded-[14] items-center justify-center mr-3.5" style={{ backgroundColor: '#1B4FBF18' }}>
+            <Text className="text-[22px]">{'\uD83D\uDC64'}</Text>
+          </View>
+          <View className="flex-1">
+            <Text className="text-gray-800 dark:text-gray-200 font-bold text-sm">{t('reportes_send_accountant')}</Text>
+            <Text className="text-gray-400 text-xs mt-0.5">{t('reportes_send_accountant_desc')}</Text>
+          </View>
+          <Text className="text-gray-300 text-[22px]">{'\u203A'}</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   )

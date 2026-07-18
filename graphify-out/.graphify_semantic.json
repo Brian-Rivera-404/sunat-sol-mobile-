@@ -1,0 +1,357 @@
+{
+  "nodes": [
+    {
+      "id": "readme_sunat_sol_movil",
+      "label": "SUNAT SOL Móvil",
+      "file_type": "document",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_react_native",
+      "label": "React Native 0.81.5",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_expo_sdk_54",
+      "label": "Expo SDK 54",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_nativewind",
+      "label": "NativeWind v4 (Tailwind CSS)",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_react_navigation_v7",
+      "label": "React Navigation v7 (Native Stack)",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_typescript_5_9",
+      "label": "TypeScript 5.9",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_wcag_2_1_aa",
+      "label": "WCAG 2.1 Level AA",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_i18n",
+      "label": "Internacionalización ES/EN",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_dark_mode",
+      "label": "Modo oscuro",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_biometric_auth",
+      "label": "Autenticación biométrica",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_haptic_feedback",
+      "label": "Feedback háptico (expo-haptics)",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_rhe",
+      "label": "Recibos por Honorarios Electrónicos (RHE)",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_team",
+      "label": "Equipo de desarrollo",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "mock_server_readme_mock_server",
+      "label": "Mock Server — Asistente Tributario",
+      "file_type": "document",
+      "source_file": "E:\\sunat-sol-mobile-\\mock-server\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "mock_server_readme_express",
+      "label": "Express server",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\mock-server\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "mock_server_readme_assistant_endpoint",
+      "label": "POST /api/assistant endpoint",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\mock-server\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "mock_server_readme_anthropic_api",
+      "label": "Anthropic Claude API",
+      "file_type": "concept",
+      "source_file": "E:\\sunat-sol-mobile-\\mock-server\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_index_html_expo_web",
+      "label": "Expo web build HTML",
+      "file_type": "document",
+      "source_file": "E:\\sunat-sol-mobile-\\docs\\index.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_react_native",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_expo_sdk_54",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_nativewind",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_react_navigation_v7",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_typescript_5_9",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_wcag_2_1_aa",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_i18n",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_dark_mode",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_biometric_auth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_haptic_feedback",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_rhe",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sunat_sol_movil",
+      "target": "readme_team",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mock_server_readme_mock_server",
+      "target": "mock_server_readme_express",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\mock-server\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mock_server_readme_mock_server",
+      "target": "mock_server_readme_assistant_endpoint",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\mock-server\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "mock_server_readme_mock_server",
+      "target": "mock_server_readme_anthropic_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "E:\\sunat-sol-mobile-\\mock-server\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

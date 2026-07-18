@@ -79,7 +79,7 @@ export default function ResumenReciboScreen({ navigation }: Props) {
   return (
     <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('NuevoRecibo2'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('resumen_recibo_volver_hint')}>
+        <TouchableOpacity onPress={() => dispatch(go('NuevoRecibo1'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('resumen_recibo_volver_hint')}>
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold">{t('resumen_recibo_title')}</Text>
@@ -166,7 +166,7 @@ export default function ResumenReciboScreen({ navigation }: Props) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => dispatch(go('NuevoRecibo2'))}
+          onPress={() => dispatch(go('NuevoRecibo1'))}
           className="items-center py-3 mb-10"
           accessibilityLabel={t('resumen_recibo_corregir')}
           accessibilityRole="button"

@@ -1,10 +1,12 @@
+// SUNAT institutional palette
 export const C = {
   navy: '#0A2240',
   navyMid: '#0D3060',
   blue: '#1B4FBF',
   blueLt: '#2563EB',
   orange: '#E85E1E',
-  gold: '#F4C430',
+  gold: '#C8A84E',
+  goldLt: '#E8DCC0',
   white: '#FFFFFF',
   bg: '#EEF2FF',
   s50: '#F8FAFC',
@@ -23,3 +25,6 @@ export const C = {
   amberBg: '#FEF3C7',
   purpleAI: '#6366F1',
 } as const
+
+export { TYPOGRAPHY, SPACING, RADIUS, ACCENT, STATUS_STYLES } from './tokens'
+export { SHADOWS } from './shadows'
