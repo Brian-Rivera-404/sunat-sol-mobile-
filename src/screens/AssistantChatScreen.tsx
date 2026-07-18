@@ -132,6 +132,26 @@ function TypingIndicator() {
   )
 }
 
+const detectActionIntent = (text: string): { route: keyof RootStackParamList; message: string } | null => {
+  const query = text.toLowerCase()
+  if (query.includes('emitir') || query.includes('nuevo recibo') || query.includes('hacer recibo') || query.includes('crear recibo')) {
+    return { route: 'NuevoRecibo1', message: 'Entendido. Abriendo el formulario para emitir un nuevo Recibo por Honorarios.' }
+  }
+  if (query.includes('deuda') || query.includes('pagar') || query.includes('mis deudas') || query.includes('deber')) {
+    return { route: 'TaxDebt', message: 'Entendido. Abriendo la sección de Deudas Tributarias.' }
+  }
+  if (query.includes('trámite') || query.includes('tramite') || query.includes('nuevo tramite') || query.includes('mis trámites')) {
+    return { route: 'Tramites', message: 'Entendido. Abriendo la sección de Trámites.' }
+  }
+  if (query.includes('calendario') || query.includes('vence') || query.includes('vencimiento') || query.includes('cronograma')) {
+    return { route: 'TaxCalendar', message: 'Entendido. Abriendo el Calendario Tributario.' }
+  }
+  if (query.includes('gasto') || query.includes('deducible') || query.includes('mis gastos')) {
+    return { route: 'DeductibleExpenses', message: 'Entendido. Abriendo la sección de Gastos Deducibles.' }
+  }
+  return null
+}
+
 export default function AssistantChatScreen({ navigation, route }: { navigation: ScreenNav; route?: { params?: { initialMessage?: string; modulo?: string } } }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
@@ -188,6 +208,28 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
 
     const userMsg: Message = { id: `u-${Date.now()}`, text: question, sender: 'user' }
     setMessages((prev) => [...prev, userMsg])
+
+    const actionIntent = detectActionIntent(question)
+    if (actionIntent) {
+      const assistantMsg: Message = { id: `a-${Date.now()}`, text: actionIntent.message, sender: 'assistant' }
+      setMessages((prev) => [...prev, assistantMsg])
+      if (state.assistantSettings.modality !== 'text_only') {
+        Speech.stop()
+        setIsSpeaking(true)
+        Speech.speak(actionIntent.message, {
+          rate: state.assistantSettings.ttsSpeed === 'fast' ? 0.9 : state.assistantSettings.ttsSpeed === 'slow' ? 0.4 : 0.6,
+          language: state.language,
+          onDone: () => setIsSpeaking(false),
+          onStopped: () => setIsSpeaking(false),
+          onError: () => setIsSpeaking(false),
+        })
+      }
+      setIsProcessing(false)
+      setTimeout(() => {
+        dispatch(go(actionIntent.route))
+      }, 1500)
+      return
+    }
 
     try {
       const result = await askAssistant({
