@@ -135,7 +135,13 @@ function TypingIndicator() {
 export default function AssistantChatScreen({ navigation, route }: { navigation: ScreenNav; route?: { params?: { initialMessage?: string; modulo?: string } } }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<Message[]>(() => [
+    {
+      id: `welcome-${Date.now()}`,
+      text: t('assistant_welcome') + '\n\n' + t('assistant_welcome_desc'),
+      sender: 'assistant',
+    }
+  ])
   const [inputText, setInputText] = useState(route?.params?.initialMessage || '')
   const [isListening, setIsListening] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -148,10 +154,23 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
   }, [])
 
   useEffect(() => {
+    const hasInitial = !!route?.params?.initialMessage
+    if (!hasInitial && state.assistantSettings.modality !== 'text_only') {
+      Speech.stop()
+      setIsSpeaking(true)
+      Speech.speak(t('assistant_welcome') + ' ' + t('assistant_welcome_desc'), {
+        rate: state.assistantSettings.ttsSpeed === 'fast' ? 0.9 : state.assistantSettings.ttsSpeed === 'slow' ? 0.4 : 0.6,
+        language: state.language,
+        onDone: () => setIsSpeaking(false),
+        onStopped: () => setIsSpeaking(false),
+        onError: () => setIsSpeaking(false),
+      })
+    }
+
     return () => {
       Speech.stop()
     }
-  }, [])
+  }, [route?.params?.initialMessage])
 
   useEffect(() => {
     if (route?.params?.initialMessage) {

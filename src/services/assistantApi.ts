@@ -153,7 +153,9 @@ Instrucciones de comportamiento:
       }
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
+        const errorText = await response.text()
+        console.error('[assistantApi] Gemini API error response:', errorText)
+        throw new Error(`HTTP ${response.status}: ${errorText}`)
       }
 
       const data = await response.json()
