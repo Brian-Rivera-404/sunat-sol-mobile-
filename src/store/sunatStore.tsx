@@ -43,6 +43,7 @@ export interface State {
   clients: Client[]
   inbox: InboxMessage[]
   onboardingSeen: boolean
+  tempOnboardingSeen?: boolean
   sessionTimeoutMinutes: number
   pinHash: string | null
   cci: string | null
@@ -75,6 +76,7 @@ type Action =
   | { type: 'SET_INBOX'; payload: InboxMessage[] }
   | { type: 'MARK_INBOX_READ'; payload: string }
   | { type: 'SET_ONBOARDING_SEEN'; payload: boolean }
+  | { type: 'SET_TEMP_ONBOARDING_SEEN'; payload: boolean }
   | { type: 'SET_SESSION_TIMEOUT'; payload: number }
   | { type: 'SET_PIN_HASH'; payload: string | null }
   | { type: 'SET_CCI'; payload: string | null }
@@ -174,6 +176,7 @@ const seedState: State = {
     { id: 'TR-003', tipo: 'Actualización de Datos RUC', descripcion: 'Cambio de dirección fiscal a Av. Arequipa 1234, Lince', fechaPresentacion: '2026-07-10', estado: 'subsanacion', observacion: 'Adjuntar recibo de servicios del domicilio declarado' },
   ],
   onboardingSeen: false,
+  tempOnboardingSeen: false,
   sessionTimeoutMinutes: 10,
   pinHash: null,
   cci: null,
@@ -267,6 +270,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, inbox: (state.inbox ?? []).map((m) => (m.id === action.payload ? { ...m, leido: true } : m)) }
     case 'SET_ONBOARDING_SEEN':
       return { ...state, onboardingSeen: action.payload }
+    case 'SET_TEMP_ONBOARDING_SEEN':
+      return { ...state, tempOnboardingSeen: action.payload }
     case 'SET_SESSION_TIMEOUT':
       return { ...state, sessionTimeoutMinutes: action.payload }
     case 'SET_PIN_HASH':
@@ -369,6 +374,7 @@ export const removeClient = (id: string) => ({ type: 'REMOVE_CLIENT' as const, p
 export const setInbox = (inbox: InboxMessage[]) => ({ type: 'SET_INBOX' as const, payload: inbox })
 export const markInboxRead = (id: string) => ({ type: 'MARK_INBOX_READ' as const, payload: id })
 export const setOnboardingSeen = (val: boolean) => ({ type: 'SET_ONBOARDING_SEEN' as const, payload: val })
+export const setTempOnboardingSeen = (val: boolean) => ({ type: 'SET_TEMP_ONBOARDING_SEEN' as const, payload: val })
 export const setSessionTimeout = (minutes: number) => ({ type: 'SET_SESSION_TIMEOUT' as const, payload: minutes })
 export const setPinHash = (hash: string | null) => ({ type: 'SET_PIN_HASH' as const, payload: hash })
 export const setCCI = (cci: string | null) => ({ type: 'SET_CCI' as const, payload: cci })

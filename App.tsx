@@ -60,9 +60,13 @@ function AppNavigator() {
 
   useEffect(() => {
     if (navigationRef.current && state.screen) {
-      navigationRef.current.navigate(state.screen as any)
+      let targetScreen = state.screen
+      if (targetScreen === 'AssistantChat' && !state.onboardingSeen && !state.tempOnboardingSeen) {
+        targetScreen = 'AssistantOnboarding'
+      }
+      navigationRef.current.navigate(targetScreen as any)
     }
-  }, [state.screen])
+  }, [state.screen, state.onboardingSeen, state.tempOnboardingSeen])
 
   useEffect(() => {
     Appearance.setColorScheme(state.highContrast || state.darkMode ? 'dark' : 'light')

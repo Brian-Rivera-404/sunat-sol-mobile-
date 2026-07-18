@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, setOnboardingSeen } from '../store/sunatStore'
+import { useStore, go, setOnboardingSeen, setTempOnboardingSeen } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
@@ -24,9 +24,11 @@ export default function AssistantOnboardingScreen({ navigation }: { navigation: 
   const handleEntendido = () => {
     if (noVolver) {
       dispatch(setOnboardingSeen(true))
+    } else {
+      dispatch(setTempOnboardingSeen(true))
     }
     vibrateLight()
-    navigation.goBack()
+    dispatch(go('AssistantChat'))
   }
 
   return (

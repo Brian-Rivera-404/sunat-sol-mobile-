@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { View, TouchableOpacity, TextInput, ScrollView, Alert, Linking, Platform, AccessibilityInfo } from 'react-native'
+import { View, TouchableOpacity, TextInput, ScrollView, Alert, Linking, Platform, AccessibilityInfo, Animated } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, addConversation } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -26,6 +26,66 @@ const FAQ_CHIPS = [
 
 type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'AssistantChat'>
 
+function AudioWaves() {
+  const anim1 = useRef(new Animated.Value(1)).current
+  const anim2 = useRef(new Animated.Value(1)).current
+  const anim3 = useRef(new Animated.Value(1)).current
+  const anim4 = useRef(new Animated.Value(1)).current
+
+  useEffect(() => {
+    const createAnim = (val: Animated.Value, delay: number) => {
+      return Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(val, {
+            toValue: 2.2,
+            duration: 350,
+            useNativeDriver: Platform.OS !== 'web',
+          }),
+          Animated.timing(val, {
+            toValue: 0.8,
+            duration: 350,
+            useNativeDriver: Platform.OS !== 'web',
+          }),
+          Animated.timing(val, {
+            toValue: 1.5,
+            duration: 350,
+            useNativeDriver: Platform.OS !== 'web',
+          }),
+          Animated.timing(val, {
+            toValue: 1.0,
+            duration: 350,
+            useNativeDriver: Platform.OS !== 'web',
+          }),
+        ])
+      )
+    }
+
+    const a1 = createAnim(anim1, 0)
+    const a2 = createAnim(anim2, 100)
+    const a3 = createAnim(anim3, 200)
+    const a4 = createAnim(anim4, 300)
+
+    Animated.parallel([a1, a2, a3, a4]).start()
+
+    return () => {
+      anim1.setValue(1)
+      anim2.setValue(1)
+      anim3.setValue(1)
+      anim4.setValue(1)
+    }
+  }, [anim1, anim2, anim3, anim4])
+
+  return (
+    <View className="flex-row gap-1 items-center justify-center py-2 h-[30] mr-2">
+      <Animated.View style={{ transform: [{ scaleY: anim1 }] }} className="w-1 h-3.5 bg-red-500 rounded-full" />
+      <Animated.View style={{ transform: [{ scaleY: anim2 }] }} className="w-1 h-3.5 bg-red-500 rounded-full" />
+      <Animated.View style={{ transform: [{ scaleY: anim3 }] }} className="w-1 h-3.5 bg-red-500 rounded-full" />
+      <Animated.View style={{ transform: [{ scaleY: anim4 }] }} className="w-1 h-3.5 bg-red-500 rounded-full" />
+    </View>
+  )
+}
+
 export default function AssistantChatScreen({ navigation, route }: { navigation: ScreenNav; route?: { params?: { initialMessage?: string; modulo?: string } } }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
@@ -33,7 +93,19 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
   const [inputText, setInputText] = useState(route?.params?.initialMessage || '')
   const [isListening, setIsListening] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
   const scrollRef = useRef<ScrollView>(null)
+
+  const stopSpeaking = useCallback(() => {
+    Speech.stop()
+    setIsSpeaking(false)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      Speech.stop()
+    }
+  }, [])
 
   useEffect(() => {
     if (route?.params?.initialMessage) {
@@ -85,9 +157,14 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
       )
 
       if (state.assistantSettings.modality !== 'text_only' && !isListening) {
+        Speech.stop()
+        setIsSpeaking(true)
         Speech.speak(respuesta.replace(/[⚠️*#]/g, ''), {
           rate: state.assistantSettings.ttsSpeed === 'fast' ? 0.9 : state.assistantSettings.ttsSpeed === 'slow' ? 0.4 : 0.6,
           language: state.language,
+          onDone: () => setIsSpeaking(false),
+          onStopped: () => setIsSpeaking(false),
+          onError: () => setIsSpeaking(false),
         })
       }
     } catch (error) {
@@ -186,9 +263,14 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
   }, [isListening, state.language, handleSend])
 
   const speakResponse = useCallback((text: string) => {
+    Speech.stop()
+    setIsSpeaking(true)
     Speech.speak(text.replace(/[⚠️*#]/g, ''), {
       rate: state.assistantSettings.ttsSpeed === 'fast' ? 0.9 : state.assistantSettings.ttsSpeed === 'slow' ? 0.4 : 0.6,
       language: state.language,
+      onDone: () => setIsSpeaking(false),
+      onStopped: () => setIsSpeaking(false),
+      onError: () => setIsSpeaking(false),
     })
   }, [state.assistantSettings.ttsSpeed, state.language])
 
@@ -301,6 +383,27 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
             accessibilityRole="button"
           >
             <Text className="text-green-700 dark:text-green-300 font-semibold text-sm">{'\uD83D\uDC64'} {t('assistant_talk_accountant')}</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {isListening && (
+        <View className="self-center bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-full px-5 py-2.5 flex-row items-center mb-3">
+          <AudioWaves />
+          <Text className="text-red-700 dark:text-red-300 font-bold text-xs">{t('assistant_listening')}</Text>
+        </View>
+      )}
+
+      {isSpeaking && (
+        <View className="px-4 mb-2 items-center">
+          <TouchableOpacity
+            className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-full px-4 py-2.5 flex-row items-center min-h-[48px] shadow-sm"
+            onPress={stopSpeaking}
+            accessibilityLabel="Detener voz del asistente"
+            accessibilityRole="button"
+          >
+            <Text className="text-red-700 dark:text-red-300 font-bold text-xs mr-2">🔇</Text>
+            <Text className="text-red-700 dark:text-red-300 font-bold text-xs">Detener lectura de voz</Text>
           </TouchableOpacity>
         </View>
       )}
