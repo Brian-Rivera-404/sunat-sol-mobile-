@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect, ReactNode } fr
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 import { secureSaveCCI, secureGetCCI, secureSavePinHash, secureGetPinHash } from '../services/secureStorage'
-import type { RHEReceipt, DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings, TaxDebt, Tramite, GuiaOrientacion } from '../types/shared'
+import type { RHEReceipt, DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings, TaxDebt, Tramite, DevolucionSolicitud } from '../types/shared'
 import type { RootStackParamList } from '../types/navigation'
 
 const KEY = 'sunat_sol_data'
@@ -48,10 +48,11 @@ export interface State {
   cci: string | null
   taxDebts: TaxDebt[]
   tramites: Tramite[]
+  devoluciones: DevolucionSolicitud[]
 }
 
 type Action =
-  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci' | 'taxDebts' | 'tramites'>> }
+  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci' | 'taxDebts' | 'tramites' | 'devoluciones'>> }
   | { type: 'GO'; payload: keyof RootStackParamList }
   | { type: 'SET_RECIBO_DATA'; payload: Partial<ReciboData> }
   | { type: 'ADD_RECIBO'; payload: Omit<RHEReceipt, 'id'> }
@@ -82,6 +83,9 @@ type Action =
   | { type: 'PAY_DEBT'; payload: string }
   | { type: 'ADD_TRAMITE'; payload: Tramite }
   | { type: 'UPDATE_TRAMITE'; payload: { id: string; estado: Tramite['estado']; observacion?: string } }
+  | { type: 'SOLICITAR_DEVOLUCION'; payload: DevolucionSolicitud }
+  | { type: 'MARCAR_RECIBO_PAGADO'; payload: string }
+  | { type: 'SOLICITAR_FRACCIONAMIENTO'; payload: { deudaId: string; tramite: Tramite } }
 
 const seedUser: User = {
   nombre: 'Juan Pérez García',
@@ -105,6 +109,9 @@ const seedRecibos: RHEReceipt[] = [
   { id: 'E001-0025', ruc: '20100070970', cliente: 'BANCO DE CRÉDITO DEL PERÚ S.A.', fecha: '2026-03-15', montoBruto: 500, retencion: 0, montoNeto: 500, formaPago: 'efectivo', estado: 'emitido' },
   { id: 'E001-0024', ruc: '20131694977', cliente: 'ALICORP S.A.A.', fecha: '2026-02-10', montoBruto: 800, retencion: 64, montoNeto: 736, formaPago: 'transferencia', estado: 'emitido' },
   { id: 'E001-0023', ruc: '20100047218', cliente: 'TELEFÓNICA DEL PERÚ S.A.A.', fecha: '2026-01-22', montoBruto: 350, retencion: 28, montoNeto: 322, formaPago: 'cheque', estado: 'emitido' },
+  { id: 'E001-0022', ruc: '20100070970', cliente: 'BANCO DE CRÉDITO DEL PERÚ S.A.', fecha: '2026-07-14', montoBruto: 4200, retencion: 336, montoNeto: 3864, formaPago: 'transferencia', estado: 'pendiente_pago' },
+  { id: 'E001-0021', ruc: '20131694977', cliente: 'ALICORP S.A.A.', fecha: '2026-07-10', montoBruto: 1800, retencion: 144, montoNeto: 1656, formaPago: 'cheque', estado: 'pendiente_pago' },
+  { id: 'E001-0020', ruc: '20100047218', cliente: 'TELEFÓNICA DEL PERÚ S.A.A.', fecha: '2026-06-28', montoBruto: 950, retencion: 76, montoNeto: 874, formaPago: 'transferencia', estado: 'pagado' },
 ]
 
 const initialReciboData: ReciboData = { ruc: '', cliente: '', monto: 0, formaPago: 'cheque', retencion: true }
@@ -172,6 +179,9 @@ const seedState: State = {
     { id: 'TR-001', tipo: 'Suspensión de Retenciones', descripcion: 'Solicitud de suspensión de retenciones 2026 — ingresos proyectados menores a S/ 36,050', fechaPresentacion: '2026-01-15', estado: 'aprobado' },
     { id: 'TR-002', tipo: 'Fraccionamiento de Deuda', descripcion: 'Solicitud de fraccionamiento de deuda tributaria — Renta Anual 2025', fechaPresentacion: '2026-06-01', estado: 'en_revision' },
     { id: 'TR-003', tipo: 'Actualización de Datos RUC', descripcion: 'Cambio de dirección fiscal a Av. Arequipa 1234, Lince', fechaPresentacion: '2026-07-10', estado: 'subsanacion', observacion: 'Adjuntar recibo de servicios del domicilio declarado' },
+  ],
+  devoluciones: [
+    { id: 'DEV-001', monto: 0, estado: 'pendiente', fechaSolicitud: '', periodo: '2025' },
   ],
   onboardingSeen: false,
   sessionTimeoutMinutes: 10,
@@ -281,6 +291,12 @@ function reducer(state: State, action: Action): State {
       return { ...state, tramites: [action.payload, ...(state.tramites ?? [])] }
     case 'UPDATE_TRAMITE':
       return { ...state, tramites: (state.tramites ?? []).map((t) => (t.id === action.payload.id ? { ...t, estado: action.payload.estado, observacion: action.payload.observacion ?? t.observacion } : t)) }
+    case 'SOLICITAR_DEVOLUCION':
+      return { ...state, devoluciones: [action.payload, ...(state.devoluciones ?? []).filter((d) => d.periodo !== action.payload.periodo)] }
+    case 'MARCAR_RECIBO_PAGADO':
+      return { ...state, recibos: (state.recibos ?? []).map((r) => (r.id === action.payload ? { ...r, estado: 'pagado' as const } : r)) }
+    case 'SOLICITAR_FRACCIONAMIENTO':
+      return { ...state, taxDebts: (state.taxDebts ?? []).map((d) => (d.id === action.payload.deudaId ? { ...d, estado: 'fraccionado' as const } : d)), tramites: [action.payload.tramite, ...(state.tramites ?? [])] }
     default:
       return state
   }
@@ -322,7 +338,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!state.loaded) return
     const persist = async () => {
       try {
-        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast, expenses: state.expenses, declarations: state.declarations, conversations: state.conversations, assistantSettings: state.assistantSettings, clients: state.clients, inbox: state.inbox, onboardingSeen: state.onboardingSeen, sessionTimeoutMinutes: state.sessionTimeoutMinutes, taxDebts: state.taxDebts, tramites: state.tramites }))
+        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast, expenses: state.expenses, declarations: state.declarations, conversations: state.conversations, assistantSettings: state.assistantSettings, clients: state.clients, inbox: state.inbox, onboardingSeen: state.onboardingSeen, sessionTimeoutMinutes: state.sessionTimeoutMinutes, taxDebts: state.taxDebts, tramites: state.tramites, devoluciones: state.devoluciones }))
       } catch {}
     }
     persist()
@@ -376,6 +392,9 @@ export const setTaxDebts = (debts: TaxDebt[]) => ({ type: 'SET_TAX_DEBTS' as con
 export const payDebt = (id: string) => ({ type: 'PAY_DEBT' as const, payload: id })
 export const addTramite = (tramite: Tramite) => ({ type: 'ADD_TRAMITE' as const, payload: tramite })
 export const updateTramite = (id: string, estado: Tramite['estado'], observacion?: string) => ({ type: 'UPDATE_TRAMITE' as const, payload: { id, estado, observacion } })
+export const solicitarDevolucion = (payload: DevolucionSolicitud) => ({ type: 'SOLICITAR_DEVOLUCION' as const, payload })
+export const marcarReciboPagado = (id: string) => ({ type: 'MARCAR_RECIBO_PAGADO' as const, payload: id })
+export const solicitarFraccionamiento = (deudaId: string, tramite: Tramite) => ({ type: 'SOLICITAR_FRACCIONAMIENTO' as const, payload: { deudaId, tramite } })
 
 export const RUC_DB: Record<string, string> = {
   '20100070970': 'BANCO DE CRÉDITO DEL PERÚ S.A.',

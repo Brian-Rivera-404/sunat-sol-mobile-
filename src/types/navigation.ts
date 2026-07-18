@@ -1,15 +1,11 @@
 export type RootStackParamList = {
   Register: undefined
   Home: undefined
-  Notificaciones: undefined
   NuevoRecibo1: undefined
-  NuevoRecibo2: undefined
   ResumenRecibo: undefined
   ReciboEmitido: undefined
   MisRecibos: undefined
-  Declarar: undefined
   MyRuc: undefined
-  Beneficios: undefined
   Reportes: undefined
   DeclaracionExitosa: undefined
   Declarations: undefined
@@ -25,5 +21,5 @@ export type RootStackParamList = {
   AssistantSettings: undefined
   TaxDebt: undefined
   Tramites: undefined
-  Orientacion: undefined
+  Devolucion: undefined
 }

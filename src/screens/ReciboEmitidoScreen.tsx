@@ -70,9 +70,9 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
             <Text className="text-xl font-bold text-[#002f5d] dark:text-blue-300 mt-1">{recibo.id}</Text>
           </View>
 
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
 
-          <View className="flex-row justify-between mb-3 mt-3" accessibilityLabel={`${t('recibo_emitido_fecha')}: ${formatearFecha(recibo.fecha)}`}>
+          <View className="flex-row justify-between mb-3" accessibilityLabel={`${t('recibo_emitido_fecha')}: ${formatearFecha(recibo.fecha)}`}>
             <Text className="text-gray-500 dark:text-gray-400">{t('recibo_emitido_fecha')}</Text>
             <Text className="text-gray-800 dark:text-gray-200 font-medium">{formatearFecha(recibo.fecha)}</Text>
           </View>
@@ -84,8 +84,8 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
             <Text className="text-gray-500 dark:text-gray-400">{t('recibo_emitido_cliente')}</Text>
             <Text className="text-gray-800 dark:text-gray-200 font-medium flex-1 text-right">{recibo.cliente}</Text>
           </View>
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
-          <View className="flex-row justify-between mb-3 mt-2" accessibilityLabel={`${t('recibo_emitido_monto_bruto')}: ${fmt(recibo.montoBruto)}`}>
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
+          <View className="flex-row justify-between mb-3" accessibilityLabel={`${t('recibo_emitido_monto_bruto')}: ${fmt(recibo.montoBruto)}`}>
             <Text className="text-gray-500 dark:text-gray-400">{t('recibo_emitido_monto_bruto')}</Text>
             <Text className="text-gray-800 dark:text-gray-200 font-medium">{fmt(recibo.montoBruto)}</Text>
           </View>
@@ -97,12 +97,12 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
             <Text className="text-gray-500 dark:text-gray-400">{t('recibo_emitido_forma_pago')}</Text>
             <Text className="text-gray-800 dark:text-gray-200 font-medium">{FORMA_PAGO_LABEL[recibo.formaPago] || recibo.formaPago}</Text>
           </View>
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
-          <View className="flex-row justify-between mt-2 mb-3" accessibilityLabel={`${t('recibo_emitido_neto')}: ${fmt(recibo.montoNeto)}`}>
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
+          <View className="flex-row justify-between mb-3" accessibilityLabel={`${t('recibo_emitido_neto')}: ${fmt(recibo.montoNeto)}`}>
             <Text className="text-gray-800 dark:text-gray-100 font-bold text-base">{t('recibo_emitido_neto')}</Text>
             <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(recibo.montoNeto)}</Text>
           </View>
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
           <View className="flex-row justify-between mt-3" accessibilityLabel={`${t('recibo_emitido_estado')}: ${ESTADO_LABEL[recibo.estado] || recibo.estado}`}>
             <Text className="text-gray-500 dark:text-gray-400">{t('recibo_emitido_estado')}</Text>
             <View className={`px-3 py-1 rounded-full ${ESTADO_COLOR[recibo.estado] || 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'}`}>

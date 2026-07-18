@@ -15,7 +15,7 @@ export type RHEReceipt = {
   retencion: number
   montoNeto: number
   formaPago: string
-  estado: 'emitido' | 'revertido' | 'anulado'
+  estado: 'emitido' | 'pendiente_pago' | 'pagado' | 'revertido' | 'anulado'
 }
 
 export type DeductibleExpense = {
@@ -101,10 +101,11 @@ export type Tramite = {
   observacion?: string
 }
 
-export type GuiaOrientacion = {
+export type DevolucionSolicitud = {
   id: string
-  titulo: string
-  contenido: string
-  categoria: string
-  icon: string
+  monto: number
+  estado: 'pendiente' | 'aprobada' | 'pagada'
+  fechaSolicitud: string
+  periodo: string
 }
+
