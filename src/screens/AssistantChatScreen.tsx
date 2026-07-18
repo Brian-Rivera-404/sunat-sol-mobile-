@@ -86,6 +86,52 @@ function AudioWaves() {
   )
 }
 
+function TypingIndicator() {
+  const dot1 = useRef(new Animated.Value(0.3)).current
+  const dot2 = useRef(new Animated.Value(0.3)).current
+  const dot3 = useRef(new Animated.Value(0.3)).current
+
+  useEffect(() => {
+    const animateDot = (val: Animated.Value, delay: number) => {
+      return Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(val, {
+            toValue: 1.0,
+            duration: 300,
+            useNativeDriver: Platform.OS !== 'web',
+          }),
+          Animated.timing(val, {
+            toValue: 0.3,
+            duration: 300,
+            useNativeDriver: Platform.OS !== 'web',
+          }),
+        ])
+      )
+    }
+
+    const a1 = animateDot(dot1, 0)
+    const a2 = animateDot(dot2, 150)
+    const a3 = animateDot(dot3, 300)
+
+    Animated.parallel([a1, a2, a3]).start()
+
+    return () => {
+      dot1.setValue(0.3)
+      dot2.setValue(0.3)
+      dot3.setValue(0.3)
+    }
+  }, [dot1, dot2, dot3])
+
+  return (
+    <View className="flex-row items-center gap-1 py-1 px-1">
+      <Animated.View style={{ opacity: dot1 }} className="w-2 h-2 rounded-full bg-gray-500" />
+      <Animated.View style={{ opacity: dot2 }} className="w-2 h-2 rounded-full bg-gray-500" />
+      <Animated.View style={{ opacity: dot3 }} className="w-2 h-2 rounded-full bg-gray-500" />
+    </View>
+  )
+}
+
 export default function AssistantChatScreen({ navigation, route }: { navigation: ScreenNav; route?: { params?: { initialMessage?: string; modulo?: string } } }) {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
@@ -130,6 +176,7 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
         context: { ruc: state.reciboData.ruc, monto: state.reciboData.monto, retencion: state.reciboData.retencion ? 8 : 0, formaPago: state.reciboData.formaPago, cliente: state.reciboData.cliente },
         settings: state.assistantSettings,
         conversationHistory: state.conversations,
+        activeScreen: state.screen,
       })
 
       const respuesta = result.lowConfidence
@@ -178,7 +225,7 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
     }
 
     setIsProcessing(false)
-  }, [inputText, isProcessing, state.reciboData, state.assistantSettings, state.language, state.conversations, dispatch, t, route?.params?.modulo])
+  }, [inputText, isProcessing, state.reciboData, state.assistantSettings, state.language, state.conversations, state.screen, dispatch, t, route?.params?.modulo])
 
   // Registrar eventos nativos de reconocimiento de voz
   useSpeechRecognitionEvent('start', () => {
@@ -352,8 +399,9 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
           </View>
         ))}
         {isProcessing && (
-          <View className="self-start mb-3 bg-white dark:bg-gray-800 rounded-[18px] p-4 shadow-sm">
-            <Text className="text-gray-500 dark:text-gray-400 text-sm">{t('general_cargando')}...</Text>
+          <View className="self-start mb-3 bg-white dark:bg-gray-800 rounded-[18px] p-3 shadow-sm flex-row items-center gap-1.5">
+            <Text className="text-gray-600 dark:text-gray-400 text-xs font-semibold">{t('assistant_label')}:</Text>
+            <TypingIndicator />
           </View>
         )}
       </ScrollView>

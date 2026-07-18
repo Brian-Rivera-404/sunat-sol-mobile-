@@ -12,16 +12,19 @@ import { C } from '../styles/theme'
 
 type HomeNav = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
-const MODULES = [
+const FREQUENT_MODULES = [
   { id: 'MisRecibos' as const, labelKey: 'home_mis_recibos', icon: '\uD83D\uDCC4', bg: '#EEF2FF' },
   { id: 'Declarations' as const, labelKey: 'home_declarar', icon: '\uD83D\uDCCA', bg: '#EEF2FF' },
-  { id: 'MyRuc' as const, labelKey: 'home_mi_ruc', icon: '\uD83C\uF3DB\uFE0F', bg: '#EEF2FF' },
-  { id: 'DeductibleExpenses' as const, labelKey: 'expenses_title', icon: '\uD83E\uDDFE', bg: '#FFF7ED' },
-  { id: 'AnnualTax' as const, labelKey: 'annual_tax_title', icon: '\uD83D\uDCCA', bg: '#F0FDF4' },
-  { id: 'Beneficios' as const, labelKey: 'home_beneficios', icon: '\uD83C\uDF81', bg: '#F5F3FF' },
+  { id: 'DeductibleExpenses' as const, labelKey: 'expenses_title', icon: '\uD83D\uDCC3', bg: '#FFF7ED' },
   { id: 'TaxDebt' as const, labelKey: 'taxdebt_title', icon: '\uD83D\uDCB0', bg: '#FEF2F2' },
+]
+
+const SECONDARY_MODULES = [
+  { id: 'MyRuc' as const, labelKey: 'home_mi_ruc', icon: '\uD83C\uF3DB\uFE0F', bg: '#EEF2FF' },
+  { id: 'AnnualTax' as const, labelKey: 'annual_tax_title', icon: '\uD83D\uDCCB', bg: '#F0FDF4' },
   { id: 'Tramites' as const, labelKey: 'tramites_title', icon: '\uD83D\uDCDD', bg: '#F0F9FF' },
   { id: 'Orientacion' as const, labelKey: 'orientacion_title', icon: '\uD83D\uDCD6', bg: '#FFFBEB' },
+  { id: 'Beneficios' as const, labelKey: 'home_beneficios', icon: '\uD83C\uDF81', bg: '#F5F3FF' },
 ]
 
 const BOTTOM_CARDS = [
@@ -114,11 +117,42 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
           </TouchableOpacity>
         </View>
 
-        {/* Module grid */}
+        {/* Operaciones Frecuentes (2x2 Grid) */}
         <View className="px-5 pt-3">
-          <Text className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">{t('home_servicios')}</Text>
+          <Text className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-3">
+            {state.language === 'es' ? 'Operaciones Frecuentes' : 'Frequent Operations'}
+          </Text>
+          <View className="flex-row flex-wrap gap-3">
+            {FREQUENT_MODULES.map((m) => {
+              const hasPendingDebts = m.id === 'TaxDebt' && (state.taxDebts ?? []).some((d) => d.estado === 'pendiente' || d.estado === 'vencido')
+              return (
+                <TouchableOpacity
+                  key={m.id}
+                  className="bg-white dark:bg-gray-800 rounded-[18px] pt-4 pb-3 px-3 items-center w-[48%] shadow-sm relative"
+                  onPress={() => { dispatch(go(m.id)); vibrateLight() }}
+                  accessibilityLabel={t(m.labelKey)}
+                  accessibilityRole="button"
+                >
+                  {hasPendingDebts && (
+                    <View className="absolute top-3 right-3 w-3 h-3 rounded-full bg-red-600 border-2 border-white dark:border-gray-800 z-10" />
+                  )}
+                  <View className="w-12 h-12 rounded-[16] items-center justify-center mb-2" style={{ backgroundColor: m.bg }}>
+                    <Text className="text-2xl">{m.icon}</Text>
+                  </View>
+                  <Text className="text-gray-800 dark:text-gray-200 font-bold text-xs text-center leading-tight">{t(m.labelKey)}</Text>
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+        </View>
+
+        {/* Consultas e Información (Secondary Grid) */}
+        <View className="px-5 pt-5">
+          <Text className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-3">
+            {state.language === 'es' ? 'Consultas e Información' : 'Inquiries & Information'}
+          </Text>
           <View className="flex-row flex-wrap gap-2.5">
-            {MODULES.map((m) => (
+            {SECONDARY_MODULES.map((m) => (
               <TouchableOpacity
                 key={m.id}
                 className="bg-white dark:bg-gray-800 rounded-[18px] pt-[14] pb-[10] px-2 items-center w-[30%] flex-grow shadow-sm"

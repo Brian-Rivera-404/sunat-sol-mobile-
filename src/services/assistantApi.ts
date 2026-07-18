@@ -1,8 +1,6 @@
 import type { AssistantSettings, AssistantConversation } from '../types/shared'
 import { localFAQ, type FAQItem } from './localFAQ'
 
-const API_URL = process.env.EXPO_PUBLIC_ASSISTANT_API_URL || 'http://localhost:3001/api/assistant'
-
 interface RHEFormContextData {
   ruc: string
   monto: number
@@ -16,6 +14,7 @@ interface AskAssistantParams {
   context: RHEFormContextData
   settings: AssistantSettings
   conversationHistory: AssistantConversation[]
+  activeScreen?: string
 }
 
 interface AskAssistantResult {
@@ -57,6 +56,7 @@ export async function askAssistant({
   context,
   settings,
   conversationHistory,
+  activeScreen,
 }: AskAssistantParams): Promise<AskAssistantResult> {
   if (settings.useLocalOnly) {
     const faqMatch = matchLocalFAQ(question)
@@ -70,15 +70,128 @@ export async function askAssistant({
     }
     return {
       answer:
-        'No tengo una respuesta local para esa pregunta. Prueba a reformularla o desactiva "Usar solo respuestas locales" en Ajustes para consultar al asistente remoto.',
+        'No tengo una respuesta local para esa pregunta. Prueba a reformularla o desactiva "Usar solo respuestas locales" en Ajustes.',
       mode: 'local',
       lowConfidence: true,
     }
   }
 
+  const geminiApiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY
+
+  if (geminiApiKey) {
+    try {
+      const systemPrompt = `Eres SOL, el asistente virtual oficial de la SUNAT (Superintendencia Nacional de Aduanas y de Administración Tributaria de Perú).
+Tu objetivo es guiar a trabajadores independientes en sus trámites tributarios de forma simple, empática y clara.
+Responde de manera concisa (máximo 3 párrafos), priorizando un lenguaje comprensible y directo, evitando tecnicismos innecesarios.
+
+Contexto actual del usuario:
+- RUC: ${context.ruc || 'No registrado'}
+- Monto del último recibo emitido o en borrador: S/ ${context.monto || '0.00'}
+- Retención aplicada: ${context.retencion}%
+- Forma de pago: ${context.formaPago || 'No especificada'}
+- Cliente: ${context.cliente || 'No especificado'}
+- Pantalla actual de la aplicación: ${activeScreen || 'Inicio/Home'}
+
+Instrucciones de comportamiento:
+1. Si el usuario está en una pantalla específica (por ejemplo, "Deuda Tributaria" o "Tramites"), prioriza responder dudas sobre esa sección (ej. cómo pagar la deuda, plazos, multas).
+2. Proporciona siempre información tributaria válida de Perú (Régimen de 4ta Categoría de Trabajadores Independientes, emisión de Recibos por Honorarios Electrónicos - RHE).
+3. Si el usuario solicita un cálculo, realiza la simulación del impuesto a la renta o retención de 4ta categoría de forma detallada paso a paso si es necesario.
+4. Mantén el tono amigable y profesional.`
+
+      const contents = []
+      const historyTurns = conversationHistory.slice(-5)
+      for (const turn of historyTurns) {
+        contents.push({
+          role: 'user',
+          parts: [{ text: turn.pregunta }]
+        })
+        contents.push({
+          role: 'model',
+          parts: [{ text: turn.respuesta }]
+        })
+      }
+
+      contents.push({
+        role: 'user',
+        parts: [{ text: question }]
+      })
+
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 12000)
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents,
+            systemInstruction: {
+              parts: [{ text: systemPrompt }]
+            },
+            generationConfig: {
+              maxOutputTokens: 500,
+              temperature: 0.2,
+            }
+          }),
+          signal: controller.signal,
+        }
+      )
+
+      clearTimeout(timeoutId)
+
+      if (response.status === 429) {
+        throw new Error('429')
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+
+      const data = await response.json()
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text
+
+      if (text) {
+        return {
+          answer: text.trim(),
+          mode: 'remote',
+          lowConfidence: false,
+        }
+      }
+      throw new Error('Invalid response format')
+
+    } catch (err: any) {
+      console.warn('[assistantApi] Falló Gemini, aplicando local fallback:', err.message)
+      const isRateLimit = err.message === '429'
+      const fallbackSuffix = isRateLimit
+        ? '\n\n(Nota: Se alcanzó el límite de solicitudes del asistente remoto, respuesta local de respaldo)'
+        : '\n\n(Nota: No se pudo contactar al asistente remoto, respuesta local de respaldo)'
+
+      const faqMatch = matchLocalFAQ(question)
+      if (faqMatch) {
+        return {
+          answer: faqMatch.respuesta + fallbackSuffix,
+          mode: 'local',
+          lowConfidence: false,
+          sourceFAQ: faqMatch,
+        }
+      }
+
+      return {
+        answer: isRateLimit
+          ? 'Lo siento, el asistente remoto está sobrecargado en este momento (Error 429) y no tengo una respuesta local guardada para tu duda.'
+          : 'Lo siento, no tengo conexión con el asistente remoto en este momento y no tengo una respuesta local guardada para tu duda.',
+        mode: 'local',
+        lowConfidence: true,
+      }
+    }
+  }
+
+  // Fallback to old URL if key is missing (for local dev setup)
+  const API_URL = process.env.EXPO_PUBLIC_ASSISTANT_API_URL || 'http://localhost:3001/api/assistant'
   try {
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 15000)
+    const timeoutId = setTimeout(() => controller.abort(), 12000)
 
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -116,12 +229,6 @@ export async function askAssistant({
       lowConfidence: data.lowConfidence === true,
     }
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      console.warn('[assistantApi] Timeout llamando al backend')
-    } else {
-      console.error('[assistantApi] Error:', error)
-    }
-
     const faqMatch = matchLocalFAQ(question)
     if (faqMatch) {
       return {
