@@ -275,6 +275,9 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
   })
 
   const handleVoice = useCallback(async () => {
+    if (isSpeaking) {
+      stopSpeaking()
+    }
     if (isListening) {
       ExpoSpeechRecognitionModule.stop()
       setIsListening(false)
@@ -326,7 +329,7 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
     } catch {
       setIsListening(false)
     }
-  }, [isListening, state.language, handleSend])
+  }, [isListening, isSpeaking, stopSpeaking, state.language, handleSend])
 
   const speakResponse = useCallback((text: string) => {
     Speech.stop()
