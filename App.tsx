@@ -118,7 +118,11 @@ function AppNavigator() {
       <NavigationContainer
         ref={navigationRef}
         onStateChange={(navState) => {
-          announceRoute(navState?.routes[navState?.index]?.name)
+          const currentRouteName = navState?.routes[navState?.index]?.name
+          if (currentRouteName && currentRouteName !== state.screen) {
+            dispatch(go(currentRouteName as any))
+          }
+          announceRoute(currentRouteName)
         }}
       >
         <Stack.Navigator screenOptions={screenOptions} initialRouteName="Home">
