@@ -7,6 +7,7 @@ import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import { askAssistant } from '../services/assistantApi'
 import HeaderBar from '../components/HeaderBar'
 import * as Speech from 'expo-speech'
+import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
 
@@ -102,15 +103,36 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
     setIsProcessing(false)
   }, [inputText, isProcessing, state.reciboData, state.assistantSettings, state.language, state.conversations, dispatch, t, route?.params?.modulo])
 
+  // Registrar eventos nativos de reconocimiento de voz
+  useSpeechRecognitionEvent('start', () => {
+    setIsListening(true)
+  })
+
+  useSpeechRecognitionEvent('end', () => {
+    setIsListening(false)
+  })
+
+  useSpeechRecognitionEvent('result', (event) => {
+    const transcript = event.results[0]?.transcript || ''
+    if (transcript) {
+      setInputText(transcript)
+      handleSend(transcript)
+    }
+  })
+
+  useSpeechRecognitionEvent('error', (event) => {
+    console.warn('Speech recognition error:', event.error, event.message)
+    setIsListening(false)
+  })
+
   const handleVoice = useCallback(async () => {
     if (isListening) {
+      ExpoSpeechRecognitionModule.stop()
       setIsListening(false)
       return
     }
 
     try {
-      setIsListening(true)
-
       if (Platform.OS === 'web') {
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
         if (SpeechRecognition) {
@@ -125,26 +147,33 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
           }
           recognition.onerror = () => setIsListening(false)
           recognition.start()
+          setIsListening(true)
         } else {
           setIsListening(false)
         }
         return
       }
 
-      try {
-        const Voice = require('@react-native-voice/voice')
-        Voice.onSpeechResults = (e: any) => {
-          if (e.value?.[0]) {
-            setInputText(e.value[0])
-            handleSend(e.value[0])
-          }
-          setIsListening(false)
+      // Solicitud interactiva de permisos nativos
+      const permissions = await ExpoSpeechRecognitionModule.getPermissionsAsync()
+      if (!permissions.granted) {
+        const request = await ExpoSpeechRecognitionModule.requestPermissionsAsync()
+        if (!request.granted) {
+          Alert.alert(
+            state.language === 'es' ? 'Permiso denegado' : 'Permission Denied',
+            state.language === 'es'
+              ? 'Se necesitan permisos de micrófono y reconocimiento de voz para usar el asistente.'
+              : 'Microphone and speech recognition permissions are required to use the assistant.'
+          )
+          return
         }
-        Voice.onSpeechError = () => setIsListening(false)
-        Voice.start(state.language === 'es' ? 'es-PE' : 'en-US')
-      } catch {
-        setIsListening(false)
       }
+
+      setIsListening(true)
+      ExpoSpeechRecognitionModule.start({
+        lang: state.language === 'es' ? 'es-PE' : 'en-US',
+        interimResults: false,
+      })
     } catch {
       setIsListening(false)
     }

@@ -2,6 +2,11 @@ const fs = require('fs')
 const path = require('path')
 
 const distHtml = path.join(__dirname, '..', 'dist', 'index.html')
+if (!fs.existsSync(distHtml)) {
+  console.error('Error: dist/index.html not found!')
+  process.exit(1)
+}
+
 let html = fs.readFileSync(distHtml, 'utf-8')
 
 // Phone-frame CSS
@@ -25,9 +30,15 @@ html = html.replace(
     </style>`
 )
 
-// Relative paths
+// First make paths relative (handling base URLs like /sunat-sol-mobile-/)
+html = html.replace(/href="\/sunat-sol-mobile-\//g, 'href="./')
+html = html.replace(/src="\/sunat-sol-mobile-\//g, 'src="./')
 html = html.replace(/href="\//g, 'href="./')
 html = html.replace(/src="\//g, 'src="./')
+
+// Match the original script tag source for index JS file before rewriting body
+const jsMatch = html.match(/src="\.\/_expo\/static\/js\/web\/index-[a-zA-Z0-9]+\.js"/)
+const jsSrc = jsMatch ? jsMatch[0] : 'src="./_expo/static/js/web/index-f6b0037b24c33c0fe12751c9de7f2ffc.js"'
 
 // Phone-frame wrapper
 const bodyContent = html.match(/<body>[\s\S]*?<\/body>/)?.[0] || ''
@@ -45,17 +56,10 @@ if (!bodyContent.includes('phone-frame')) {
       <div id="root"></div>
       <div class="home-indicator"></div>
     </div>
-  <script src="./_expo/static/js/web/index-f6b0037b24c33c0fe12751c9de7f2ffc.js" defer></script>
+  <script ${jsSrc} defer></script>
   <script>document.addEventListener('click',function(){sessionStorage.setItem('_activity',Date.now())})</script>
 </body>`
   )
-}
-
-// Fix JS hash if different
-const jsMatch = html.match(/src="\.\/_expo\/static\/js\/web\/index-[\w\d]+\.js"/)
-const bodyJsMatch = bodyContent.match(/src="\.\/_expo\/static\/js\/web\/index-[\w\d]+\.js"/)
-if (jsMatch && bodyJsMatch && jsMatch[0] !== bodyJsMatch[0]) {
-  html = html.replace(bodyJsMatch[0], jsMatch[0])
 }
 
 // Activity tracking (ensure it's there)
@@ -64,4 +68,4 @@ if (!html.includes('_activity')) {
 }
 
 fs.writeFileSync(distHtml, html)
-console.log('patched dist/index.html')
+console.log('patched dist/index.html successfully with jsSrc:', jsSrc)

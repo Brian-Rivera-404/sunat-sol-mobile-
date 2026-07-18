@@ -2,18 +2,24 @@
 Write-Host "Building web export..." -ForegroundColor Cyan
 npx expo export --platform web
 
-Write-Host "Fixing paths to relative..." -ForegroundColor Cyan
-$html = "dist/index.html"
-(Get-Content $html) -replace 'href="/_expo', 'href="./_expo' -replace 'href="/favicon', 'href="./favicon' -replace 'src="/_expo', 'src="./_expo' | Set-Content $html
+Write-Host "Patching index.html (relative paths & phone frame)..." -ForegroundColor Cyan
+node scripts/patch-html.js
 
-Write-Host "Adding phone frame CSS..." -ForegroundColor Cyan
-# Phone frame already added if script runs after build; re-add if overwritten
-$content = Get-Content $html -Raw
-if ($content -notmatch "phone-frame") {
-  Write-Host "Phone frame not found, needs manual addition" -ForegroundColor Yellow
+Write-Host "Creating .nojekyll file..." -ForegroundColor Cyan
+New-Item -ItemType File -Path "dist/.nojekyll" -Force | Out-Null
+
+Write-Host "Syncing build to docs/ folder for GitHub Pages..." -ForegroundColor Cyan
+if (Test-Path "docs") {
+    Remove-Item -Path "docs" -Recurse -Force
 }
+New-Item -ItemType Directory -Path "docs" -Force | Out-Null
+Copy-Item -Path "dist\*" -Destination "docs" -Recurse -Force
 
-Write-Host "Deploying to gh-pages..." -ForegroundColor Cyan
-npx gh-pages --dist dist --branch gh-pages --message "Deploy $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
+Write-Host "Deploying to gh-pages branch..." -ForegroundColor Cyan
+npx gh-pages --dist dist --branch gh-pages --dotfiles --message "Deploy $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
 
-Write-Host "Done! https://brian-rivera-404.github.io/sunat-sol-mobile-/" -ForegroundColor Green
+Write-Host "Staging docs changes..." -ForegroundColor Cyan
+git add docs
+
+Write-Host "Done! Remember to commit and push 'docs/' directory to 'main' branch if you deploy from main/docs." -ForegroundColor Green
+Write-Host "URL: https://brian-rivera-404.github.io/sunat-sol-mobile-/" -ForegroundColor Green

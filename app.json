@@ -28,6 +28,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "experiments": {
+      "baseUrl": "/sunat-sol-mobile-"
+    },
     "plugins": [
       "expo-localization",
       "expo-secure-store",
