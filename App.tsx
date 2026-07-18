@@ -39,6 +39,9 @@ import AssistantOnboardingScreen from './src/screens/AssistantOnboardingScreen'
 import AssistantChatScreen from './src/screens/AssistantChatScreen'
 import AssistantHistoryScreen from './src/screens/AssistantHistoryScreen'
 import AssistantSettingsScreen from './src/screens/AssistantSettingsScreen'
+import TaxDebtScreen from './src/screens/TaxDebtScreen'
+import TramitesScreen from './src/screens/TramitesScreen'
+import OrientacionScreen from './src/screens/OrientacionScreen'
 import ModalRecibo from './src/components/ModalRecibo'
 import Toast from './src/components/Toast'
 import BottomNav from './src/components/BottomNav'
@@ -92,6 +95,9 @@ function AppNavigator() {
       AssistantChat: 'Asistente tributario',
       AssistantHistory: 'Historial del asistente',
       AssistantSettings: 'Ajustes del asistente',
+      TaxDebt: 'Deuda tributaria',
+      Tramites: 'Trámites y solicitudes',
+      Orientacion: 'Orientación tributaria',
     }
     AccessibilityInfo.announceForAccessibility(names[routeName] || routeName)
   }, [])
@@ -140,6 +146,9 @@ function AppNavigator() {
           <Stack.Screen name="AssistantChat" component={AssistantChatScreen} />
           <Stack.Screen name="AssistantHistory" component={AssistantHistoryScreen} />
           <Stack.Screen name="AssistantSettings" component={AssistantSettingsScreen} />
+          <Stack.Screen name="TaxDebt" component={TaxDebtScreen} />
+          <Stack.Screen name="Tramites" component={TramitesScreen} />
+          <Stack.Screen name="Orientacion" component={OrientacionScreen} />
         </Stack.Navigator>
       </NavigationContainer>
 

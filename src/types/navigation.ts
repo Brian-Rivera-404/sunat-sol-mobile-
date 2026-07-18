@@ -23,4 +23,7 @@ export type RootStackParamList = {
   AssistantChat: { initialMessage?: string; modulo?: string } | undefined
   AssistantHistory: undefined
   AssistantSettings: undefined
+  TaxDebt: undefined
+  Tramites: undefined
+  Orientacion: undefined
 }

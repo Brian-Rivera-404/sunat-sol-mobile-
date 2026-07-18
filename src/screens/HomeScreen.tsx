@@ -19,6 +19,9 @@ const MODULES = [
   { id: 'DeductibleExpenses' as const, labelKey: 'expenses_title', icon: '\uD83E\uDDFE', bg: '#FFF7ED' },
   { id: 'AnnualTax' as const, labelKey: 'annual_tax_title', icon: '\uD83D\uDCCA', bg: '#F0FDF4' },
   { id: 'Beneficios' as const, labelKey: 'home_beneficios', icon: '\uD83C\uDF81', bg: '#F5F3FF' },
+  { id: 'TaxDebt' as const, labelKey: 'taxdebt_title', icon: '\uD83D\uDCB0', bg: '#FEF2F2' },
+  { id: 'Tramites' as const, labelKey: 'tramites_title', icon: '\uD83D\uDCDD', bg: '#F0F9FF' },
+  { id: 'Orientacion' as const, labelKey: 'orientacion_title', icon: '\uD83D\uDCD6', bg: '#FFFBEB' },
 ]
 
 const BOTTOM_CARDS = [

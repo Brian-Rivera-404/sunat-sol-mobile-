@@ -81,3 +81,30 @@ export type ValidatedEstablishment = {
   categoria: 'hotel' | 'restaurante' | 'farmacia' | 'transporte' | 'otro'
   validado: boolean
 }
+
+export type TaxDebt = {
+  id: string
+  tributo: string
+  periodo: string
+  monto: number
+  fechaVencimiento: string
+  estado: 'pendiente' | 'vencido' | 'pagado' | 'fraccionado'
+  tipo: 'multa' | 'declaracion' | 'liquidacion'
+}
+
+export type Tramite = {
+  id: string
+  tipo: string
+  descripcion: string
+  fechaPresentacion: string
+  estado: 'en_revision' | 'aprobado' | 'rechazado' | 'subsanacion'
+  observacion?: string
+}
+
+export type GuiaOrientacion = {
+  id: string
+  titulo: string
+  contenido: string
+  categoria: string
+  icon: string
+}

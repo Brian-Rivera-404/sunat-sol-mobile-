@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect, ReactNode } fr
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 import { secureSaveCCI, secureGetCCI, secureSavePinHash, secureGetPinHash } from '../services/secureStorage'
-import type { RHEReceipt, DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings } from '../types/shared'
+import type { RHEReceipt, DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings, TaxDebt, Tramite, GuiaOrientacion } from '../types/shared'
 import type { RootStackParamList } from '../types/navigation'
 
 const KEY = 'sunat_sol_data'
@@ -46,10 +46,12 @@ export interface State {
   sessionTimeoutMinutes: number
   pinHash: string | null
   cci: string | null
+  taxDebts: TaxDebt[]
+  tramites: Tramite[]
 }
 
 type Action =
-  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci'>> }
+  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci' | 'taxDebts' | 'tramites'>> }
   | { type: 'GO'; payload: keyof RootStackParamList }
   | { type: 'SET_RECIBO_DATA'; payload: Partial<ReciboData> }
   | { type: 'ADD_RECIBO'; payload: Omit<RHEReceipt, 'id'> }
@@ -76,6 +78,10 @@ type Action =
   | { type: 'SET_SESSION_TIMEOUT'; payload: number }
   | { type: 'SET_PIN_HASH'; payload: string | null }
   | { type: 'SET_CCI'; payload: string | null }
+  | { type: 'SET_TAX_DEBTS'; payload: TaxDebt[] }
+  | { type: 'PAY_DEBT'; payload: string }
+  | { type: 'ADD_TRAMITE'; payload: Tramite }
+  | { type: 'UPDATE_TRAMITE'; payload: { id: string; estado: Tramite['estado']; observacion?: string } }
 
 const seedUser: User = {
   nombre: 'Juan Pérez García',
@@ -156,6 +162,17 @@ const seedState: State = {
     { id: 'in2', titulo: 'CCI registrada exitosamente', cuerpo: 'Tu cuenta BCP terminada en ****4521 fue registrada para devoluciones tributarias.', fecha: '2026-07-10', leido: true, modulo: 'rhe' },
     { id: 'in3', titulo: 'Suspensión de retenciones aprobada', cuerpo: 'Tu solicitud de suspensión de retenciones es válida hasta el 31/12/2026.', fecha: '2026-07-02', leido: true, modulo: 'rhe' },
   ],
+  taxDebts: [
+    { id: 'DEU-001', tributo: 'Impuesto a la Renta 4ta Categoría', periodo: '2026-06', monto: 1890, fechaVencimiento: '2026-07-18', estado: 'pendiente', tipo: 'declaracion' },
+    { id: 'DEU-002', tributo: 'Impuesto a la Renta 4ta Categoría', periodo: '2026-05', monto: 2340, fechaVencimiento: '2026-06-16', estado: 'pagado', tipo: 'declaracion' },
+    { id: 'DEU-003', tributo: 'Multa — Presentación fuera de plazo', periodo: '2026-03', monto: 460, fechaVencimiento: '2026-04-30', estado: 'vencido', tipo: 'multa' },
+    { id: 'DEU-004', tributo: 'Liquidación — Renta Anual 2025', periodo: '2025', monto: 12500, fechaVencimiento: '2027-03-31', estado: 'fraccionado', tipo: 'liquidacion' },
+  ],
+  tramites: [
+    { id: 'TR-001', tipo: 'Suspensión de Retenciones', descripcion: 'Solicitud de suspensión de retenciones 2026 — ingresos proyectados menores a S/ 36,050', fechaPresentacion: '2026-01-15', estado: 'aprobado' },
+    { id: 'TR-002', tipo: 'Fraccionamiento de Deuda', descripcion: 'Solicitud de fraccionamiento de deuda tributaria — Renta Anual 2025', fechaPresentacion: '2026-06-01', estado: 'en_revision' },
+    { id: 'TR-003', tipo: 'Actualización de Datos RUC', descripcion: 'Cambio de dirección fiscal a Av. Arequipa 1234, Lince', fechaPresentacion: '2026-07-10', estado: 'subsanacion', observacion: 'Adjuntar recibo de servicios del domicilio declarado' },
+  ],
   onboardingSeen: false,
   sessionTimeoutMinutes: 10,
   pinHash: null,
@@ -175,6 +192,8 @@ function reducer(state: State, action: Action): State {
         conversations: action.payload.conversations ?? state.conversations,
         clients: action.payload.clients ?? state.clients,
         inbox: action.payload.inbox ?? state.inbox,
+        taxDebts: action.payload.taxDebts ?? state.taxDebts,
+        tramites: action.payload.tramites ?? state.tramites,
         loaded: true,
       }
     case 'GO':
@@ -254,6 +273,14 @@ function reducer(state: State, action: Action): State {
       return { ...state, pinHash: action.payload }
     case 'SET_CCI':
       return { ...state, cci: action.payload }
+    case 'SET_TAX_DEBTS':
+      return { ...state, taxDebts: action.payload }
+    case 'PAY_DEBT':
+      return { ...state, taxDebts: (state.taxDebts ?? []).map((d) => (d.id === action.payload ? { ...d, estado: 'pagado' as const } : d)) }
+    case 'ADD_TRAMITE':
+      return { ...state, tramites: [action.payload, ...(state.tramites ?? [])] }
+    case 'UPDATE_TRAMITE':
+      return { ...state, tramites: (state.tramites ?? []).map((t) => (t.id === action.payload.id ? { ...t, estado: action.payload.estado, observacion: action.payload.observacion ?? t.observacion } : t)) }
     default:
       return state
   }
@@ -295,7 +322,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!state.loaded) return
     const persist = async () => {
       try {
-        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast, expenses: state.expenses, declarations: state.declarations, conversations: state.conversations, assistantSettings: state.assistantSettings, clients: state.clients, inbox: state.inbox, onboardingSeen: state.onboardingSeen, sessionTimeoutMinutes: state.sessionTimeoutMinutes }))
+        await AsyncStorage.setItem(KEY, JSON.stringify({ user: state.user, recibos: state.recibos, nextId: state.nextId, language: state.language, darkMode: state.darkMode, biometricEnabled: state.biometricEnabled, highContrast: state.highContrast, expenses: state.expenses, declarations: state.declarations, conversations: state.conversations, assistantSettings: state.assistantSettings, clients: state.clients, inbox: state.inbox, onboardingSeen: state.onboardingSeen, sessionTimeoutMinutes: state.sessionTimeoutMinutes, taxDebts: state.taxDebts, tramites: state.tramites }))
       } catch {}
     }
     persist()
@@ -345,6 +372,10 @@ export const setOnboardingSeen = (val: boolean) => ({ type: 'SET_ONBOARDING_SEEN
 export const setSessionTimeout = (minutes: number) => ({ type: 'SET_SESSION_TIMEOUT' as const, payload: minutes })
 export const setPinHash = (hash: string | null) => ({ type: 'SET_PIN_HASH' as const, payload: hash })
 export const setCCI = (cci: string | null) => ({ type: 'SET_CCI' as const, payload: cci })
+export const setTaxDebts = (debts: TaxDebt[]) => ({ type: 'SET_TAX_DEBTS' as const, payload: debts })
+export const payDebt = (id: string) => ({ type: 'PAY_DEBT' as const, payload: id })
+export const addTramite = (tramite: Tramite) => ({ type: 'ADD_TRAMITE' as const, payload: tramite })
+export const updateTramite = (id: string, estado: Tramite['estado'], observacion?: string) => ({ type: 'UPDATE_TRAMITE' as const, payload: { id, estado, observacion } })
 
 export const RUC_DB: Record<string, string> = {
   '20100070970': 'BANCO DE CRÉDITO DEL PERÚ S.A.',
