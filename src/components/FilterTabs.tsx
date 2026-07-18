@@ -1,5 +1,5 @@
-import React from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import React, { useRef, useEffect } from 'react'
+import { ScrollView, TouchableOpacity, Platform } from 'react-native'
 import { Text } from './AccessibleText'
 
 interface TabItem<T> {
@@ -20,11 +20,69 @@ export default function FilterTabs<T extends string | null>({
   onSelect,
   accessibilityLabelPrefix = ''
 }: FilterTabsProps<T>) {
+  const scrollRef = useRef<any>(null)
+
+  useEffect(() => {
+    if (Platform.OS !== 'web' || !scrollRef.current) return
+
+    const el = scrollRef.current.getScrollableNode
+      ? scrollRef.current.getScrollableNode()
+      : scrollRef.current
+
+    if (!el) return
+
+    let isDown = false
+    let startX: number
+    let scrollLeft: number
+
+    const onMouseDown = (e: MouseEvent) => {
+      isDown = true
+      el.style.cursor = 'grabbing'
+      startX = e.pageX - el.offsetLeft
+      scrollLeft = el.scrollLeft
+    }
+
+    const onMouseLeave = () => {
+      isDown = false
+      el.style.cursor = 'grab'
+    }
+
+    const onMouseUp = () => {
+      isDown = false
+      el.style.cursor = 'grab'
+    }
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDown) return
+      e.preventDefault()
+      const x = e.pageX - el.offsetLeft
+      const walk = (x - startX) * 1.5
+      el.scrollLeft = scrollLeft - walk
+    }
+
+    el.addEventListener('mousedown', onMouseDown)
+    el.addEventListener('mouseleave', onMouseLeave)
+    el.addEventListener('mouseup', onMouseUp)
+    el.addEventListener('mousemove', onMouseMove)
+
+    el.style.cursor = 'grab'
+    el.style.userSelect = 'none'
+
+    return () => {
+      el.removeEventListener('mousedown', onMouseDown)
+      el.removeEventListener('mouseleave', onMouseLeave)
+      el.removeEventListener('mouseup', onMouseUp)
+      el.removeEventListener('mousemove', onMouseMove)
+    }
+  }, [])
+
   return (
     <ScrollView
+      ref={scrollRef}
       horizontal={true}
-      showsHorizontalScrollIndicator={false}
+      showsHorizontalScrollIndicator={Platform.OS === 'web'}
       className="mb-3.5 mt-1"
+      style={{ width: '100%' }}
       contentContainerStyle={{
         flexDirection: 'row',
         flexWrap: 'nowrap',
