@@ -125,7 +125,7 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
               placeholder="Ej: Suspensión de Retenciones"
               accessibilityLabel={t('tramites_type')}
             />
-            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('register_name')}</Text>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('tramites_desc')}</Text>
             <TextInput
               className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100 mb-6"
               value={descripcion}
@@ -133,7 +133,7 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
               placeholder="Describe tu solicitud..."
               multiline
               numberOfLines={3}
-              accessibilityLabel={t('register_name')}
+              accessibilityLabel={t('tramites_desc')}
             />
             {error && (
               <Text className="text-red-500 dark:text-red-400 text-sm font-semibold mb-4" accessibilityLiveRegion="polite">

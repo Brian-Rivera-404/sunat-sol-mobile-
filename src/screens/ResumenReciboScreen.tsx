@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react'
-import { View, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import React, { useState, useRef, useEffect } from 'react'
+import { View, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
@@ -39,7 +39,18 @@ export default function ResumenReciboScreen({ navigation }: Props) {
     ? `${t('resumen_apartado')}: ${fmt(sugerenciaRetencion)} (8%)`
     : null
 
+  useEffect(() => {
+    return () => {
+      Speech.stop()
+    }
+  }, [])
+
   function handleEscucharResumen() {
+    if (isSpeaking) {
+      Speech.stop()
+      setIsSpeaking(false)
+      return
+    }
     setSummaryFullyRead(false)
     setIsSpeaking(true)
     Speech.speak(resumenTexto, {
@@ -57,6 +68,16 @@ export default function ResumenReciboScreen({ navigation }: Props) {
   }
 
   function handleConfirmar() {
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm(`${t('resumen_recibo_alerta_title')}\n\n${t('resumen_recibo_alerta_body')}`)
+      if (confirmed) {
+        dispatch(emitirRecibo())
+        vibrateSuccess()
+        dispatch(go('ReciboEmitido'))
+      }
+      return
+    }
+
     Alert.alert(
       t('resumen_recibo_alerta_title'),
       t('resumen_recibo_alerta_body'),

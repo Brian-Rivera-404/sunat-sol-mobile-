@@ -132,10 +132,124 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
     lines.push('</body></html>')
     return lines.join('')
   }
-
   const handleExportPDF = async () => {
     vibrateLight()
     try {
+      if (Platform.OS === 'web') {
+        const { jsPDF } = require('jspdf')
+        const doc = new jsPDF()
+        const isEs = state.language === 'es'
+        
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(22)
+        doc.setTextColor(10, 34, 64)
+        doc.text('SUNAT', 20, 25)
+        
+        doc.setFontSize(10)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(100, 116, 139)
+        const subtitle = isEs ? 'SUNAT SOL Móvil - Reporte Oficial' : 'SUNAT SOL Mobile - Official Report'
+        doc.text(subtitle, 20, 32)
+        
+        doc.setDrawColor(27, 79, 191)
+        doc.setLineWidth(1)
+        doc.line(20, 37, 190, 37)
+        
+        doc.setFontSize(16)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(30, 41, 59)
+        const titleText = isEs ? 'REPORTE TRIBUTARIO DE CUARTA CATEGORÍA' : 'FOURTH CATEGORY TAX REPORT'
+        doc.text(titleText, 20, 50)
+        
+        doc.setFontSize(10)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(71, 85, 105)
+        doc.text(`${isEs ? 'Contribuyente' : 'Taxpayer'}: ${state.user.nombre}`, 20, 60)
+        doc.text(`RUC: ${state.user.dni}`, 20, 65)
+        doc.text(`${isEs ? 'Fecha de Emisión' : 'Issue Date'}: ${new Date().toLocaleString()}`, 20, 70)
+        
+        doc.setFontSize(12)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(10, 34, 64)
+        doc.text(isEs ? 'Resumen Anual' : 'Annual Summary', 20, 85)
+        
+        doc.setFillColor(248, 250, 252)
+        doc.rect(20, 90, 170, 55, 'F')
+        
+        doc.setFontSize(10)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(100, 116, 139)
+        
+        const summaryRows = [
+          { label: t('declarar_ingresos'), val: fmt(totalIngresos) },
+          { label: t('reportes_recibos_emitidos'), val: String(emitidos.length) },
+          { label: t('reportes_promedio'), val: fmt(promedio) },
+          { label: t('simulator_withholdings'), val: fmt(totalRetenciones) },
+          { label: t('simulator_expenses'), val: fmt(totalGastos) }
+        ]
+        
+        let yPos = 98
+        summaryRows.forEach((row) => {
+          doc.setFont('helvetica', 'normal')
+          doc.setTextColor(100, 116, 139)
+          doc.text(row.label, 25, yPos)
+          
+          doc.setFont('helvetica', 'bold')
+          doc.setTextColor(15, 23, 42)
+          doc.text(row.val, 185, yPos, { align: 'right' })
+          
+          yPos += 9
+        })
+        
+        doc.setFontSize(12)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(10, 34, 64)
+        doc.text(isEs ? 'Principales Clientes' : 'Top Clients', 20, 160)
+        
+        doc.setFillColor(10, 34, 64)
+        doc.rect(20, 165, 170, 10, 'F')
+        
+        doc.setFontSize(10)
+        doc.setTextColor(255, 255, 255)
+        doc.text('#', 23, 171)
+        doc.text(t('mis_recibos_cliente'), 35, 171)
+        doc.text(isEs ? 'Recibos' : 'Receipts', 135, 171, { align: 'right' })
+        doc.text('Total', 185, 171, { align: 'right' })
+        
+        let tableY = 182
+        topClientes.forEach((c: any, index: number) => {
+          if (index % 2 === 1) {
+            doc.setFillColor(248, 250, 252)
+            doc.rect(20, tableY - 6, 170, 9, 'F')
+          }
+          
+          doc.setFont('helvetica', 'normal')
+          doc.setTextColor(51, 65, 85)
+          doc.text(String(index + 1), 23, tableY)
+          doc.text(c.nombre.substring(0, 40), 35, tableY)
+          doc.text(String(c.count), 135, tableY, { align: 'right' })
+          
+          doc.setFont('helvetica', 'bold')
+          doc.setTextColor(10, 34, 64)
+          doc.text(fmt(c.total), 185, tableY, { align: 'right' })
+          
+          tableY += 9
+        })
+        
+        doc.setDrawColor(226, 232, 240)
+        doc.line(20, 245, 190, 245)
+        
+        doc.setFontSize(9)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(148, 163, 184)
+        doc.text(t('simulator_not_official'), 105, 253, { align: 'center' })
+        doc.text(`${t('reportes_generated')}: ${new Date().toLocaleDateString()}`, 105, 260, { align: 'center' })
+        
+        doc.save('sunat-reporte.pdf')
+        vibrateSuccess()
+        return
+      }
+      
       const Print = require('expo-print')
       const Sharing = require('expo-sharing')
       const html = buildPDFHtml()
@@ -148,7 +262,6 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
       console.warn('Error exporting PDF:', e)
     }
   }
-
   const handleExportExcel = async () => {
     vibrateLight()
     try {
@@ -204,11 +317,11 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-4" accessibilityRole="header">{t('reportes_ingresos_mes')}</Text>
           <View className="flex-row items-end h-32 gap-1">
             {ingresosPorMes.map((monto, i) => {
-              const altura = (monto / maxMes) * 100
+              const altura = (monto / maxMes) * 80
               return (
-                <View key={i} className="flex-1 items-center" accessibilityLabel={MESES[i] + ': ' + fmt(monto)}>
-                  <View className="w-full bg-[#0A2240] dark:bg-blue-400 rounded-t-sm" style={{ height: Math.max(altura, 2) as any + '%' as any }} />
-                  <Text className="text-xs text-gray-400 dark:text-gray-400 mt-1">{MESES[i]}</Text>
+                <View key={i} className="flex-1 items-center h-full justify-end" accessibilityLabel={MESES[i] + ': ' + fmt(monto)}>
+                  <View className="w-full bg-[#0A2240] dark:bg-blue-400 rounded-t-sm" style={{ height: (Math.max(altura, 2) + '%') as any }} />
+                  <Text className="text-[10px] text-gray-400 dark:text-gray-400 mt-1">{MESES[i]}</Text>
                 </View>
               )
             })}

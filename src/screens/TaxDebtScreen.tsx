@@ -10,6 +10,7 @@ import { FadeInView, PressableScale } from '../components/AnimatedHelpers'
 import { C, SHADOWS } from '../styles/theme'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
+import FilterTabs from '../components/FilterTabs'
 
 const DEBT_STATUS_STYLE: Record<string, { color: string; bg: string }> = {
   pendiente: { color: C.amberDark, bg: C.amberBg },
@@ -127,20 +128,11 @@ export default function TaxDebtScreen({ navigation }: { navigation: ScreenNav })
             </View>
 
             {/* Filter chips */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-3" contentContainerStyle={{ gap: 6 }}>
-              {FILTERS.map((f) => (
-                <TouchableOpacity
-                  key={f.key ?? 'all'}
-                  className={`px-4 min-h-[48px] justify-center rounded-full ${filter === f.key ? 'bg-[#002f5d]' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600'}`}
-                  onPress={() => setFilter(f.key)}
-                  accessibilityLabel={f.label}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: filter === f.key }}
-                >
-                  <Text className={`text-xs font-semibold ${filter === f.key ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>{f.label}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+            <FilterTabs
+              items={FILTERS}
+              selectedKey={filter}
+              onSelect={setFilter}
+            />
 
             {/* Debt list */}
             {filtered.map((debt, idx) => {

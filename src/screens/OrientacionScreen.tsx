@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { FadeInView } from '../components/AnimatedHelpers'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
+import FilterTabs from '../components/FilterTabs'
 import type { GuiaOrientacion } from '../types/shared'
 
 const GUIAS: GuiaOrientacion[] = [
@@ -52,20 +53,14 @@ export default function OrientacionScreen({ navigation }: { navigation: ScreenNa
         <Text className="text-gray-500 dark:text-gray-400 text-sm mb-4">{t('orientacion_subtitle')}</Text>
 
         {/* Category filter */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-4" contentContainerStyle={{ gap: 6 }}>
-          {CATEGORIAS.map((cat) => (
-            <TouchableOpacity
-              key={cat.key ?? 'all'}
-              className={`px-4 min-h-[48px] justify-center rounded-full ${filterCat === cat.key ? 'bg-[#002f5d]' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600'}`}
-              onPress={() => setFilterCat(cat.key)}
-              accessibilityLabel={t(cat.labelKey)}
-              accessibilityRole="button"
-              accessibilityState={{ selected: filterCat === cat.key }}
-            >
-              <Text className={`text-xs font-semibold ${filterCat === cat.key ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>{t(cat.labelKey)}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        <FilterTabs
+          items={CATEGORIAS.map((cat) => ({
+            key: cat.key,
+            label: t(cat.labelKey),
+          }))}
+          selectedKey={filterCat}
+          onSelect={setFilterCat}
+        />
 
         {/* Guide cards */}
         {filtered.map((guia, idx) => {

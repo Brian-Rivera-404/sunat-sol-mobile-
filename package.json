@@ -25,6 +25,7 @@
     "expo-status-bar": "~3.0.9",
     "jest": "~29.7.0",
     "jest-expo": "~54.0.17",
+    "jspdf": "^4.2.1",
     "nativewind": "^4.2.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",

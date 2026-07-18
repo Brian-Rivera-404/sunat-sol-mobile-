@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { FadeInView } from '../components/AnimatedHelpers'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
+import FilterTabs from '../components/FilterTabs'
 import { fmt, formatearFecha } from '../store/sunatStore'
 
 const ESTADO_LABEL: Record<string, string> = {
@@ -109,30 +110,16 @@ export default function MisRecibosScreen({ navigation }: { navigation: ScreenNav
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0A2240" />}
         >
           {/* Filter chips - wrapped in a robust horizontal ScrollView */}
-          <ScrollView 
-            horizontal={true} 
-            showsHorizontalScrollIndicator={false} 
-            className="mb-3 mt-3" 
-            contentContainerStyle={{ flexDirection: 'row', gap: 6 }}
-          >
-            {[
+          <FilterTabs
+            items={[
               { key: null, label: t('general_all') },
               { key: 'pendiente_pago', label: t('mis_recibos_pendientes') },
               { key: 'emitido', label: t('estado_emitido') },
               { key: 'pagado', label: t('estado_pagado') },
-            ].map((f) => (
-              <TouchableOpacity
-                key={f.key ?? 'all'}
-                className={`px-4 py-2 rounded-full ${filterEstado === f.key ? 'bg-[#002f5d]' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600'}`}
-                onPress={() => setFilterEstado(f.key)}
-                accessibilityLabel={f.label}
-                accessibilityRole="button"
-                accessibilityState={{ selected: filterEstado === f.key }}
-              >
-                <Text className={`text-xs font-semibold ${filterEstado === f.key ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>{f.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+            ]}
+            selectedKey={filterEstado}
+            onSelect={setFilterEstado}
+          />
           
           {filtered.map((recibo, idx) => (
             <FadeInView key={recibo.id} delay={idx * 50}>
