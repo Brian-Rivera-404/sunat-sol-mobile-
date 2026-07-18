@@ -148,7 +148,7 @@ const seedState: State = {
     { id: 'DEC-001', periodo: '2026-03', estado: 'pagado', fechaLimite: '2026-04-15', monto: 1500 },
   ],
   conversations: [],
-  assistantSettings: { modality: 'text_voice', ttsSpeed: 'normal', useLocalOnly: true, language: 'es' },
+  assistantSettings: { modality: 'text_voice', ttsSpeed: 'normal', useLocalOnly: false, language: 'es' },
   clients: [
     { id: 'c1', ruc: '20100070970', nombre: 'BANCO DE CRÉDITO DEL PERÚ S.A.', frecuente: true },
     { id: 'c2', ruc: '20131694977', nombre: 'ALICORP S.A.A.', frecuente: true },

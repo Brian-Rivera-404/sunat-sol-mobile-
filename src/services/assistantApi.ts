@@ -58,6 +58,14 @@ export async function askAssistant({
   conversationHistory,
   activeScreen,
 }: AskAssistantParams): Promise<AskAssistantResult> {
+  const geminiApiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY
+  console.log('[assistantApi] askAssistant called.', {
+    question,
+    useLocalOnly: settings.useLocalOnly,
+    hasGeminiApiKey: !!geminiApiKey,
+    activeScreen,
+  })
+
   if (settings.useLocalOnly) {
     const faqMatch = matchLocalFAQ(question)
     if (faqMatch) {
@@ -76,8 +84,7 @@ export async function askAssistant({
     }
   }
 
-  const geminiApiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY
-
+  // Key already read at the top for logging
   if (geminiApiKey) {
     try {
       const systemPrompt = `Eres SOL, el asistente virtual oficial de la SUNAT (Superintendencia Nacional de Aduanas y de Administración Tributaria de Perú).
@@ -119,6 +126,7 @@ Instrucciones de comportamiento:
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 12000)
 
+      console.log('[assistantApi] Dispatching contents payload to Gemini API...', JSON.stringify(contents, null, 2))
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
         {
