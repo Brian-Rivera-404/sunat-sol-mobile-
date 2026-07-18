@@ -22,4 +22,5 @@ export type RootStackParamList = {
   TaxDebt: undefined
   Tramites: undefined
   Devolucion: undefined
+  Orientacion: undefined
 }

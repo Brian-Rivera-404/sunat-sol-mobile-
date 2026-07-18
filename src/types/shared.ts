@@ -109,3 +109,12 @@ export type DevolucionSolicitud = {
   periodo: string
 }
 
+export type GuiaOrientacion = {
+  id: string
+  titulo: string
+  contenido: string
+  categoria: string
+  ioniconsIcon: string
+  bg: string
+}
+

@@ -38,6 +38,7 @@ import AssistantSettingsScreen from './src/screens/AssistantSettingsScreen'
 import TaxDebtScreen from './src/screens/TaxDebtScreen'
 import TramitesScreen from './src/screens/TramitesScreen'
 import DevolucionScreen from './src/screens/DevolucionScreen'
+import OrientacionScreen from './src/screens/OrientacionScreen'
 import ModalRecibo from './src/components/ModalRecibo'
 import Toast from './src/components/Toast'
 import BottomNav from './src/components/BottomNav'
@@ -146,6 +147,7 @@ function AppNavigator() {
           <Stack.Screen name="TaxDebt" component={TaxDebtScreen} />
           <Stack.Screen name="Tramites" component={TramitesScreen} />
           <Stack.Screen name="Devolucion" component={DevolucionScreen} />
+          <Stack.Screen name="Orientacion" component={OrientacionScreen} />
         </Stack.Navigator>
       </NavigationContainer>
 

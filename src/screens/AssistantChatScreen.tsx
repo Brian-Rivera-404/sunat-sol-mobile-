@@ -149,6 +149,9 @@ const detectActionIntent = (text: string): { route: keyof RootStackParamList; me
   if (query.includes('gasto') || query.includes('deducible') || query.includes('mis gastos')) {
     return { route: 'DeductibleExpenses', message: 'Entendido. Abriendo la sección de Gastos Deducibles.' }
   }
+  if (query.includes('orientacion') || query.includes('orientación') || query.includes('guia') || query.includes('guía') || query.includes('aprender') || query.includes('duda')) {
+    return { route: 'Orientacion', message: 'Entendido. Abriendo la sección de Orientación Tributaria.' }
+  }
   return null
 }
 

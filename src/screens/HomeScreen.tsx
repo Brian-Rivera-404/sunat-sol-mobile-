@@ -27,6 +27,7 @@ const MODULES = [
   { id: 'TaxDebt' as const, labelKey: 'taxdebt_title', icon: 'warning', bg: '#F5E8E8' },
   { id: 'Tramites' as const, labelKey: 'tramites_title', icon: 'clipboard', bg: '#E8EFF5' },
   { id: 'TaxSimulator' as const, labelKey: 'simulator_title', icon: 'calculator', bg: '#F5F0E0' },
+  { id: 'Orientacion' as const, labelKey: 'orientacion_title', icon: 'book', bg: '#FFFBEB' },
 ]
 
 const BOTTOM_CARDS = [
