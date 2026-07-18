@@ -267,11 +267,11 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
               <TouchableOpacity
                 className="flex-row items-center py-2.5 px-4"
                 onPress={toggleContrast}
-                accessibilityLabel={state.highContrast ? 'Desactivar alto contraste' : 'Activar alto contraste'}
+                accessibilityLabel={state.highContrast ? t('high_contrast_off') : t('high_contrast_on')}
                 accessibilityRole="button"
               >
                 <Ionicons name={state.highContrast ? 'eye-off' : 'eye'} size={18} color={C.s500} style={{ marginRight: 8 }} />
-                <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.highContrast ? 'Alto contraste ON' : t('home_alto_contraste')}</Text>
+                <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.highContrast ? t('high_contrast_on') : t('home_alto_contraste')}</Text>
               </TouchableOpacity>
             </View>
           </View>

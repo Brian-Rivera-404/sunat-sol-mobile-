@@ -47,6 +47,8 @@ const strings: Record<string, Record<string, string>> = {
     home_declarado: 'Declarado',
     home_servicios: 'Servicios Tributarios',
     home_alto_contraste: 'Alto contraste',
+    high_contrast_on: 'Alto contraste activado',
+    high_contrast_off: 'Alto contraste desactivado',
     home_reportes_sub: 'Declaraciones y recibos',
     inbox_subtitle: '1 mensaje nuevo',
     calendar_subtitle: 'Vence seg\u00FAn RUC',
@@ -150,6 +152,7 @@ const strings: Record<string, Record<string, string>> = {
     mis_recibos_fecha: 'Fecha',
     mis_recibos_monto: 'Monto',
     mis_recibos_pago: 'Pago',
+    mis_recibos_retencion: 'Retención',
     // Declarar
     declarar_title: 'Declarar 4ta Categoría',
     declarar_anual: 'Declaración Anual 2026',
@@ -652,6 +655,8 @@ const strings: Record<string, Record<string, string>> = {
     home_declarado: 'Declared',
     home_servicios: 'Tax Services',
     home_alto_contraste: 'High contrast',
+    high_contrast_on: 'High contrast enabled',
+    high_contrast_off: 'High contrast disabled',
     home_reportes_sub: 'Declarations and receipts',
     inbox_subtitle: '1 new message',
     calendar_subtitle: 'Due by RUC digit',
@@ -755,6 +760,7 @@ const strings: Record<string, Record<string, string>> = {
     mis_recibos_fecha: 'Date',
     mis_recibos_monto: 'Amount',
     mis_recibos_pago: 'Payment',
+    mis_recibos_retencion: 'Withholding',
     // Declarar
     declarar_title: 'Declare 4th Category',
     declarar_anual: 'Annual Declaration 2026',

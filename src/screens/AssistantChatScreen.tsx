@@ -489,6 +489,21 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
             )}
           </View>
         ))}
+        {messages.length <= 1 && (
+          <View className="flex-row flex-wrap mt-1 mb-4" style={{ gap: 6 }}>
+            {getFaqChipsForScreen(state.previousScreen).map((chip) => (
+              <TouchableOpacity
+                key={chip}
+                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full px-4 py-2 shadow-sm"
+                onPress={() => handleSend(t(chip))}
+                accessibilityLabel={t(chip)}
+                accessibilityRole="button"
+              >
+                <Text className="text-sm text-gray-700 dark:text-gray-300">{t(chip)}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
         {isProcessing && (
           <View className="self-start mb-3 bg-white dark:bg-gray-800 rounded-[18px] p-3 shadow-sm flex-row items-center gap-1.5">
             <Text className="text-gray-600 dark:text-gray-400 text-xs font-semibold">{t('assistant_label')}:</Text>
@@ -496,22 +511,6 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
           </View>
         )}
       </ScrollView>
-
-      {messages.length <= 1 && (
-        <View className="px-4 flex-row flex-wrap mb-2">
-          {getFaqChipsForScreen(state.previousScreen).map((chip) => (
-            <TouchableOpacity
-              key={chip}
-              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full px-4 py-2 mr-2 mb-2 shadow-sm"
-              onPress={() => handleSend(t(chip))}
-              accessibilityLabel={t(chip)}
-              accessibilityRole="button"
-            >
-              <Text className="text-sm text-gray-700 dark:text-gray-300">{t(chip)}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
 
       {lastAssistantMsg?.lowConfidence && (
         <View className="px-4 mb-2">

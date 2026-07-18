@@ -5,7 +5,7 @@ import { secureSaveCCI, secureGetCCI, secureSavePinHash, secureGetPinHash } from
 import type { RHEReceipt, DeductibleExpense, TaxDeclaration, AssistantConversation, Client, InboxMessage, AssistantSettings, TaxDebt, Tramite, DevolucionSolicitud } from '../types/shared'
 import type { RootStackParamList } from '../types/navigation'
 
-const KEY = 'sunat_sol_data'
+const KEY = 'sunat_sol_data_v2'
 
 interface User {
   nombre: string
