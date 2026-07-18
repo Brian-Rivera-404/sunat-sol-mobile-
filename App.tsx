@@ -60,7 +60,7 @@ function AppNavigator() {
 
   useEffect(() => {
     if (navigationRef.current && state.screen) {
-      navigationRef.current.navigate(state.screen)
+      navigationRef.current.navigate(state.screen as any)
     }
   }, [state.screen])
 
