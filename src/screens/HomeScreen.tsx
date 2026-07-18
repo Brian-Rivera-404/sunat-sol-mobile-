@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, TouchableOpacity, ScrollView, Platform } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, TouchableOpacity, ScrollView, Platform, AppState } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, setDarkMode, setHighContrast } from '../store/sunatStore'
@@ -7,6 +7,7 @@ import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
+import * as LocalAuthentication from 'expo-local-authentication'
 
 import { C } from '../styles/theme'
 
@@ -36,6 +37,78 @@ const BOTTOM_CARDS = [
 export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
   const { state, dispatch } = useStore()
   const { t, switchLang, nextLangLabel } = useTranslate()
+
+  const [isLocked, setIsLocked] = useState(state.biometricEnabled)
+
+  const unlockWithBiometrics = async () => {
+    if (!state.biometricEnabled) {
+      setIsLocked(false)
+      return
+    }
+    const hasHardware = await LocalAuthentication.hasHardwareAsync()
+    const isEnrolled = await LocalAuthentication.isEnrolledAsync()
+    if (hasHardware && isEnrolled) {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: t('biometric_login') || 'Acceso con huella',
+        disableDeviceFallback: false,
+      })
+      if (result.success) {
+        setIsLocked(false)
+        vibrateLight()
+      }
+    } else {
+      setIsLocked(false)
+    }
+  }
+
+  useEffect(() => {
+    if (state.biometricEnabled) {
+      unlockWithBiometrics()
+    }
+  }, [state.biometricEnabled])
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: any) => {
+      if (nextAppState === 'active' && state.biometricEnabled) {
+        setIsLocked(true)
+        unlockWithBiometrics()
+      }
+    }
+    const subscription = AppState.addEventListener('change', handleAppStateChange)
+    return () => {
+      subscription.remove()
+    }
+  }, [state.biometricEnabled])
+
+  if (isLocked) {
+    return (
+      <View className="flex-1 bg-[#002f5d] items-center justify-center px-8">
+        <View className="items-center mb-8">
+          <Text className="text-white text-5xl font-bold mb-2">{t('app_name')}</Text>
+          <Text className="text-blue-200 text-lg text-center">SOL Móvil Seguro</Text>
+        </View>
+        <TouchableOpacity
+          onPress={unlockWithBiometrics}
+          className="bg-white/10 dark:bg-white/5 border border-white/20 p-8 rounded-full mb-12 items-center justify-center shadow-lg"
+          accessibilityLabel="Desbloquear con biometría"
+          accessibilityRole="button"
+        >
+          <Text className="text-6xl text-white">🔒</Text>
+        </TouchableOpacity>
+        <Text className="text-white/80 text-center mb-8 text-sm px-4">
+          Esta aplicación contiene información tributaria confidencial protegida por biometría.
+        </Text>
+        <TouchableOpacity
+          onPress={unlockWithBiometrics}
+          className="bg-white rounded-xl py-3.5 px-8 w-full items-center shadow-md"
+          accessibilityLabel="Desbloquear ahora"
+          accessibilityRole="button"
+        >
+          <Text className="text-[#002f5d] font-bold text-base">Desbloquear Aplicación</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
 
   const firstName = state.user?.nombre ?? 'Usuario'
   const initial = firstName.charAt(0).toUpperCase()

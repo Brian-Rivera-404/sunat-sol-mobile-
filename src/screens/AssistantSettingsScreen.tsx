@@ -1,9 +1,10 @@
 import React from 'react'
-import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, setAssistantSettings } from '../store/sunatStore'
+import { useStore, go, setAssistantSettings, setBiometric } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
+import * as LocalAuthentication from 'expo-local-authentication'
 import HeaderBar from '../components/HeaderBar'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
@@ -40,6 +41,28 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
   const toggleLocal = () => {
     dispatch(setAssistantSettings({ useLocalOnly: !settings.useLocalOnly }))
     vibrateSuccess()
+  }
+
+  const toggleBiometric = async () => {
+    vibrateLight()
+    if (!state.biometricEnabled) {
+      const hasHardware = await LocalAuthentication.hasHardwareAsync()
+      const isEnrolled = await LocalAuthentication.isEnrolledAsync()
+      if (!hasHardware || !isEnrolled) {
+        Alert.alert(t('biometric_not_available') || 'Biometría no disponible')
+        return
+      }
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: t('biometric_login') || 'Acceso con huella',
+      })
+      if (result.success) {
+        dispatch(setBiometric(true))
+        vibrateSuccess()
+      }
+    } else {
+      dispatch(setBiometric(false))
+      vibrateSuccess()
+    }
   }
 
   return (
@@ -106,6 +129,24 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
               accessibilityLabel={`${t('assistant_settings_local')}: ${settings.useLocalOnly ? t('general_active') : t('general_inactive')}`}
               accessibilityRole="switch"
               accessibilityState={{ checked: settings.useLocalOnly }}
+            >
+              <View className="w-6 h-6 rounded-full bg-white shadow-sm" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+          <View className="flex-row items-center justify-between">
+            <View className="flex-1 mr-4">
+              <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t('biometric_setup')}</Text>
+              <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('biometric_login')}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={toggleBiometric}
+              className={`w-14 h-7 rounded-full px-0.5 justify-center ${state.biometricEnabled ? 'bg-[#1B4FBF] items-end' : 'bg-gray-300 dark:bg-gray-600 items-start'}`}
+              accessibilityLabel={`${t('biometric_setup')}: ${state.biometricEnabled ? t('general_active') : t('general_inactive')}`}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: state.biometricEnabled }}
             >
               <View className="w-6 h-6 rounded-full bg-white shadow-sm" />
             </TouchableOpacity>
