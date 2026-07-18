@@ -1,0 +1,149 @@
+import React, { useState } from 'react'
+import { View, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native'
+import { Text } from '../components/AccessibleText'
+import { useStore, go, formatearFecha, addTramite } from '../store/sunatStore'
+import { useTranslate } from '../i18n/useTranslate'
+import { vibrateLight, vibrateSuccess, vibrateError } from '../utils/haptics'
+import HeaderBar from '../components/HeaderBar'
+import { C } from '../styles/theme'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../types/navigation'
+
+const TRAMITE_STATUS: Record<string, { color: string; bg: string; labelKey: string }> = {
+  en_revision: { color: '#D97706', bg: '#FEF3C7', labelKey: 'tramites_status_review' },
+  aprobado: { color: '#16A34A', bg: '#DCFCE7', labelKey: 'tramites_status_approved' },
+  rechazado: { color: '#DC2626', bg: '#FEE2E2', labelKey: 'tramites_status_rejected' },
+  subsanacion: { color: '#1B4FBF', bg: '#DBEAFE', labelKey: 'tramites_status_correction' },
+}
+
+type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Tramites'>
+
+export default function TramitesScreen({ navigation }: { navigation: ScreenNav }) {
+  const { state, dispatch } = useStore()
+  const { t } = useTranslate()
+  const [showForm, setShowForm] = useState(false)
+  const [tipo, setTipo] = useState('')
+  const [descripcion, setDescripcion] = useState('')
+
+  const tramites = state.tramites ?? []
+
+  const handleSubmit = () => {
+    if (!tipo.trim() || !descripcion.trim()) {
+      vibrateError()
+      return
+    }
+    dispatch(addTramite({
+      id: `TR-${Date.now()}`,
+      tipo: tipo.trim(),
+      descripcion: descripcion.trim(),
+      fechaPresentacion: new Date().toISOString().split('T')[0],
+      estado: 'en_revision',
+    }))
+    vibrateSuccess()
+    setShowForm(false)
+    setTipo('')
+    setDescripcion('')
+  }
+
+  return (
+    <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
+      <HeaderBar dark>
+        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
+          <Text className="text-white text-2xl">{'\u2039'}</Text>
+        </TouchableOpacity>
+        <Text className="text-white text-lg font-bold flex-1" accessibilityRole="header">{t('tramites_title')}</Text>
+        <TouchableOpacity
+          className="bg-white/20 rounded-xl px-3 py-1.5"
+          onPress={() => { vibrateLight(); setShowForm(true) }}
+          accessibilityLabel={t('tramites_new')}
+          accessibilityRole="button"
+        >
+          <Text className="text-white font-bold text-xs">{'\u2795'}</Text>
+        </TouchableOpacity>
+      </HeaderBar>
+
+      <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
+        {tramites.length === 0 ? (
+          <View className="items-center justify-center py-20">
+            <Text className="text-5xl mb-4">{'\uD83D\uDCCB'}</Text>
+            <Text className="text-gray-500 dark:text-gray-400 text-center">{t('tramites_empty')}</Text>
+          </View>
+        ) : (
+          tramites.map((tr) => {
+            const s = TRAMITE_STATUS[tr.estado] ?? { color: C.s500, bg: C.s100, labelKey: tr.estado }
+            return (
+              <View key={tr.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+                <View className="flex-row justify-between items-start mb-2">
+                  <View className="flex-1 mr-2">
+                    <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{tr.tipo}</Text>
+                    <Text className="text-xs text-gray-400 mt-0.5">{tr.descripcion}</Text>
+                  </View>
+                  <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
+                    <Text className="text-xs font-bold" style={{ color: s.color }}>{t(s.labelKey)}</Text>
+                  </View>
+                </View>
+                <View className="flex-row items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+                  <Text className="text-xs text-gray-400">{t('tramites_presentacion')}: {formatearFecha(tr.fechaPresentacion)}</Text>
+                  {tr.observacion && (
+                    <TouchableOpacity
+                      className="bg-amber-50 dark:bg-amber-900 rounded-lg px-2 py-1"
+                      onPress={() => { vibrateLight() }}
+                      accessibilityLabel={`${t('tramites_observacion')}: ${tr.observacion}`}
+                    >
+                      <Text className="text-amber-700 dark:text-amber-300 text-xs font-semibold">{'\uD83D\uDCDD'} {t('tramites_observacion')}</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+            )
+          })
+        )}
+        <View className="h-10" />
+      </ScrollView>
+
+      <Modal visible={showForm} transparent animationType="slide">
+        <View className="flex-1 justify-end bg-black/50">
+          <View className="bg-white dark:bg-gray-800 rounded-t-3xl p-6 pb-10">
+            <Text className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">{t('tramites_new')}</Text>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('tramites_type')}</Text>
+            <TextInput
+              className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100 mb-4"
+              value={tipo}
+              onChangeText={setTipo}
+              placeholder="Ej: Suspensión de Retenciones"
+              accessibilityLabel={t('tramites_type')}
+            />
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('register_name')}</Text>
+            <TextInput
+              className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100 mb-6"
+              value={descripcion}
+              onChangeText={setDescripcion}
+              placeholder="Describe tu solicitud..."
+              multiline
+              numberOfLines={3}
+              accessibilityLabel={t('register_name')}
+            />
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                className="flex-1 py-3 rounded-xl items-center border border-gray-300 dark:border-gray-600"
+                onPress={() => setShowForm(false)}
+                accessibilityLabel={t('general_cancelar')}
+                accessibilityRole="button"
+              >
+                <Text className="text-gray-600 dark:text-gray-400 font-semibold">{t('general_cancelar')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex-1 py-3 rounded-xl items-center" style={{ backgroundColor: C.navy }}
+                onPress={handleSubmit}
+                accessibilityLabel={t('general_save')}
+                accessibilityRole="button"
+              >
+                <Text className="text-white font-bold">{t('general_save')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  )
+}
