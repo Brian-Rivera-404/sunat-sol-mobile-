@@ -18,11 +18,35 @@ type Message = {
   lowConfidence?: boolean
 }
 
-const FAQ_CHIPS = [
-  'faq_chip_retencion',
-  'faq_chip_cobre_menos',
-  'faq_chip_equivoco',
-]
+const getFaqChipsForScreen = (screen: string | null): string[] => {
+  if (screen === 'DeductibleExpenses' || screen === 'ValidarEstablecimientos') {
+    return [
+      'faq_chip_gasto_deducir',
+      'faq_chip_validar_local',
+      'faq_chip_limite_uit',
+    ]
+  }
+  if (screen === 'TaxDebt') {
+    return [
+      'faq_chip_pagar_deuda',
+      'faq_chip_vencimiento_plazo',
+      'faq_chip_fraccionamiento',
+    ]
+  }
+  if (screen === 'NuevoRecibo1' || screen === 'MisRecibos' || screen === 'ReciboEmitido') {
+    return [
+      'faq_chip_retencion',
+      'faq_chip_cobre_menos',
+      'faq_chip_anular_recibo',
+    ]
+  }
+  return [
+    'faq_chip_retencion',
+    'faq_chip_cobre_menos',
+    'faq_chip_vencimiento_declaracion',
+    'faq_chip_gasto_deducir',
+  ]
+}
 
 type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'AssistantChat'>
 
@@ -473,9 +497,9 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
         )}
       </ScrollView>
 
-      {messages.length === 0 && (
+      {messages.length <= 1 && (
         <View className="px-4 flex-row flex-wrap mb-2">
-          {FAQ_CHIPS.map((chip) => (
+          {getFaqChipsForScreen(state.previousScreen).map((chip) => (
             <TouchableOpacity
               key={chip}
               className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full px-4 py-2 mr-2 mb-2 shadow-sm"

@@ -145,14 +145,14 @@ export default function MisRecibosScreen({ navigation }: Props) {
                 </View>
                 <StatusPill status={recibo.estado} />
               </View>
-              <View className="flex-row justify-between items-center">
-                <View>
-                  <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(recibo.montoBruto)}</Text>
+              <View className="flex-row justify-between items-center gap-2">
+                <View className="flex-1 min-w-[100px]">
+                  <Text numberOfLines={1} adjustsFontSizeToFit className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(recibo.montoBruto)}</Text>
                   {recibo.retencion > 0 && (
-                    <Text className="text-xs text-gray-400">{t('mis_recibos_retencion')}: {fmt(recibo.retencion)}</Text>
+                    <Text numberOfLines={1} className="text-xs text-gray-400">{t('mis_recibos_retencion')}: {fmt(recibo.retencion)}</Text>
                   )}
                 </View>
-                <View className="flex-row gap-2">
+                <View className="flex-row gap-1.5 flex-shrink-0">
                   <TouchableOpacity
                     className="rounded-xl px-3 py-1.5" style={{ backgroundColor: C.s100 }}
                     onPress={() => { vibrateLight(); dispatch(showModal(recibo.id)) }}

@@ -25,6 +25,7 @@ interface ReciboData {
 
 export interface State {
   screen: keyof RootStackParamList
+  previousScreen: keyof RootStackParamList | null
   user: User
   recibos: RHEReceipt[]
   nextId: number
@@ -103,7 +104,7 @@ const seedUser: User = {
  *   pago  → formaPago    estado → estado
  */
 const seedRecibos: RHEReceipt[] = [
-  { id: 'E001-0030', ruc: '20100070970', cliente: 'BANCO DE CRÉDITO DEL PERÚ S.A.', fecha: '2026-06-19', montoBruto: 111111, retencion: 8888.88, montoNeto: 102222.12, formaPago: 'cheque', estado: 'emitido' },
+  { id: 'E001-0030', ruc: '20100070970', cliente: 'BANCO DE CRÉDITO DEL PERÚ S.A.', fecha: '2026-06-19', montoBruto: 3200, retencion: 256, montoNeto: 2944, formaPago: 'cheque', estado: 'emitido' },
   { id: 'E001-0029', ruc: '20100070970', cliente: 'BANCO DE CRÉDITO DEL PERÚ S.A.', fecha: '2026-06-14', montoBruto: 2500, retencion: 200, montoNeto: 2300, formaPago: 'transferencia', estado: 'emitido' },
   { id: 'E001-0028', ruc: '20131694977', cliente: 'ALICORP S.A.A.', fecha: '2026-06-04', montoBruto: 1800, retencion: 144, montoNeto: 1656, formaPago: 'transferencia', estado: 'emitido' },
   { id: 'E001-0027', ruc: '20100047218', cliente: 'TELEFÓNICA DEL PERÚ S.A.A.', fecha: '2026-05-05', montoBruto: 1200, retencion: 144, montoNeto: 1056, formaPago: 'efectivo', estado: 'emitido' },
@@ -120,6 +121,7 @@ const initialReciboData: ReciboData = { ruc: '', cliente: '', monto: 0, formaPag
 
 const seedState: State = {
   screen: 'Home',
+  previousScreen: null,
   user: seedUser,
   recibos: seedRecibos,
   nextId: 31,
@@ -155,7 +157,7 @@ const seedState: State = {
     { id: 'DEC-001', periodo: '2026-03', estado: 'pagado', fechaLimite: '2026-04-15', monto: 1500 },
   ],
   conversations: [],
-  assistantSettings: { modality: 'text_voice', ttsSpeed: 'normal', useLocalOnly: false, language: 'es' },
+  assistantSettings: { modality: 'text_voice', ttsSpeed: 'normal', useLocalOnly: true, language: 'es' },
   clients: [
     { id: 'c1', ruc: '20100070970', nombre: 'BANCO DE CRÉDITO DEL PERÚ S.A.', frecuente: true },
     { id: 'c2', ruc: '20131694977', nombre: 'ALICORP S.A.A.', frecuente: true },
@@ -210,7 +212,11 @@ function reducer(state: State, action: Action): State {
         loaded: true,
       }
     case 'GO':
-      return { ...state, screen: action.payload }
+      return {
+        ...state,
+        previousScreen: state.screen === 'AssistantChat' || state.screen === 'AssistantOnboarding' || state.screen === 'AssistantHistory' ? state.previousScreen : state.screen,
+        screen: action.payload
+      }
     case 'SET_RECIBO_DATA':
       return { ...state, reciboData: { ...state.reciboData, ...action.payload } }
     case 'ADD_RECIBO': {

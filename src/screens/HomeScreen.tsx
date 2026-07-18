@@ -158,23 +158,23 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
           {/* Income card */}
           <View className="bg-white/9 rounded-[20px] p-[18px] border border-white/12">
             <Text className="text-white/55 text-xs mb-2">{t('home_ingresos_label')}</Text>
-            <Text className="text-3xl font-extrabold tracking-tight" style={{ color: '#C8A84E' }}>{fmt(totalIngresos)}</Text>
+            <Text numberOfLines={1} adjustsFontSizeToFit className="text-3xl font-extrabold tracking-tight" style={{ color: '#C8A84E' }}>{fmt(totalIngresos)}</Text>
             <Text className="text-white/40 text-xs mt-1.5">
               {reciboCount} recibo{reciboCount !== 1 ? 's' : ''} emitido{reciboCount !== 1 ? 's' : ''}
             </Text>
             <View className="h-[1] bg-white/10 my-4" />
-            <View className="flex-row justify-between">
-              <View>
+            <View className="flex-row justify-between gap-3">
+              <View className="flex-1 min-w-[80px]">
                 <Text className="text-white/45 text-xs">{t('home_retenido')}</Text>
-                <Text className="text-white/90 text-sm font-bold">{fmt(totalRetenido)}</Text>
+                <Text numberOfLines={1} adjustsFontSizeToFit className="text-white/90 text-sm font-bold">{fmt(totalRetenido)}</Text>
               </View>
-              <View>
+              <View className="flex-1 min-w-[80px]">
                 <Text className="text-white/45 text-xs">{t('home_neto')}</Text>
-                <Text className="text-sm font-bold" style={{ color: '#C8A84E' }}>{fmt(totalNeto)}</Text>
+                <Text numberOfLines={1} adjustsFontSizeToFit className="text-sm font-bold" style={{ color: '#C8A84E' }}>{fmt(totalNeto)}</Text>
               </View>
-              <View>
+              <View className="flex-1 min-w-[80px]">
                 <Text className="text-white/45 text-xs">{t('home_declarado')}</Text>
-                <Text className="text-white/90 text-sm font-bold">{fmt(totalIngresos * 0.08)}</Text>
+                <Text numberOfLines={1} adjustsFontSizeToFit className="text-white/90 text-sm font-bold">{fmt(totalIngresos * 0.08)}</Text>
               </View>
             </View>
           </View>

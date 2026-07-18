@@ -78,7 +78,7 @@ export async function askAssistant({
     }
     return {
       answer:
-        'No tengo una respuesta local para esa pregunta. Prueba a reformularla o desactiva "Usar solo respuestas locales" en Ajustes.',
+        'Lo siento, no logré comprender tu consulta. Como tu asistente virtual de la SUNAT, puedo ayudarte con la emisión de tus Recibos por Honorarios, consulta de deudas tributarias pendientes, trámites recurrentes y gastos deducibles. ¿Podrías reformular tu pregunta o intentar con alguna de las opciones sugeridas?',
       mode: 'local',
       lowConfidence: true,
     }
@@ -171,16 +171,16 @@ Instrucciones de comportamiento:
       throw new Error('Invalid response format')
 
     } catch (err: any) {
+      console.error('[assistantApi] DETAILED GEMINI API ERROR:', err)
+      if (err instanceof Error) {
+        console.error('[assistantApi] Error name:', err.name, 'message:', err.message, 'stack:', err.stack)
+      }
       console.warn('[assistantApi] Falló Gemini, aplicando local fallback:', err.message)
-      const isRateLimit = err.message === '429'
-      const fallbackSuffix = isRateLimit
-        ? '\n\n(Nota: Se alcanzó el límite de solicitudes del asistente remoto, respuesta local de respaldo)'
-        : '\n\n(Nota: No se pudo contactar al asistente remoto, respuesta local de respaldo)'
 
       const faqMatch = matchLocalFAQ(question)
       if (faqMatch) {
         return {
-          answer: faqMatch.respuesta + fallbackSuffix,
+          answer: faqMatch.respuesta,
           mode: 'local',
           lowConfidence: false,
           sourceFAQ: faqMatch,
@@ -188,9 +188,8 @@ Instrucciones de comportamiento:
       }
 
       return {
-        answer: isRateLimit
-          ? 'Lo siento, el asistente remoto está sobrecargado en este momento (Error 429) y no tengo una respuesta local guardada para tu duda.'
-          : 'Lo siento, no tengo conexión con el asistente remoto en este momento y no tengo una respuesta local guardada para tu duda.',
+        answer:
+          'Lo siento, no logré comprender tu consulta. Como tu asistente virtual de la SUNAT, puedo ayudarte con la emisión de tus Recibos por Honorarios, consulta de deudas tributarias pendientes, trámites recurrentes y gastos deducibles. ¿Podrías reformular tu pregunta o intentar con alguna de las opciones sugeridas?',
         mode: 'local',
         lowConfidence: true,
       }
@@ -242,9 +241,7 @@ Instrucciones de comportamiento:
     const faqMatch = matchLocalFAQ(question)
     if (faqMatch) {
       return {
-        answer:
-          faqMatch.respuesta +
-          '\n\n(Nota: No hubo conexión con el servidor, esta es una respuesta local de respaldo)',
+        answer: faqMatch.respuesta,
         mode: 'local',
         lowConfidence: false,
         sourceFAQ: faqMatch,
@@ -253,7 +250,7 @@ Instrucciones de comportamiento:
 
     return {
       answer:
-        'No pude conectar con el asistente y no tengo una respuesta local para eso. Verifica tu conexión o activa "Usar solo respuestas locales" en Ajustes.',
+        'Lo siento, no logré comprender tu consulta. Como tu asistente virtual de la SUNAT, puedo ayudarte con la emisión de tus Recibos por Honorarios, consulta de deudas tributarias pendientes, trámites recurrentes y gastos deducibles. ¿Podrías reformular tu pregunta o intentar con alguna de las opciones sugeridas?',
       mode: 'local',
       lowConfidence: true,
     }
