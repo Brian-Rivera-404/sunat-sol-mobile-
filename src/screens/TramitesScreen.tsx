@@ -10,10 +10,10 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
 
 const TRAMITE_STATUS: Record<string, { color: string; bg: string; labelKey: string }> = {
-  en_revision: { color: '#92400E', bg: '#FEF3C7', labelKey: 'tramites_status_review' },
-  aprobado: { color: '#065F46', bg: '#DCFCE7', labelKey: 'tramites_status_approved' },
-  rechazado: { color: '#991B1B', bg: '#FEE2E2', labelKey: 'tramites_status_rejected' },
-  subsanacion: { color: '#1B4FBF', bg: '#DBEAFE', labelKey: 'tramites_status_correction' },
+  en_revision: { color: C.amberDark, bg: C.amberBg, labelKey: 'tramites_status_review' },
+  aprobado: { color: C.greenDark, bg: C.greenBg, labelKey: 'tramites_status_approved' },
+  rechazado: { color: C.redDark, bg: C.redBg, labelKey: 'tramites_status_rejected' },
+  subsanacion: { color: C.blue, bg: C.blueBg, labelKey: 'tramites_status_correction' },
 }
 
 type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'Tramites'>
@@ -24,14 +24,17 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
   const [showForm, setShowForm] = useState(false)
   const [tipo, setTipo] = useState('')
   const [descripcion, setDescripcion] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   const tramites = state.tramites ?? []
 
   const handleSubmit = () => {
     if (!tipo.trim() || !descripcion.trim()) {
+      setError(t('login_errors_required'))
       vibrateError()
       return
     }
+    setError(null)
     dispatch(addTramite({
       id: `TR-${Date.now()}`,
       tipo: tipo.trim(),
@@ -54,7 +57,7 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
         <Text className="text-white text-lg font-bold flex-1" accessibilityRole="header">{t('tramites_title')}</Text>
         <TouchableOpacity
           className="bg-white/20 rounded-xl min-w-[48px] min-h-[48px] items-center justify-center"
-          onPress={() => { vibrateLight(); setShowForm(true) }}
+          onPress={() => { vibrateLight(); setError(null); setTipo(''); setDescripcion(''); setShowForm(true) }}
           accessibilityLabel={t('tramites_new')}
           accessibilityRole="button"
         >
@@ -123,22 +126,27 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
               numberOfLines={3}
               accessibilityLabel={t('register_name')}
             />
+            {error && (
+              <Text className="text-red-500 dark:text-red-400 text-sm font-semibold mb-4" accessibilityLiveRegion="polite">
+                {error}
+              </Text>
+            )}
             <View className="flex-row gap-3">
               <TouchableOpacity
-                className="flex-1 rounded-xl items-center border border-gray-300 dark:border-gray-600 min-h-[48px] justify-center"
+                className="flex-1 border border-gray-300 dark:border-gray-600 rounded-xl min-h-[48px] justify-center items-center"
                 onPress={() => setShowForm(false)}
                 accessibilityLabel={t('general_cancelar') + ' ' + t('tramites_new').toLowerCase()}
                 accessibilityRole="button"
               >
-                <Text className="text-gray-600 dark:text-gray-400 font-semibold">{t('general_cancelar')}</Text>
+                <Text className="text-gray-700 dark:text-gray-300 font-bold text-base">{t('general_cancelar')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="flex-1 rounded-xl items-center min-h-[48px] justify-center" style={{ backgroundColor: C.navy }}
+                className="flex-1 bg-[#002f5d] rounded-xl min-h-[48px] justify-center items-center"
                 onPress={handleSubmit}
                 accessibilityLabel={t('general_save') + ' ' + t('tramites_new').toLowerCase()}
                 accessibilityRole="button"
               >
-                <Text className="text-white font-bold">{t('general_save')}</Text>
+                <Text className="text-white font-bold text-base">{t('general_save')}</Text>
               </TouchableOpacity>
             </View>
           </View>

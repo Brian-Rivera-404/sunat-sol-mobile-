@@ -10,10 +10,10 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
 
 const DEBT_STATUS_STYLE: Record<string, { color: string; bg: string }> = {
-  pendiente: { color: '#92400E', bg: '#FEF3C7' },
-  vencido: { color: '#991B1B', bg: '#FEE2E2' },
-  pagado: { color: '#065F46', bg: '#DCFCE7' },
-  fraccionado: { color: '#1B4FBF', bg: '#DBEAFE' },
+  pendiente: { color: C.amberDark, bg: C.amberBg },
+  vencido: { color: C.redDark, bg: C.redBg },
+  pagado: { color: C.greenDark, bg: C.greenBg },
+  fraccionado: { color: C.blue, bg: C.blueBg },
 }
 
 const DEBT_TYPE_LABEL: Record<string, string> = {

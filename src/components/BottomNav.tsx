@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { id: 'Inbox' as const, icon: '\uD83D\uDCEB', labelKey: 'bottomnav_buzon' },
 ]
 
-const MAIN_SCREENS = ['Home', 'MisRecibos', 'Declarations', 'Inbox']
+const MAIN_SCREENS = ['Home', 'MisRecibos', 'Declarations', 'Inbox', 'TaxDebt', 'Tramites', 'Orientacion']
 
 export default function BottomNav() {
   const { state, dispatch } = useStore()
