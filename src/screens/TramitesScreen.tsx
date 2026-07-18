@@ -10,9 +10,9 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
 
 const TRAMITE_STATUS: Record<string, { color: string; bg: string; labelKey: string }> = {
-  en_revision: { color: '#D97706', bg: '#FEF3C7', labelKey: 'tramites_status_review' },
-  aprobado: { color: '#16A34A', bg: '#DCFCE7', labelKey: 'tramites_status_approved' },
-  rechazado: { color: '#DC2626', bg: '#FEE2E2', labelKey: 'tramites_status_rejected' },
+  en_revision: { color: '#92400E', bg: '#FEF3C7', labelKey: 'tramites_status_review' },
+  aprobado: { color: '#065F46', bg: '#DCFCE7', labelKey: 'tramites_status_approved' },
+  rechazado: { color: '#991B1B', bg: '#FEE2E2', labelKey: 'tramites_status_rejected' },
   subsanacion: { color: '#1B4FBF', bg: '#DBEAFE', labelKey: 'tramites_status_correction' },
 }
 
@@ -53,7 +53,7 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold flex-1" accessibilityRole="header">{t('tramites_title')}</Text>
         <TouchableOpacity
-          className="bg-white/20 rounded-xl px-3 py-1.5"
+          className="bg-white/20 rounded-xl min-w-[48px] min-h-[48px] items-center justify-center"
           onPress={() => { vibrateLight(); setShowForm(true) }}
           accessibilityLabel={t('tramites_new')}
           accessibilityRole="button"
@@ -66,7 +66,7 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
         {tramites.length === 0 ? (
           <View className="items-center justify-center py-20">
             <Text className="text-5xl mb-4">{'\uD83D\uDCCB'}</Text>
-            <Text className="text-gray-500 dark:text-gray-400 text-center">{t('tramites_empty')}</Text>
+            <Text className="text-gray-700 dark:text-gray-400 text-center">{t('tramites_empty')}</Text>
           </View>
         ) : (
           tramites.map((tr) => {
@@ -76,14 +76,14 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
                 <View className="flex-row justify-between items-start mb-2">
                   <View className="flex-1 mr-2">
                     <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{tr.tipo}</Text>
-                    <Text className="text-xs text-gray-400 mt-0.5">{tr.descripcion}</Text>
+                    <Text className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{tr.descripcion}</Text>
                   </View>
                   <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
                     <Text className="text-xs font-bold" style={{ color: s.color }}>{t(s.labelKey)}</Text>
                   </View>
                 </View>
                 <View className="flex-row items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
-                  <Text className="text-xs text-gray-400">{t('tramites_presentacion')}: {formatearFecha(tr.fechaPresentacion)}</Text>
+                  <Text className="text-xs text-gray-600 dark:text-gray-400">{t('tramites_presentacion')}: {formatearFecha(tr.fechaPresentacion)}</Text>
                   {tr.observacion && (
                     <TouchableOpacity
                       className="bg-amber-50 dark:bg-amber-900 rounded-lg px-2 py-1"
@@ -125,17 +125,17 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
             />
             <View className="flex-row gap-3">
               <TouchableOpacity
-                className="flex-1 py-3 rounded-xl items-center border border-gray-300 dark:border-gray-600"
+                className="flex-1 rounded-xl items-center border border-gray-300 dark:border-gray-600 min-h-[48px] justify-center"
                 onPress={() => setShowForm(false)}
-                accessibilityLabel={t('general_cancelar')}
+                accessibilityLabel={t('general_cancelar') + ' ' + t('tramites_new').toLowerCase()}
                 accessibilityRole="button"
               >
                 <Text className="text-gray-600 dark:text-gray-400 font-semibold">{t('general_cancelar')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="flex-1 py-3 rounded-xl items-center" style={{ backgroundColor: C.navy }}
+                className="flex-1 rounded-xl items-center min-h-[48px] justify-center" style={{ backgroundColor: C.navy }}
                 onPress={handleSubmit}
-                accessibilityLabel={t('general_save')}
+                accessibilityLabel={t('general_save') + ' ' + t('tramites_new').toLowerCase()}
                 accessibilityRole="button"
               >
                 <Text className="text-white font-bold">{t('general_save')}</Text>

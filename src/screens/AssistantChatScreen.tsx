@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { View, TouchableOpacity, TextInput, ScrollView, Alert, Linking, Platform } from 'react-native'
+import { View, TouchableOpacity, TextInput, ScrollView, Alert, Linking, Platform, AccessibilityInfo } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, addConversation } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -106,10 +106,16 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
   // Registrar eventos nativos de reconocimiento de voz
   useSpeechRecognitionEvent('start', () => {
     setIsListening(true)
+    AccessibilityInfo.announceForAccessibility(
+      state.language === 'es' ? 'Grabadora iniciada, hable ahora.' : 'Microphone active, start speaking.'
+    )
   })
 
   useSpeechRecognitionEvent('end', () => {
     setIsListening(false)
+    AccessibilityInfo.announceForAccessibility(
+      state.language === 'es' ? 'Grabadora apagada.' : 'Microphone disabled.'
+    )
   })
 
   useSpeechRecognitionEvent('result', (event) => {

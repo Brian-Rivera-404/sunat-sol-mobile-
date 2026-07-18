@@ -10,9 +10,9 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
 
 const DEBT_STATUS_STYLE: Record<string, { color: string; bg: string }> = {
-  pendiente: { color: '#D97706', bg: '#FEF3C7' },
-  vencido: { color: '#DC2626', bg: '#FEE2E2' },
-  pagado: { color: '#16A34A', bg: '#DCFCE7' },
+  pendiente: { color: '#92400E', bg: '#FEF3C7' },
+  vencido: { color: '#991B1B', bg: '#FEE2E2' },
+  pagado: { color: '#065F46', bg: '#DCFCE7' },
   fraccionado: { color: '#1B4FBF', bg: '#DBEAFE' },
 }
 
@@ -77,13 +77,13 @@ export default function TaxDebtScreen({ navigation }: { navigation: ScreenNav })
         {debts.length === 0 ? (
           <View className="items-center justify-center py-20">
             <Text className="text-5xl mb-4">{'\u2705'}</Text>
-            <Text className="text-gray-500 dark:text-gray-400 text-center">{t('taxdebt_empty')}</Text>
+            <Text className="text-gray-600 dark:text-gray-400 text-center">{t('taxdebt_empty')}</Text>
           </View>
         ) : (
           <>
             {/* Summary card */}
             <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
-              <Text className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('taxdebt_total_debt')}</Text>
+              <Text className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('taxdebt_total_debt')}</Text>
               <Text className="text-3xl font-extrabold" style={{ color: totalDeuda > 0 ? C.red : C.green }}>{fmt(totalDeuda)}</Text>
               <View className="flex-row gap-4 mt-3">
                 {['pendiente', 'vencido', 'fraccionado'].map((k) => {
@@ -93,7 +93,7 @@ export default function TaxDebtScreen({ navigation }: { navigation: ScreenNav })
                   return (
                     <View key={k} className="flex-row items-center">
                       <View className="w-2 h-2 rounded-full mr-1" style={{ backgroundColor: s.color }} />
-                      <Text className="text-xs text-gray-500">{count} {t('taxdebt_' + k)}</Text>
+                      <Text className="text-xs text-gray-600 dark:text-gray-400">{count} {t('taxdebt_' + k)}</Text>
                     </View>
                   )
                 })}
@@ -105,7 +105,7 @@ export default function TaxDebtScreen({ navigation }: { navigation: ScreenNav })
               {FILTERS.map((f) => (
                 <TouchableOpacity
                   key={f.key ?? 'all'}
-                  className={`px-4 py-2 rounded-full ${filter === f.key ? 'bg-[#002f5d]' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600'}`}
+                  className={`px-4 min-h-[48px] justify-center rounded-full ${filter === f.key ? 'bg-[#002f5d]' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600'}`}
                   onPress={() => setFilter(f.key)}
                   accessibilityLabel={f.label}
                   accessibilityRole="button"
@@ -124,7 +124,7 @@ export default function TaxDebtScreen({ navigation }: { navigation: ScreenNav })
                   <View className="flex-row justify-between items-start mb-2">
                     <View className="flex-1 mr-2">
                       <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{debt.tributo}</Text>
-                      <Text className="text-xs text-gray-400 mt-0.5">{t('taxdebt_periodo')}: {debt.periodo}</Text>
+                      <Text className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{t('taxdebt_periodo')}: {debt.periodo}</Text>
                     </View>
                     <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
                       <Text className="text-xs font-bold" style={{ color: s.color }}>{t('taxdebt_' + debt.estado)}</Text>
@@ -132,15 +132,15 @@ export default function TaxDebtScreen({ navigation }: { navigation: ScreenNav })
                   </View>
                   <View className="flex-row items-center gap-3 mb-2">
                     <View className="bg-gray-100 dark:bg-gray-700 rounded-lg px-2 py-1">
-                      <Text className="text-xs font-semibold text-gray-500">{t(DEBT_TYPE_LABEL[debt.tipo] ?? debt.tipo)}</Text>
+                      <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400">{t(DEBT_TYPE_LABEL[debt.tipo] ?? debt.tipo)}</Text>
                     </View>
-                    <Text className="text-xs text-gray-400">{'\uD83D\uDCC5'} {t('taxdebt_duedate')}: {formatearFecha(debt.fechaVencimiento)}</Text>
+                    <Text className="text-xs text-gray-600 dark:text-gray-400">{'\uD83D\uDCC5'} {t('taxdebt_duedate')}: {formatearFecha(debt.fechaVencimiento)}</Text>
                   </View>
                   <View className="flex-row justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-700">
                     <Text className="text-xl font-extrabold" style={{ color: debt.estado === 'vencido' ? C.red : C.navy }}>{fmt(debt.monto)}</Text>
                     {debt.estado !== 'pagado' && (
                       <TouchableOpacity
-                        className="px-4 py-2 rounded-xl" style={{ backgroundColor: C.blue }}
+                        className="px-4 rounded-xl min-h-[48px] justify-center" style={{ backgroundColor: C.blue }}
                         onPress={() => handlePay(debt.id, debt.monto)}
                         accessibilityLabel={t('taxdebt_pay_now')}
                         accessibilityRole="button"

@@ -47,14 +47,14 @@ export default function OrientacionScreen({ navigation }: { navigation: ScreenNa
       </HeaderBar>
 
       <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
-        <Text className="text-gray-500 dark:text-gray-400 text-sm mb-4">{t('orientacion_subtitle')}</Text>
+        <Text className="text-gray-700 dark:text-gray-400 text-sm mb-4">{t('orientacion_subtitle')}</Text>
 
         {/* Category filter */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-4" contentContainerStyle={{ gap: 6 }}>
           {CATEGORIAS.map((cat) => (
             <TouchableOpacity
               key={cat.key ?? 'all'}
-              className={`px-4 py-2 rounded-full ${filterCat === cat.key ? 'bg-[#002f5d]' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600'}`}
+              className={`px-4 min-h-[48px] justify-center rounded-full ${filterCat === cat.key ? 'bg-[#002f5d]' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600'}`}
               onPress={() => setFilterCat(cat.key)}
               accessibilityLabel={t(cat.labelKey)}
               accessibilityRole="button"
@@ -80,15 +80,15 @@ export default function OrientacionScreen({ navigation }: { navigation: ScreenNa
                 <Text className="text-2xl mr-3">{guia.icon}</Text>
                 <View className="flex-1">
                   <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{t(guia.titulo)}</Text>
-                  <Text className="text-xs text-gray-400 mt-0.5">{t('orientacion_cat_' + guia.categoria)}</Text>
+                  <Text className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{t('orientacion_cat_' + guia.categoria)}</Text>
                 </View>
-                <Text className="text-gray-400 text-lg">{isExpanded ? '\u25B2' : '\u25BC'}</Text>
+                <Text className="text-gray-600 dark:text-gray-400 text-lg">{isExpanded ? '\u25B2' : '\u25BC'}</Text>
               </View>
               {isExpanded && (
                 <View className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-                  <Text className="text-sm text-gray-600 dark:text-gray-400 leading-6">{t(guia.contenido)}</Text>
+                  <Text className="text-sm text-gray-700 dark:text-gray-300 leading-6">{t(guia.contenido)}</Text>
                   <TouchableOpacity
-                    className="mt-3 self-start px-4 py-2 rounded-xl" style={{ backgroundColor: C.blue }}
+                    className="mt-3 self-start px-4 rounded-xl min-h-[48px] justify-center" style={{ backgroundColor: C.blue }}
                     onPress={() => dispatch(go('AssistantChat'))}
                     accessibilityLabel={t('inbox_ask_assistant')}
                     accessibilityRole="button"
@@ -102,10 +102,10 @@ export default function OrientacionScreen({ navigation }: { navigation: ScreenNa
         })}
 
         <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-[16px] px-4 py-4 mb-10 mt-1">
-          <Text className="text-blue-700 dark:text-blue-300 text-sm font-bold mb-1">{'\uD83D\uDCA1'} {t('assistant_welcome')}</Text>
-          <Text className="text-blue-600 dark:text-blue-400 text-xs leading-5">{t('assistant_welcome_desc')}</Text>
+          <Text className="text-blue-800 dark:text-blue-300 text-sm font-bold mb-1">{'\uD83D\uDCA1'} {t('assistant_welcome')}</Text>
+          <Text className="text-blue-700 dark:text-blue-400 text-xs leading-5">{t('assistant_welcome_desc')}</Text>
           <TouchableOpacity
-            className="mt-3 px-5 py-2.5 rounded-xl self-start" style={{ backgroundColor: C.blue }}
+            className="mt-3 px-5 rounded-xl self-start min-h-[48px] justify-center" style={{ backgroundColor: C.blue }}
             onPress={() => dispatch(go('AssistantChat'))}
             accessibilityLabel={t('assistant_title')}
             accessibilityRole="button"
