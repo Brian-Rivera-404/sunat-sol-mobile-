@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { View, TouchableOpacity, ScrollView, Alert, Linking, Platform } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, fmt, formatearFecha, MESES } from '../store/sunatStore'
+import { useStore, go, goBack, fmt, formatearFecha, MESES } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
@@ -140,45 +140,59 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
         const doc = new jsPDF()
         const isEs = state.language === 'es'
         
+        // --- 1. HEADER BANNER ---
+        doc.setFillColor(0, 47, 93) // SUNAT Blue
+        doc.rect(0, 0, 210, 40, 'F')
+        
+        doc.setFillColor(253, 184, 19) // SUNAT Gold
+        doc.rect(0, 40, 210, 3, 'F')
+        
         doc.setFont('helvetica', 'bold')
         doc.setFontSize(22)
-        doc.setTextColor(10, 34, 64)
-        doc.text('SUNAT', 20, 25)
+        doc.setTextColor(255, 255, 255)
+        doc.text('SUNAT SOL', 20, 26)
         
         doc.setFontSize(10)
         doc.setFont('helvetica', 'normal')
-        doc.setTextColor(100, 116, 139)
-        const subtitle = isEs ? 'SUNAT SOL Móvil - Reporte Oficial' : 'SUNAT SOL Mobile - Official Report'
-        doc.text(subtitle, 20, 32)
+        doc.setTextColor(230, 240, 255)
+        doc.text(isEs ? 'Reporte Tributario Oficial - Renta de 4ta Categoría' : 'Official Tax Report - 4th Category Income', 20, 34)
         
-        doc.setDrawColor(27, 79, 191)
-        doc.setLineWidth(1)
-        doc.line(20, 37, 190, 37)
+        // --- 2. CONTRIBUYENTE INFO CARD ---
+        doc.setFillColor(245, 247, 250)
+        doc.roundedRect(20, 52, 170, 35, 3, 3, 'F')
+        doc.setDrawColor(218, 225, 233)
+        doc.setLineWidth(0.5)
+        doc.roundedRect(20, 52, 170, 35, 3, 3, 'D')
         
-        doc.setFontSize(16)
         doc.setFont('helvetica', 'bold')
-        doc.setTextColor(30, 41, 59)
-        const titleText = isEs ? 'REPORTE TRIBUTARIO DE CUARTA CATEGORÍA' : 'FOURTH CATEGORY TAX REPORT'
-        doc.text(titleText, 20, 50)
+        doc.setFontSize(11)
+        doc.setTextColor(15, 23, 42)
+        doc.text(isEs ? 'INFORMACIÓN DEL CONTRIBUYENTE' : 'TAXPAYER INFORMATION', 25, 60)
         
-        doc.setFontSize(10)
         doc.setFont('helvetica', 'normal')
+        doc.setFontSize(9)
         doc.setTextColor(71, 85, 105)
-        doc.text(`${isEs ? 'Contribuyente' : 'Taxpayer'}: ${state.user.nombre}`, 20, 60)
-        doc.text(`RUC: ${state.user.dni}`, 20, 65)
-        doc.text(`${isEs ? 'Fecha de Emisión' : 'Issue Date'}: ${new Date().toLocaleString()}`, 20, 70)
+        doc.text(`${isEs ? 'Nombre' : 'Name'}: ${state.user.nombre}`, 25, 68)
+        doc.text(`RUC: ${state.user.dni || '10456789123'}`, 25, 74)
+        doc.text(`${isEs ? 'Fecha de Generación' : 'Date Generated'}: ${new Date().toLocaleString('es-PE')}`, 25, 80)
         
-        doc.setFontSize(12)
+        doc.text(`${isEs ? 'Dirección' : 'Address'}: ${state.user.direccion}`, 105, 68)
+        doc.text(`${isEs ? 'Correo' : 'Email'}: ${state.user.email}`, 105, 74)
+        doc.text(`${isEs ? 'Teléfono' : 'Phone'}: ${state.user.tel}`, 105, 80)
+        
+        // --- 3. RESUMEN DE INGRESOS Y GASTOS ---
         doc.setFont('helvetica', 'bold')
-        doc.setTextColor(10, 34, 64)
-        doc.text(isEs ? 'Resumen Anual' : 'Annual Summary', 20, 85)
+        doc.setFontSize(12)
+        doc.setTextColor(0, 47, 93)
+        doc.text(isEs ? 'Resumen Financiero Anual' : 'Annual Financial Summary', 20, 102)
         
-        doc.setFillColor(248, 250, 252)
-        doc.rect(20, 90, 170, 55, 'F')
-        
-        doc.setFontSize(10)
-        doc.setFont('helvetica', 'normal')
-        doc.setTextColor(100, 116, 139)
+        doc.setFillColor(0, 47, 93)
+        doc.rect(20, 106, 170, 8, 'F')
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(9)
+        doc.setTextColor(255, 255, 255)
+        doc.text(isEs ? 'Concepto' : 'Concept', 25, 111)
+        doc.text(isEs ? 'Monto Acumulado' : 'Accumulated Amount', 185, 111, { align: 'right' })
         
         const summaryRows = [
           { label: t('declarar_ingresos'), val: fmt(totalIngresos) },
@@ -188,62 +202,85 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
           { label: t('simulator_expenses'), val: fmt(totalGastos) }
         ]
         
-        let yPos = 98
-        summaryRows.forEach((row) => {
+        let yPos = 120
+        summaryRows.forEach((row, idx) => {
+          if (idx % 2 === 1) {
+            doc.setFillColor(245, 247, 250)
+            doc.rect(20, yPos - 5, 170, 8, 'F')
+          }
           doc.setFont('helvetica', 'normal')
-          doc.setTextColor(100, 116, 139)
+          doc.setTextColor(71, 85, 105)
           doc.text(row.label, 25, yPos)
           
           doc.setFont('helvetica', 'bold')
           doc.setTextColor(15, 23, 42)
           doc.text(row.val, 185, yPos, { align: 'right' })
           
-          yPos += 9
+          doc.setDrawColor(230, 235, 242)
+          doc.line(20, yPos + 3, 190, yPos + 3)
+          
+          yPos += 8
         })
         
-        doc.setFontSize(12)
+        // --- 4. TOP CLIENTES TABLE ---
         doc.setFont('helvetica', 'bold')
-        doc.setTextColor(10, 34, 64)
-        doc.text(isEs ? 'Principales Clientes' : 'Top Clients', 20, 160)
+        doc.setFontSize(12)
+        doc.setTextColor(0, 47, 93)
+        doc.text(isEs ? 'Principales Clientes (Top 5)' : 'Top 5 Clients', 20, 170)
         
-        doc.setFillColor(10, 34, 64)
-        doc.rect(20, 165, 170, 10, 'F')
-        
-        doc.setFontSize(10)
+        doc.setFillColor(0, 47, 93)
+        doc.rect(20, 174, 170, 8, 'F')
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(9)
         doc.setTextColor(255, 255, 255)
-        doc.text('#', 23, 171)
-        doc.text(t('mis_recibos_cliente'), 35, 171)
-        doc.text(isEs ? 'Recibos' : 'Receipts', 135, 171, { align: 'right' })
-        doc.text('Total', 185, 171, { align: 'right' })
+        doc.text('#', 23, 179)
+        doc.text(isEs ? 'Razón Social / Cliente' : 'Client Name', 35, 179)
+        doc.text(isEs ? 'Recibos' : 'Receipts', 145, 179, { align: 'right' })
+        doc.text('Total', 185, 179, { align: 'right' })
         
-        let tableY = 182
+        let tableY = 188
         topClientes.forEach((c: any, index: number) => {
           if (index % 2 === 1) {
-            doc.setFillColor(248, 250, 252)
-            doc.rect(20, tableY - 6, 170, 9, 'F')
+            doc.setFillColor(245, 247, 250)
+            doc.rect(20, tableY - 5, 170, 8, 'F')
           }
           
           doc.setFont('helvetica', 'normal')
-          doc.setTextColor(51, 65, 85)
+          doc.setTextColor(71, 85, 105)
           doc.text(String(index + 1), 23, tableY)
-          doc.text(c.nombre.substring(0, 40), 35, tableY)
-          doc.text(String(c.count), 135, tableY, { align: 'right' })
+          doc.text(c.nombre.substring(0, 45), 35, tableY)
+          doc.text(String(c.count), 145, tableY, { align: 'right' })
           
           doc.setFont('helvetica', 'bold')
-          doc.setTextColor(10, 34, 64)
+          doc.setTextColor(15, 23, 42)
           doc.text(fmt(c.total), 185, tableY, { align: 'right' })
           
-          tableY += 9
+          doc.setDrawColor(230, 235, 242)
+          doc.line(20, tableY + 3, 190, tableY + 3)
+          tableY += 8
         })
         
-        doc.setDrawColor(226, 232, 240)
-        doc.line(20, 245, 190, 245)
+        // --- 5. FOOTER / BARCODE ---
+        doc.setDrawColor(200, 200, 200)
+        doc.setLineWidth(0.5)
+        doc.line(20, 255, 190, 255)
         
-        doc.setFontSize(9)
-        doc.setFont('helvetica', 'normal')
+        doc.setFillColor(71, 85, 105)
+        let barX = 20
+        for (let i = 0; i < 40; i++) {
+          const w = Math.random() > 0.5 ? 1.5 : 0.5
+          doc.rect(barX, 258, w, 6, 'F')
+          barX += w + (Math.random() > 0.5 ? 1 : 0.5)
+        }
+        
+        doc.setFontSize(8)
+        doc.setFont('helvetica', 'italic')
         doc.setTextColor(148, 163, 184)
-        doc.text(t('simulator_not_official'), 105, 253, { align: 'center' })
-        doc.text(`${t('reportes_generated')}: ${new Date().toLocaleDateString()}`, 105, 260, { align: 'center' })
+        doc.text(isEs ? 'Reporte informativo autogenerado localmente. Sin firma legal requerida.' : 'Information report auto-generated locally. No legal signature required.', 20, 271)
+        doc.text(isEs ? 'SUNAT - Superintendencia Nacional de Aduanas y de Administración Tributaria' : 'SUNAT - National Superintendency of Customs and Tax Administration', 20, 276)
+        
+        doc.setFont('helvetica', 'normal')
+        doc.text('Página 1 de 1', 185, 276, { align: 'right' })
         
         doc.save('sunat-reporte.pdf')
         vibrateSuccess()
@@ -266,9 +303,6 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
     vibrateLight()
     try {
       const XLSX = require('xlsx')
-      const FileSystem = require('expo-file-system')
-      const Sharing = require('expo-sharing')
-      const wb = XLSX.utils.book_new()
       const data = emitidos.map(function(r: any) {
         return {
           'Recibo': r.id,
@@ -283,7 +317,17 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
         }
       })
       const ws = XLSX.utils.json_to_sheet(data)
+      const wb = XLSX.utils.book_new()
       XLSX.utils.book_append_sheet(wb, ws, 'Reportes')
+
+      if (Platform.OS === 'web') {
+        XLSX.writeFile(wb, 'sunat-reporte.xlsx')
+        vibrateSuccess()
+        return
+      }
+
+      const FileSystem = require('expo-file-system')
+      const Sharing = require('expo-sharing')
       const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' })
       const uri = FileSystem.documentDirectory + 'sunat-reporte.xlsx'
       await FileSystem.writeAsStringAsync(uri, wbout, { encoding: FileSystem.EncodingType.Base64 })
@@ -299,7 +343,7 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
   return (
     <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
+        <TouchableOpacity onPress={() => dispatch(goBack())} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('reportes_title')}</Text>

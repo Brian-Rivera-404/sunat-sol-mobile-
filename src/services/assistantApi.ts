@@ -25,8 +25,33 @@ interface AskAssistantResult {
 }
 
 function matchLocalFAQ(question: string): FAQItem | null {
-  const lowerQ = question.toLowerCase().trim()
-  const normalizedQ = lowerQ.replace(/[¿?¡!.,;:]/g, '')
+  const lowerQ = question.toLowerCase().trim().replace(/[¿?¡!.,;:]/g, '')
+
+  const chipToFaqIdMap: Record<string, string> = {
+    faq_chip_retencion: 'faq-retencion-8',
+    faq_chip_cobre_menos: 'faq-neto-menor-bruto',
+    faq_chip_equivoco: 'faq-equivoco-emitir',
+    faq_chip_gasto_deducir: 'faq-gastos-deducibles',
+    faq_chip_validar_local: 'faq-establecimiento-valido',
+    faq_chip_limite_uit: 'faq-limite-3uit',
+    faq_chip_pagar_deuda: 'faq-como-pago-deuda',
+    faq_chip_vencimiento_plazo: 'faq-vencimiento-plazo-deuda',
+    faq_chip_fraccionamiento: 'faq-fraccionamiento-deuda',
+    faq_chip_anular_recibo: 'faq-como-anular',
+    faq_chip_vencimiento_declaracion: 'faq-cuando-vence-declaracion',
+  }
+
+  const strings = require('../i18n/strings').default
+  for (const [chipKey, faqId] of Object.entries(chipToFaqIdMap)) {
+    const esText = strings['es']?.[chipKey]?.toLowerCase()?.trim()?.replace(/[¿?¡!.,;:]/g, '')
+    const enText = strings['en']?.[chipKey]?.toLowerCase()?.trim()?.replace(/[¿?¡!.,;:]/g, '')
+    if (lowerQ === esText || lowerQ === enText) {
+      const matched = localFAQ.find((faq) => faq.id === faqId)
+      if (matched) return matched
+    }
+  }
+
+  const normalizedQ = lowerQ
 
   const exactMatch = localFAQ.find((faq) => {
     const lowerFaq = faq.pregunta.toLowerCase().replace(/[¿?¡!.,;:]/g, '')

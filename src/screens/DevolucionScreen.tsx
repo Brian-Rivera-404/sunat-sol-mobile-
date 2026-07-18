@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { Text } from '../components/AccessibleText'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
-import { useStore, go, fmt, solicitarDevolucion, toastMsg } from '../store/sunatStore'
+import { useStore, go, goBack, fmt, solicitarDevolucion, toastMsg } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import HeaderBar from '../components/HeaderBar'
 import { vibrateSuccess } from '../utils/haptics'
@@ -49,7 +49,7 @@ export default function DevolucionScreen({ navigation }: Props) {
   return (
     <View className="flex-1 bg-[#EBF0F7] dark:bg-gray-900">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button">
+        <TouchableOpacity onPress={() => dispatch(goBack())} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button">
           <Ionicons name="chevron-back" size={28} color="#FFF" />
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold flex-1">{t('menu_devolucion')}</Text>

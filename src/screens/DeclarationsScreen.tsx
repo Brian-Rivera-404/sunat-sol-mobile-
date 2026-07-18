@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, fmt, formatearFecha } from '../store/sunatStore'
+import { useStore, go, goBack, fmt, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import { isValidDate, isFutureDate } from '../utils/validators'
@@ -63,7 +63,7 @@ export default function DeclarationsScreen({ navigation }: { navigation: ScreenN
   return (
     <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
+        <TouchableOpacity onPress={() => dispatch(goBack())} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold" accessibilityRole="header">{t('declarations_title')}</Text>

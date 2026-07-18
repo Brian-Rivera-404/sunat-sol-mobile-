@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { View, TouchableOpacity, ScrollView, Platform, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, formatearFecha } from '../store/sunatStore'
+import { useStore, go, goBack, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
@@ -90,7 +90,7 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
   return (
     <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
+        <TouchableOpacity onPress={() => dispatch(goBack())} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('calendar_title')}</Text>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView, TextInput } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, fmt } from '../store/sunatStore'
+import { useStore, go, goBack, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import HeaderBar from '../components/HeaderBar'
 
@@ -18,7 +18,7 @@ export default function TaxSimulatorScreen() {
   return (
     <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900" keyboardShouldPersistTaps="handled">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
+        <TouchableOpacity onPress={() => dispatch(goBack())} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-xl font-bold" accessibilityRole="header">{t('simulator_title')}</Text>

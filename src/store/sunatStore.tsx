@@ -26,6 +26,7 @@ interface ReciboData {
 export interface State {
   screen: keyof RootStackParamList
   previousScreen: keyof RootStackParamList | null
+  history: (keyof RootStackParamList)[]
   user: User
   recibos: RHEReceipt[]
   nextId: number
@@ -54,8 +55,9 @@ export interface State {
 }
 
 type Action =
-  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci' | 'taxDebts' | 'tramites' | 'devoluciones'>> }
+  | { type: 'LOAD'; payload: Partial<Pick<State, 'user' | 'recibos' | 'nextId' | 'language' | 'darkMode' | 'biometricEnabled' | 'highContrast' | 'expenses' | 'declarations' | 'conversations' | 'assistantSettings' | 'clients' | 'inbox' | 'onboardingSeen' | 'sessionTimeoutMinutes' | 'pinHash' | 'cci' | 'taxDebts' | 'tramites' | 'devoluciones' | 'history'>> }
   | { type: 'GO'; payload: keyof RootStackParamList }
+  | { type: 'GO_BACK' }
   | { type: 'SET_RECIBO_DATA'; payload: Partial<ReciboData> }
   | { type: 'ADD_RECIBO'; payload: Omit<RHEReceipt, 'id'> }
   | { type: 'EMITIR_RECIBO' }
@@ -122,6 +124,7 @@ const initialReciboData: ReciboData = { ruc: '', cliente: '', monto: 0, formaPag
 const seedState: State = {
   screen: 'Home',
   previousScreen: null,
+  history: ['Home'],
   user: seedUser,
   recibos: seedRecibos,
   nextId: 31,
@@ -201,6 +204,7 @@ function reducer(state: State, action: Action): State {
         ...state,
         ...action.payload,
         screen: 'Home', // siempre Home, ignorar lo guardado
+        history: ['Home'],
         recibos: action.payload.recibos ?? state.recibos,
         expenses: action.payload.expenses ?? state.expenses,
         declarations: action.payload.declarations ?? state.declarations,
@@ -211,12 +215,36 @@ function reducer(state: State, action: Action): State {
         tramites: action.payload.tramites ?? state.tramites,
         loaded: true,
       }
-    case 'GO':
+    case 'GO': {
+      const newScreen = action.payload
+      const history = [...(state.history ?? ['Home'])]
+      if (history[history.length - 1] !== newScreen) {
+        if (history.length > 1 && history[history.length - 2] === newScreen) {
+          history.pop()
+        } else {
+          history.push(newScreen)
+        }
+      }
       return {
         ...state,
         previousScreen: state.screen === 'AssistantChat' || state.screen === 'AssistantOnboarding' || state.screen === 'AssistantHistory' ? state.previousScreen : state.screen,
-        screen: action.payload
+        history,
+        screen: newScreen
       }
+    }
+    case 'GO_BACK': {
+      const history = [...(state.history ?? ['Home'])]
+      if (history.length > 1) {
+        history.pop()
+        const prev = history[history.length - 1]
+        return {
+          ...state,
+          history,
+          screen: prev
+        }
+      }
+      return state
+    }
     case 'SET_RECIBO_DATA':
       return { ...state, reciboData: { ...state.reciboData, ...action.payload } }
     case 'ADD_RECIBO': {
@@ -375,6 +403,7 @@ export function useStore() {
 }
 
 export const go = (screen: keyof RootStackParamList) => ({ type: 'GO' as const, payload: screen })
+export const goBack = () => ({ type: 'GO_BACK' as const })
 export const setLang = (lang: string) => ({ type: 'SET_LANG' as const, payload: lang })
 export const setDarkMode = (val: boolean) => ({ type: 'SET_DARK_MODE' as const, payload: val })
 export const setBiometric = (val: boolean) => ({ type: 'SET_BIOMETRIC' as const, payload: val })

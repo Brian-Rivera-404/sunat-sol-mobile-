@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { View, TouchableOpacity, ScrollView, Modal, TextInput } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, fmt, formatearFecha, setCCI } from '../store/sunatStore'
+import { useStore, go, goBack, fmt, formatearFecha, setCCI } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess, vibrateError } from '../utils/haptics'
 import { sanitizeInput } from '../utils/validators'
@@ -52,7 +52,7 @@ export default function MyRucScreen({ navigation }: { navigation: ScreenNav }) {
   return (
     <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
+        <TouchableOpacity onPress={() => dispatch(goBack())} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold" accessibilityRole="header">{t('miruc_title')}</Text>

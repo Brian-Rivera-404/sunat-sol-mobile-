@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { View, TouchableOpacity, TextInput, ScrollView, Alert, Linking, Platform, AccessibilityInfo, Animated } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, addConversation } from '../store/sunatStore'
+import { useStore, go, goBack, addConversation } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import { askAssistant } from '../services/assistantApi'
@@ -214,10 +214,16 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
       })
     }
 
+    const unsubscribe = navigation.addListener('blur', () => {
+      Speech.stop()
+      setIsSpeaking(false)
+    })
+
     return () => {
       Speech.stop()
+      unsubscribe()
     }
-  }, [route?.params?.initialMessage])
+  }, [route?.params?.initialMessage, navigation])
 
   useEffect(() => {
     if (route?.params?.initialMessage) {
@@ -430,7 +436,7 @@ export default function AssistantChatScreen({ navigation, route }: { navigation:
   return (
     <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
+        <TouchableOpacity onPress={() => dispatch(goBack())} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold flex-1">{t('assistant_title')}</Text>

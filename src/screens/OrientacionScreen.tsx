@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go } from '../store/sunatStore'
+import { useStore, go, goBack } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
@@ -43,7 +43,7 @@ export default function OrientacionScreen({ navigation }: { navigation: ScreenNa
   return (
     <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
+        <TouchableOpacity onPress={() => dispatch(goBack())} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
           <Ionicons name="chevron-back" size={28} color="#FFF" />
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold flex-1" accessibilityRole="header">{t('orientacion_title')}</Text>

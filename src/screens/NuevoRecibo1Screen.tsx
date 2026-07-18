@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
-import { useStore, go, RUC_DB, setReciboData } from '../store/sunatStore'
+import { useStore, go, goBack, RUC_DB, setReciboData } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateError } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
@@ -52,7 +52,7 @@ export default function NuevoRecibo1Screen({ navigation }: Props) {
   return (
     <KeyboardAvoidingView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900" behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('Home'))} className="py-2.5 mr-3" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint="Regresa al inicio">
+        <TouchableOpacity onPress={() => dispatch(goBack())} className="py-2.5 mr-3" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint="Regresa al inicio">
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold">{t('nuevo_recibo_step1')}</Text>

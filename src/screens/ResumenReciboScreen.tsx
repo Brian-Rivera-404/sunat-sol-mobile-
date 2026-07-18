@@ -40,10 +40,15 @@ export default function ResumenReciboScreen({ navigation }: Props) {
     : null
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      Speech.stop()
+      setIsSpeaking(false)
+    })
     return () => {
       Speech.stop()
+      unsubscribe()
     }
-  }, [])
+  }, [navigation])
 
   function handleEscucharResumen() {
     if (isSpeaking) {

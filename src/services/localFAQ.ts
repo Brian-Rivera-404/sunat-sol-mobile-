@@ -207,4 +207,32 @@ export const localFAQ: FAQItem[] = [
     modulo: 'asistente',
     tags: ['historial', 'borrar', 'privacidad', 'conversaciones'],
   },
+  {
+    id: 'faq-limite-3uit',
+    pregunta: '¿Qué es el límite de 3 UIT?',
+    respuesta: 'Es el límite máximo de gastos adicionales (hasta 3 UIT, equivalente a S/ 15,450 en 2026) que puedes deducir para pagar menos Impuesto a la Renta anual por consumos en hoteles, restaurantes, bares y servicios profesionales.',
+    modulo: 'gastos',
+    tags: ['uit', 'limite', '3 uit', 'deducir', 'gastos']
+  },
+  {
+    id: 'faq-como-pago-deuda',
+    pregunta: '¿Cómo pago mi deuda?',
+    respuesta: 'Puedes pagar tu deuda desde la sección "Deuda Tributaria" en la app seleccionando la deuda y tocando "Pagar ahora" (usando NPS o tarjeta de débito/crédito), o solicitar un fraccionamiento si deseas pagar en cuotas.',
+    modulo: 'deuda',
+    tags: ['deuda', 'pagar', 'pago', 'impuesto']
+  },
+  {
+    id: 'faq-vencimiento-plazo-deuda',
+    pregunta: '¿Qué pasa si vence el plazo?',
+    respuesta: 'Si vence el plazo sin pagar, la deuda entra en estado vencido y acumula intereses moratorios diarios. SUNAT podría iniciar una cobranza coactiva, por lo que es recomendable pagar o solicitar fraccionamiento a tiempo.',
+    modulo: 'deuda',
+    tags: ['vence', 'plazo', 'vencido', 'intereses', 'multa']
+  },
+  {
+    id: 'faq-fraccionamiento-deuda',
+    pregunta: '¿Qué es el fraccionamiento?',
+    respuesta: 'El fraccionamiento es un beneficio que te permite pagar tus deudas tributarias en cuotas mensuales (hasta en 72 meses según el monto). Puedes solicitarlo desde "Deuda Tributaria" tocando "Solicitar fraccionamiento".',
+    modulo: 'deuda',
+    tags: ['fraccionamiento', 'fraccionar', 'cuotas', 'deuda']
+  }
 ]
