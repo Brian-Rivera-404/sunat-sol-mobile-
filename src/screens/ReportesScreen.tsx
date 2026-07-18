@@ -1,4 +1,4 @@
-﻿import React, { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { View, TouchableOpacity, ScrollView, Alert, Linking, Platform } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt, formatearFecha, MESES } from '../store/sunatStore'
@@ -52,25 +52,83 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
   }
 
   function buildPDFHtml(): string {
+    const isEs = state.language === 'es'
+    const title = isEs ? 'REPORTE TRIBUTARIO DE CUARTA CATEGORÍA' : 'FOURTH CATEGORY TAX REPORT'
+    const subtitle = isEs ? 'SUNAT SOL Móvil - Reporte Oficial' : 'SUNAT SOL Mobile - Official Report'
+    const section1 = isEs ? 'Resumen Anual' : 'Annual Summary'
+    const section2 = isEs ? 'Principales Clientes' : 'Top Clients'
+    
     const lines: string[] = []
     lines.push('<!DOCTYPE html><html><head><meta charset="utf-8">')
-    lines.push('<title>' + t('reportes_title') + '</title></head>')
-    lines.push('<body style="font-family:sans-serif;padding:20px;">')
-    lines.push('<h1>' + t('reportes_title') + '</h1>')
-    lines.push('<h2>' + t('reportes_resumen_anual') + '</h2>')
-    lines.push('<p>' + t('declarar_ingresos') + ': ' + fmt(totalIngresos) + '</p>')
-    lines.push('<p>' + t('reportes_recibos_emitidos') + ': ' + emitidos.length + '</p>')
-    lines.push('<p>' + t('reportes_promedio') + ': ' + fmt(promedio) + '</p>')
-    lines.push('<p>' + t('simulator_withholdings') + ': ' + fmt(totalRetenciones) + '</p>')
-    lines.push('<p>' + t('simulator_expenses') + ': ' + fmt(totalGastos) + '</p>')
-    lines.push('<h2>' + t('reportes_principales_clientes') + '</h2>')
-    lines.push('<ul>')
-    topClientes.forEach(function(c: any) {
-      lines.push('<li>' + c.nombre + ' - ' + c.count + ' recibos - ' + fmt(c.total) + '</li>')
+    lines.push('<title>' + title + '</title>')
+    lines.push('<style>')
+    lines.push('body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #333; margin: 0; padding: 40px; line-height: 1.6; }')
+    lines.push('.header { border-bottom: 3px solid #1B4FBF; padding-bottom: 20px; margin-bottom: 30px; }')
+    lines.push('.logo-text { font-size: 26px; font-weight: bold; color: #0A2240; letter-spacing: 1px; }')
+    lines.push('.logo-sub { font-size: 13px; color: #64748B; margin-top: 4px; text-transform: uppercase; font-weight: 600; }')
+    lines.push('.report-title { font-size: 20px; font-weight: 800; color: #1E293B; margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; }')
+    lines.push('.card { background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; margin-bottom: 30px; }')
+    lines.push('.row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #E2E8F0; }')
+    lines.push('.row:last-child { border-bottom: none; }')
+    lines.push('.label { font-size: 14px; color: #64748B; font-weight: 500; }')
+    lines.push('.value { font-size: 15px; color: #0F172A; font-weight: 700; }')
+    lines.push('.table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 30px; }')
+    lines.push('.table th { background-color: #0A2240; color: #ffffff; text-align: left; padding: 12px; font-size: 13px; font-weight: 600; }')
+    lines.push('.table td { padding: 12px; border-bottom: 1px solid #E2E8F0; font-size: 14px; color: #334155; }')
+    lines.push('.table tr:nth-child(even) td { background-color: #F8FAFC; }')
+    lines.push('.footer { border-top: 1px solid #E2E8F0; padding-top: 20px; margin-top: 50px; text-align: center; }')
+    lines.push('.disclaimer { font-size: 11px; color: #94A3B8; line-height: 1.5; margin-bottom: 10px; }')
+    lines.push('.date { font-size: 11px; color: #64748B; font-weight: 500; }')
+    lines.push('</style></head>')
+    lines.push('<body>')
+    
+    // Header
+    lines.push('<div class="header">')
+    lines.push('<div class="logo-text">SUNAT</div>')
+    lines.push('<div class="logo-sub">' + subtitle + '</div>')
+    lines.push('</div>')
+    
+    // Title
+    lines.push('<div class="report-title">' + title + '</div>')
+    
+    // User info
+    lines.push('<div style="margin-bottom: 25px; font-size: 13px; color: #475569;">')
+    lines.push('<strong>Contribuyente:</strong> ' + state.user.nombre + ' | <strong>RUC:</strong> ' + state.user.dni + '<br/>')
+    lines.push('<strong>Fecha de Emisión:</strong> ' + new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString())
+    lines.push('</div>')
+    
+    // Summary Card
+    lines.push('<div class="report-title">' + section1 + '</div>')
+    lines.push('<div class="card">')
+    lines.push('<div class="row"><div class="label">' + t('declarar_ingresos') + '</div><div class="value">' + fmt(totalIngresos) + '</div></div>')
+    lines.push('<div class="row"><div class="label">' + t('reportes_recibos_emitidos') + '</div><div class="value">' + emitidos.length + '</div></div>')
+    lines.push('<div class="row"><div class="label">' + t('reportes_promedio') + '</div><div class="value">' + fmt(promedio) + '</div></div>')
+    lines.push('<div class="row"><div class="label">' + t('simulator_withholdings') + '</div><div class="value">' + fmt(totalRetenciones) + '</div></div>')
+    lines.push('<div class="row"><div class="label">' + t('simulator_expenses') + '</div><div class="value">' + fmt(totalGastos) + '</div></div>')
+    lines.push('</div>')
+    
+    // Top Clients Table
+    lines.push('<div class="report-title">' + section2 + '</div>')
+    lines.push('<table class="table">')
+    lines.push('<thead><tr><th>#</th><th>' + t('mis_recibos_cliente') + '</th><th style="text-align:right;">Recibos</th><th style="text-align:right;">Total</th></tr></thead>')
+    lines.push('<tbody>')
+    topClientes.forEach(function(c: any, index: number) {
+      lines.push('<tr>')
+      lines.push('<td>' + (index + 1) + '</td>')
+      lines.push('<td><strong>' + c.nombre + '</strong></td>')
+      lines.push('<td style="text-align:right;">' + c.count + '</td>')
+      lines.push('<td style="text-align:right; font-weight:700; color:#0A2240;">' + fmt(c.total) + '</td>')
+      lines.push('</tr>')
     })
-    lines.push('</ul>')
-    lines.push('<p style="color:#666;font-size:12px;">' + t('simulator_not_official') + '</p>')
-    lines.push('<p style="color:#999;font-size:10px;">' + t('reportes_generated') + ': ' + new Date().toLocaleDateString() + '</p>')
+    lines.push('</tbody>')
+    lines.push('</table>')
+    
+    // Footer
+    lines.push('<div class="footer">')
+    lines.push('<div class="disclaimer">' + t('simulator_not_official') + '</div>')
+    lines.push('<div class="date">' + t('reportes_generated') + ': ' + new Date().toLocaleDateString() + '</div>')
+    lines.push('</div>')
+    
     lines.push('</body></html>')
     return lines.join('')
   }
@@ -167,7 +225,13 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
                 <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100" numberOfLines={1}>{c.nombre}</Text>
                 <Text className="text-xs text-gray-400 dark:text-gray-400">{c.count} recibos</Text>
               </View>
-              <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(c.total)}</Text>
+              <Text 
+                numberOfLines={1} 
+                adjustsFontSizeToFit 
+                className="text-xl font-extrabold text-[#0A2240] dark:text-blue-300 flex-shrink-0 text-right min-w-[100px]"
+              >
+                {fmt(c.total)}
+              </Text>
             </View>
           ))}
         </View>
@@ -224,9 +288,15 @@ export default function ReportesScreen({ navigation }: { navigation: ScreenNav }
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <View className="flex-row justify-between items-center py-2.5" accessibilityLabel={label + ': ' + value}>
-      <Text className="text-sm text-gray-600 dark:text-gray-400">{label}</Text>
-      <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{value}</Text>
+    <View className="flex-row justify-between items-center py-2.5 gap-2" accessibilityLabel={label + ': ' + value}>
+      <Text className="text-sm text-gray-600 dark:text-gray-400 flex-1 mr-2">{label}</Text>
+      <Text 
+        numberOfLines={1} 
+        adjustsFontSizeToFit 
+        className="text-xl font-extrabold text-[#0A2240] dark:text-blue-300 flex-shrink-0 text-right min-w-[100px]"
+      >
+        {value}
+      </Text>
     </View>
   )
 }

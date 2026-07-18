@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native'
+import { View, TouchableOpacity, ScrollView, TextInput, Modal, Alert } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, formatearFecha, addTramite } from '../store/sunatStore'
@@ -82,19 +82,23 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
                 <View className="flex-row justify-between items-start mb-2.5">
                   <View className="flex-1 mr-2">
                     <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{tr.tipo}</Text>
-                    <Text className="text-xs text-gray-400 mt-1">{tr.descripcion}</Text>
+                    <Text className="text-xs text-gray-400 dark:text-gray-300 mt-1">{tr.descripcion}</Text>
                   </View>
                   <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
                     <Text className="text-xs font-bold" style={{ color: s.color }}>{t(s.labelKey)}</Text>
                   </View>
                 </View>
                 <View className="flex-row items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
-                  <Text className="text-xs text-gray-400">{t('tramites_presentacion')}: {formatearFecha(tr.fechaPresentacion)}</Text>
+                  <Text className="text-xs text-gray-400 dark:text-gray-300">{t('tramites_presentacion')}: {formatearFecha(tr.fechaPresentacion)}</Text>
                   {tr.observacion && (
                     <TouchableOpacity
-                      className="bg-amber-50 dark:bg-amber-900 rounded-lg px-2 py-1"
-                      onPress={() => { vibrateLight() }}
+                      className="bg-amber-50 dark:bg-amber-900 rounded-lg px-2 py-1 flex-row items-center"
+                      onPress={() => {
+                        vibrateLight()
+                        Alert.alert(t('tramites_observacion'), tr.observacion)
+                      }}
                       accessibilityLabel={`${t('tramites_observacion')}: ${tr.observacion}`}
+                      accessibilityRole="button"
                     >
                       <Ionicons name="document-text-outline" size={14} color="#D97706" style={{ marginRight: 2 }} />
                       <Text className="text-amber-700 dark:text-amber-300 text-xs font-semibold">{t('tramites_observacion')}</Text>

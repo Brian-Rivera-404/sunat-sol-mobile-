@@ -70,9 +70,15 @@ export default function TaxSimulatorScreen() {
 
 function InfoRow({ label, value, isBold }: { label: string; value: string; isBold?: boolean }) {
   return (
-    <View className="flex-row justify-between items-center py-2.5" accessibilityLabel={`${label}: ${value}`}>
-      <Text className={`text-sm text-gray-600 dark:text-gray-400 flex-1 ${isBold ? 'font-bold' : ''}`}>{label}</Text>
-      <Text className={`text-sm text-gray-900 dark:text-gray-100 ${isBold ? 'font-bold' : ''}`}>{value}</Text>
+    <View className="flex-row justify-between items-center py-2.5 gap-2" accessibilityLabel={`${label}: ${value}`}>
+      <Text className={`text-sm text-gray-600 dark:text-gray-400 flex-1 mr-2 ${isBold ? 'font-bold' : ''}`}>{label}</Text>
+      <Text 
+        numberOfLines={1} 
+        adjustsFontSizeToFit 
+        className={`text-sm text-gray-900 dark:text-gray-100 flex-shrink-0 text-right min-w-[80px] ${isBold ? 'font-bold' : ''}`}
+      >
+        {value}
+      </Text>
     </View>
   )
 }

@@ -151,7 +151,7 @@ export default function TaxDebtScreen({ navigation }: { navigation: ScreenNav })
                   <View className="flex-row justify-between items-start mb-2.5">
                     <View className="flex-1 mr-2">
                       <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{debt.tributo}</Text>
-                      <Text className="text-xs text-gray-400 mt-1">{t('taxdebt_periodo')}: {debt.periodo}</Text>
+                      <Text className="text-xs text-gray-400 dark:text-gray-300 mt-1">{t('taxdebt_periodo')}: {debt.periodo}</Text>
                     </View>
                     <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
                       <Text className="text-xs font-bold" style={{ color: s.color }}>{t('taxdebt_' + debt.estado)}</Text>
@@ -161,10 +161,17 @@ export default function TaxDebtScreen({ navigation }: { navigation: ScreenNav })
                     <View className="bg-gray-100 dark:bg-gray-700 rounded-lg px-2 py-1">
                       <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400">{t(DEBT_TYPE_LABEL[debt.tipo] ?? debt.tipo)}</Text>
                     </View>
-                    <Text className="text-xs text-gray-400"><Ionicons name="calendar-outline" size={12} color={C.s400} /> {t('taxdebt_duedate')}: {formatearFecha(debt.fechaVencimiento)}</Text>
+                    <Text className="text-xs text-gray-400 dark:text-gray-300"><Ionicons name="calendar-outline" size={12} color={C.s400} /> {t('taxdebt_duedate')}: {formatearFecha(debt.fechaVencimiento)}</Text>
                   </View>
                   <View className="flex-row justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-700">
-                    <Text className="text-xl font-extrabold" style={{ color: debt.estado === 'vencido' ? C.red : C.navy }}>{fmt(debt.monto)}</Text>
+                    <Text 
+                      numberOfLines={1} 
+                      adjustsFontSizeToFit 
+                      className="text-xl font-extrabold text-[#0A2240] dark:text-blue-300 flex-shrink-0 text-right min-w-[100px]" 
+                      style={{ color: debt.estado === 'vencido' ? C.red : undefined }}
+                    >
+                      {fmt(debt.monto)}
+                    </Text>
                     {debt.estado !== 'pagado' && debt.estado !== 'fraccionado' && (
                       <TouchableOpacity
                         className="px-4 rounded-xl min-h-[48px] justify-center" style={{ backgroundColor: C.blue }}

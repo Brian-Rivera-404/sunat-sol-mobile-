@@ -152,9 +152,15 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
 
       <View className="px-4 pt-6">
         <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3" style={SHADOWS.card}>
-          <View className="flex-row justify-between items-center mb-2.5">
-            <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{t('expenses_used')}</Text>
-            <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(totalGastos)} / S/ {fmt(3 * UIT)}</Text>
+          <View className="flex-row justify-between items-center mb-2.5 gap-2">
+            <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 flex-1 mr-2">{t('expenses_used')}</Text>
+            <Text 
+              numberOfLines={1} 
+              adjustsFontSizeToFit 
+              className="text-xl font-extrabold text-[#0A2240] dark:text-blue-300 flex-shrink-0 text-right min-w-[100px]"
+            >
+              {fmt(totalGastos)} / S/ {fmt(3 * UIT)}
+            </Text>
           </View>
           <View className="h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <View className="h-2.5 bg-[#002f5d] rounded-full" style={{ width: `${Math.min(100, (totalGastos / (3 * UIT)) * 100)}%` }} />
@@ -287,7 +293,13 @@ export default function DeductibleExpensesScreen({ navigation }: { navigation: S
                     <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('expenses_cat_' + exp.categoria)}</Text>
                   </View>
                 </View>
-                <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(exp.monto)}</Text>
+                <Text 
+                  numberOfLines={1} 
+                  adjustsFontSizeToFit 
+                  className="text-xl font-extrabold text-[#0A2240] dark:text-blue-300 flex-shrink-0 text-right min-w-[100px]"
+                >
+                  {fmt(exp.monto)}
+                </Text>
               </View>
               {exp.comprobanteUri && (
                 <View className="mt-2">

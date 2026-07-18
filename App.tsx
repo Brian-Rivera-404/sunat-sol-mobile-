@@ -112,7 +112,7 @@ function AppNavigator() {
   const showAI = state.screen !== 'Register'
 
   return (
-    <View className="flex-1" accessibilityLanguage="es" style={{ paddingBottom: insets.bottom }}>
+    <View className={state.darkMode || state.highContrast ? "dark flex-1" : "flex-1"} accessibilityLanguage="es" style={{ paddingBottom: insets.bottom }}>
       <NavigationContainer
         ref={navigationRef}
         onStateChange={(navState) => {

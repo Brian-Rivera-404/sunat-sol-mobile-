@@ -245,33 +245,37 @@ export default function HomeScreen({ navigation }: { navigation: HomeNav }) {
 
           {/* Settings footer */}
           <View className="border-t border-gray-200 dark:border-gray-700 mt-5 pt-4">
-            <View className="flex-row justify-center space-x-4">
+            <View className="flex-row justify-center flex-wrap gap-2.5">
               <TouchableOpacity
-                className="flex-row items-center py-2 px-4"
+                className="flex-row items-center py-2 px-3 bg-white dark:bg-gray-800 rounded-full border border-gray-100 dark:border-gray-700 shadow-sm"
                 onPress={switchLang}
                 accessibilityLabel={`${t('lang_switch')}: ${nextLangLabel}`}
                 accessibilityRole="button"
               >
-                <Ionicons name="language" size={18} color={C.s500} style={{ marginRight: 8 }} />
-                <Text className="text-gray-500 dark:text-gray-400 text-sm">{nextLangLabel}</Text>
+                <Ionicons name="language" size={16} color={C.blue} style={{ marginRight: 6 }} />
+                <Text className="text-gray-700 dark:text-gray-300 text-xs font-semibold">{nextLangLabel}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="flex-row items-center py-2.5 px-4"
+                className="flex-row items-center py-2 px-3 bg-white dark:bg-gray-800 rounded-full border border-gray-100 dark:border-gray-700 shadow-sm"
                 onPress={toggleDark}
                 accessibilityLabel={state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}
                 accessibilityRole="button"
               >
-                <Ionicons name={state.darkMode ? 'moon' : 'sunny'} size={18} color={C.s500} style={{ marginRight: 8 }} />
-                <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.darkMode ? t('dark_mode_off') : t('dark_mode_on')}</Text>
+                <Ionicons name={state.darkMode ? 'moon' : 'sunny'} size={16} color={C.blue} style={{ marginRight: 6 }} />
+                <Text className="text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                  {state.darkMode ? t('dark_mode_on_short') : t('dark_mode_off_short')}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="flex-row items-center py-2.5 px-4"
+                className="flex-row items-center py-2 px-3 bg-white dark:bg-gray-800 rounded-full border border-gray-100 dark:border-gray-700 shadow-sm"
                 onPress={toggleContrast}
                 accessibilityLabel={state.highContrast ? t('high_contrast_off') : t('high_contrast_on')}
                 accessibilityRole="button"
               >
-                <Ionicons name={state.highContrast ? 'eye-off' : 'eye'} size={18} color={C.s500} style={{ marginRight: 8 }} />
-                <Text className="text-gray-500 dark:text-gray-400 text-sm">{state.highContrast ? t('high_contrast_on') : t('home_alto_contraste')}</Text>
+                <Ionicons name={state.highContrast ? 'eye-off' : 'eye'} size={16} color={C.blue} style={{ marginRight: 6 }} />
+                <Text className="text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                  {state.highContrast ? t('high_contrast_on_short') : t('high_contrast_off_short')}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

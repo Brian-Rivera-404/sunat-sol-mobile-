@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
-import { useStore, go, setAssistantSettings, setBiometric } from '../store/sunatStore'
+import { useStore, go, setAssistantSettings, setBiometric, setDarkMode, setHighContrast } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess } from '../utils/haptics'
 import * as LocalAuthentication from 'expo-local-authentication'
@@ -147,6 +147,42 @@ export default function AssistantSettingsScreen({ navigation }: { navigation: Sc
               accessibilityLabel={`${t('biometric_setup')}: ${state.biometricEnabled ? t('general_active') : t('general_inactive')}`}
               accessibilityRole="switch"
               accessibilityState={{ checked: state.biometricEnabled }}
+            >
+              <View className="w-6 h-6 rounded-full bg-white shadow-sm" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
+          <View className="flex-row items-center justify-between">
+            <View className="flex-1 mr-4">
+              <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t('dark_mode')}</Text>
+              <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('dark_mode_desc')}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => { dispatch(setDarkMode(!state.darkMode)); vibrateLight() }}
+              className={`w-14 h-7 rounded-full px-0.5 justify-center ${state.darkMode ? 'bg-[#1B4FBF] items-end' : 'bg-gray-300 dark:bg-gray-600 items-start'}`}
+              accessibilityLabel={`${t('dark_mode')}: ${state.darkMode ? t('general_active') : t('general_inactive')}`}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: state.darkMode }}
+            >
+              <View className="w-6 h-6 rounded-full bg-white shadow-sm" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
+          <View className="flex-row items-center justify-between">
+            <View className="flex-1 mr-4">
+              <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t('high_contrast')}</Text>
+              <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('high_contrast_desc')}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => { dispatch(setHighContrast(!state.highContrast)); vibrateLight() }}
+              className={`w-14 h-7 rounded-full px-0.5 justify-center ${state.highContrast ? 'bg-[#1B4FBF] items-end' : 'bg-gray-300 dark:bg-gray-600 items-start'}`}
+              accessibilityLabel={`${t('high_contrast')}: ${state.highContrast ? t('general_active') : t('general_inactive')}`}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: state.highContrast }}
             >
               <View className="w-6 h-6 rounded-full bg-white shadow-sm" />
             </TouchableOpacity>

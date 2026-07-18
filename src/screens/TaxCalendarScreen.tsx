@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { View, TouchableOpacity, ScrollView, Platform } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Platform, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, formatearFecha } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
@@ -8,6 +8,7 @@ import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
+import { isValidDate, isFutureDate } from '../utils/validators'
 
 const CAL_PROTO = [
   { ruc: '0', date: '14 jul', status: 'vencido' as const },
@@ -38,14 +39,14 @@ const DEADLINES = [
   { mes: 'Febrero', dia: 12, label: 'calendar_onthly_declaration' },
   { mes: 'Marzo', dia: 12, label: 'calendar_annual_declaration' },
   { mes: 'Abril', dia: 14, label: 'calendar_onthly_declaration' },
-  { mes: 'Mayo', dia: 12, label: 'calendar_onthly_declaration' },
-  { mes: 'Junio', dia: 12, label: 'calendar_onthly_declaration' },
-  { mes: 'Julio', dia: 12, label: 'calendar_onthly_declaration' },
-  { mes: 'Agosto', dia: 14, label: 'calendar_onthly_declaration' },
-  { mes: 'Setiembre', dia: 12, label: 'calendar_onthly_declaration' },
-  { mes: 'Octubre', dia: 14, label: 'calendar_onthly_declaration' },
-  { mes: 'Noviembre', dia: 12, label: 'calendar_onthly_declaration' },
-  { mes: 'Diciembre', dia: 12, label: 'calendar_onthly_declaration' },
+  { mes: 'Mayo', dia: 15, label: 'calendar_onthly_declaration' },
+  { mes: 'Junio', dia: 16, label: 'calendar_onthly_declaration' },
+  { mes: 'Julio', dia: 18, label: 'calendar_onthly_declaration' },
+  { mes: 'Agosto', dia: 15, label: 'calendar_onthly_declaration' },
+  { mes: 'Septiembre', dia: 15, label: 'calendar_onthly_declaration' },
+  { mes: 'Octubre', dia: 15, label: 'calendar_onthly_declaration' },
+  { mes: 'Noviembre', dia: 15, label: 'calendar_onthly_declaration' },
+  { mes: 'Diciembre', dia: 15, label: 'calendar_onthly_declaration' },
 ]
 
 type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'TaxCalendar'>
@@ -57,6 +58,34 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
   const ruc = state.user?.dni || '10734521890'
   const lastDigit = parseInt(ruc.slice(-1), 10)
   const currentMonth = new Date().getMonth()
+
+  const handleSetReminder = () => {
+    vibrateLight()
+    const today = new Date().toISOString().split('T')[0]
+    Alert.prompt
+      ? Alert.prompt(
+          t('declarations_reminder_title'),
+          t('declarations_reminder_desc'),
+          [
+            { text: t('general_cancelar'), style: 'cancel' },
+            {
+              text: t('declarations_reminder_set'),
+              onPress: (input?: string) => {
+                const date = (input || '').trim()
+                if (!isValidDate(date) || !isFutureDate(date)) {
+                  Alert.alert(t('general_error'), t('declarations_reminder_invalid'))
+                  return
+                }
+                Alert.alert(t('declarations_reminder_set'), t('declarations_reminder_success') + ' ' + date)
+              },
+            },
+          ],
+          'plain-text',
+          today,
+          'number-pad',
+        )
+      : Alert.alert(t('declarations_reminder_title'), t('declarations_reminder_platform'))
+  }
 
   return (
     <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
@@ -79,18 +108,18 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
           <Text className="text-xs text-gray-400 dark:text-gray-400 leading-4">{t('calendar_ruc_explain')}</Text>
         </View>
 
-        {/* RUC-digit calendar view – prototype parity */}
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm" accessibilityLabel={t('calendar_ruc_table')}>
+        {/* Tabla de vencimientos cortos */}
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('calendar_ruc_table')}</Text>
           {CAL_PROTO.map((item, i) => (
             <View key={i} className="flex-row items-center justify-between py-2.5" style={{ borderBottomWidth: i < CAL_PROTO.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}>
               <View className="flex-row items-center">
-                <View className="w-8 h-8 rounded-full bg-[#EEF2FF] items-center justify-center mr-3">
+                <View className="w-8 h-8 rounded-full bg-[#EEF2FF] dark:bg-gray-700 items-center justify-center mr-3">
                   <Text className="text-xs font-bold" style={{ color: C.navy }}>{item.ruc}</Text>
                 </View>
                 <View>
                   <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t('calendar_ruc_digit_title')} {item.ruc}</Text>
-                  <Text className="text-xs text-gray-400">{item.date}</Text>
+                  <Text className="text-xs text-gray-400 dark:text-gray-300">{item.date}</Text>
                 </View>
               </View>
               <CalPill status={item.status} />
@@ -114,7 +143,7 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
                 </View>
                 <View className="flex-1">
                   <Text className={`text-sm font-semibold ${isPast ? 'text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-gray-100'}`}>{dl.mes}</Text>
-                  <Text className={`text-xs ${isPast ? 'text-gray-400 dark:text-gray-500' : 'text-gray-400 dark:text-gray-400'}`}>{t(dl.label)}</Text>
+                  <Text className={`text-xs ${isPast ? 'text-gray-400 dark:text-gray-500' : 'text-gray-400 dark:text-gray-300'}`}>{t(dl.label)}</Text>
                 </View>
                 {isCurrent && <Text className="text-[#0A2240] dark:text-blue-400 text-xs font-semibold">{t('calendar_current')}</Text>}
               </View>
@@ -129,10 +158,10 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
             { label: t('calendar_obligation_jul'), date: t('calendar_obligation_jul_date') },
             { label: t('calendar_obligation_annual'), date: t('calendar_obligation_annual_date') },
           ].map((e, i) => (
-            <View key={i} className="flex-row justify-between items-center py-2" style={{ borderBottomWidth: i === 0 ? 1 : 0, borderBottomColor: '#F1F5F9' }}>
-              <View>
+            <View key={i} className="flex-row items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
+              <View className="flex-1 mr-3">
                 <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{e.label}</Text>
-                <Text className="text-xs" style={{ color: '#94A3B8' }}>{e.date}</Text>
+                <Text className="text-xs text-gray-400 dark:text-gray-500">{e.date}</Text>
               </View>
               <CalPill status="próximo" />
             </View>
@@ -141,7 +170,7 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
 
         <TouchableOpacity
           className="bg-white dark:bg-gray-800 rounded-[18px] p-4 flex-row items-center justify-between mb-10 shadow-sm"
-          onPress={() => { vibrateLight() }}
+          onPress={handleSetReminder}
           accessibilityLabel={t('calendar_set_reminder')}
           accessibilityRole="button"
           accessibilityHint={t('calendar_set_reminder_hint')}

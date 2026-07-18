@@ -98,9 +98,15 @@ export default function ReciboEmitidoScreen({ navigation }: Props) {
             <Text className="text-gray-800 dark:text-gray-200 font-medium">{FORMA_PAGO_LABEL[recibo.formaPago] || recibo.formaPago}</Text>
           </View>
           <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
-          <View className="flex-row justify-between mb-3" accessibilityLabel={`${t('recibo_emitido_neto')}: ${fmt(recibo.montoNeto)}`}>
-            <Text className="text-gray-800 dark:text-gray-100 font-bold text-base">{t('recibo_emitido_neto')}</Text>
-            <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(recibo.montoNeto)}</Text>
+          <View className="flex-row justify-between mb-3 gap-2" accessibilityLabel={`${t('recibo_emitido_neto')}: ${fmt(recibo.montoNeto)}`}>
+            <Text className="text-gray-800 dark:text-gray-100 font-bold text-base flex-1 mr-2">{t('recibo_emitido_neto')}</Text>
+            <Text 
+              numberOfLines={1} 
+              adjustsFontSizeToFit 
+              className="text-xl font-extrabold text-[#0A2240] dark:text-blue-300 flex-shrink-0 text-right min-w-[100px]"
+            >
+              {fmt(recibo.montoNeto)}
+            </Text>
           </View>
           <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
           <View className="flex-row justify-between mt-3" accessibilityLabel={`${t('recibo_emitido_estado')}: ${ESTADO_LABEL[recibo.estado] || recibo.estado}`}>
