@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, formatearFecha, addTramite } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight, vibrateSuccess, vibrateError } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
-import { C } from '../styles/theme'
+import { FadeInView } from '../components/AnimatedHelpers'
+import { C, SHADOWS } from '../styles/theme'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/navigation'
 
@@ -52,7 +54,7 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
     <View className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
         <TouchableOpacity onPress={() => dispatch(go('Home'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('general_volver_hint')}>
-          <Text className="text-white text-2xl">{'\u2039'}</Text>
+          <Ionicons name="chevron-back" size={28} color="#FFF" />
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold flex-1" accessibilityRole="header">{t('tramites_title')}</Text>
         <TouchableOpacity
@@ -61,54 +63,57 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
           accessibilityLabel={t('tramites_new')}
           accessibilityRole="button"
         >
-          <Text className="text-white font-bold text-xs">{'\u2795'}</Text>
+          <Ionicons name="add" size={20} color="#FFF" />
         </TouchableOpacity>
       </HeaderBar>
 
       <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
         {tramites.length === 0 ? (
           <View className="items-center justify-center py-20">
-            <Text className="text-5xl mb-4">{'\uD83D\uDCCB'}</Text>
-            <Text className="text-gray-700 dark:text-gray-400 text-center">{t('tramites_empty')}</Text>
+            <Ionicons name="clipboard-outline" size={56} color={C.s300} style={{ marginBottom: 16 }} />
+            <Text className="text-gray-500 dark:text-gray-400 text-center">{t('tramites_empty')}</Text>
           </View>
         ) : (
-          tramites.map((tr) => {
+          tramites.map((tr, idx) => {
             const s = TRAMITE_STATUS[tr.estado] ?? { color: C.s500, bg: C.s100, labelKey: tr.estado }
             return (
-              <View key={tr.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
-                <View className="flex-row justify-between items-start mb-2">
+              <FadeInView key={tr.id} delay={idx * 50}>
+              <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3" style={SHADOWS.card}>
+                <View className="flex-row justify-between items-start mb-2.5">
                   <View className="flex-1 mr-2">
                     <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">{tr.tipo}</Text>
-                    <Text className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{tr.descripcion}</Text>
+                    <Text className="text-xs text-gray-400 mt-1">{tr.descripcion}</Text>
                   </View>
                   <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: s.bg }}>
                     <Text className="text-xs font-bold" style={{ color: s.color }}>{t(s.labelKey)}</Text>
                   </View>
                 </View>
-                <View className="flex-row items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
-                  <Text className="text-xs text-gray-600 dark:text-gray-400">{t('tramites_presentacion')}: {formatearFecha(tr.fechaPresentacion)}</Text>
+                <View className="flex-row items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+                  <Text className="text-xs text-gray-400">{t('tramites_presentacion')}: {formatearFecha(tr.fechaPresentacion)}</Text>
                   {tr.observacion && (
                     <TouchableOpacity
                       className="bg-amber-50 dark:bg-amber-900 rounded-lg px-2 py-1"
                       onPress={() => { vibrateLight() }}
                       accessibilityLabel={`${t('tramites_observacion')}: ${tr.observacion}`}
                     >
-                      <Text className="text-amber-700 dark:text-amber-300 text-xs font-semibold">{'\uD83D\uDCDD'} {t('tramites_observacion')}</Text>
+                      <Ionicons name="document-text-outline" size={14} color="#D97706" style={{ marginRight: 2 }} />
+                      <Text className="text-amber-700 dark:text-amber-300 text-xs font-semibold">{t('tramites_observacion')}</Text>
                     </TouchableOpacity>
                   )}
                 </View>
               </View>
+              </FadeInView>
             )
           })
         )}
-        <View className="h-10" />
+        <View className="h-12" />
       </ScrollView>
 
       <Modal visible={showForm} transparent animationType="slide">
         <View className="flex-1 justify-end bg-black/50">
           <View className="bg-white dark:bg-gray-800 rounded-t-3xl p-6 pb-10">
             <Text className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">{t('tramites_new')}</Text>
-            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('tramites_type')}</Text>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('tramites_type')}</Text>
             <TextInput
               className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100 mb-4"
               value={tipo}
@@ -116,7 +121,7 @@ export default function TramitesScreen({ navigation }: { navigation: ScreenNav }
               placeholder="Ej: Suspensión de Retenciones"
               accessibilityLabel={t('tramites_type')}
             />
-            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('register_name')}</Text>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('register_name')}</Text>
             <TextInput
               className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100 mb-6"
               value={descripcion}

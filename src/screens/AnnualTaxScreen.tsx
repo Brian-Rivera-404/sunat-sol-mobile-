@@ -1,13 +1,11 @@
-import React, { useMemo } from 'react'
-import { View, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
+import React, { useMemo, useState } from 'react'
+import { View, TouchableOpacity, ScrollView, Switch, Alert } from 'react-native'
 import { Text } from '../components/AccessibleText'
 import { useStore, go, fmt } from '../store/sunatStore'
 import { useTranslate } from '../i18n/useTranslate'
 import { vibrateLight } from '../utils/haptics'
 import HeaderBar from '../components/HeaderBar'
 import { C } from '../styles/theme'
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import type { RootStackParamList } from '../types/navigation'
 
 const RENTA_CHECK = [
   { id: 'ingresos', labelKey: 'annual_step_ingresos', done: true },
@@ -17,11 +15,10 @@ const RENTA_CHECK = [
   { id: 'devolucion', labelKey: 'annual_step_devolucion', done: false },
 ]
 
-type ScreenNav = NativeStackNavigationProp<RootStackParamList, 'AnnualTax'>
-
-export default function AnnualTaxScreen({ navigation }: { navigation: ScreenNav }) {
+export default function AnnualTaxScreen() {
   const { state, dispatch } = useStore()
   const { t } = useTranslate()
+  const [acepto, setAcepto] = useState(false)
 
   const emitidos = useMemo(() => (state.recibos ?? []).filter((r) => r.estado === 'emitido'), [state.recibos])
   const totalIngresos = useMemo(() => emitidos.reduce((s, r) => s + r.montoBruto, 0), [emitidos])
@@ -45,7 +42,6 @@ export default function AnnualTaxScreen({ navigation }: { navigation: ScreenNav 
   }, [totalIngresos, totalGastos, emitidos, impuestoEstimado, saldoAPagar])
 
   const progress = Math.min((pasosCompletados / RENTA_CHECK.length) * 100, 100)
-  const screenWidth = Dimensions.get('window').width
   const circleSize = 56
   const strokeWidth = 4
   const radius = (circleSize - strokeWidth) / 2
@@ -63,7 +59,7 @@ export default function AnnualTaxScreen({ navigation }: { navigation: ScreenNav 
 
       <View className="px-4 pt-6">
         {/* Progress card with circle */}
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <View className="flex-row justify-between items-center mb-3.5">
             <View>
               <Text className="text-xs" style={{ color: C.s500 }}>{t('annual_tax_campaign')}</Text>
@@ -86,7 +82,7 @@ export default function AnnualTaxScreen({ navigation }: { navigation: ScreenNav 
         </View>
 
         {/* Checklist — prototype parity */}
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] shadow-sm mb-2.5 overflow-hidden">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] shadow-sm mb-3 overflow-hidden">
           {RENTA_CHECK.map((item, i) => {
             const done = i < pasosCompletados
             return (
@@ -102,7 +98,7 @@ export default function AnnualTaxScreen({ navigation }: { navigation: ScreenNav 
         </View>
 
         {/* Deadline info box */}
-        <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-[16px] px-4 py-3 flex-row gap-2.5 mb-2.5" accessibilityRole="alert">
+        <View className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-[16px] px-4 py-3 flex-row gap-2.5 mb-3" accessibilityRole="alert">
           <Text className="text-lg">{'\uD83D\uDCC5'}</Text>
           <Text className="text-xs leading-5 flex-1" style={{ color: '#1E40AF' }}><Text className="font-bold">{t('annual_tax_deadline')}:</Text> {t('annual_tax_deadline_desc')}</Text>
         </View>
@@ -113,22 +109,60 @@ export default function AnnualTaxScreen({ navigation }: { navigation: ScreenNav 
           <InfoRow label={t('declarar_ingresos')} value={fmt(totalIngresos)} />
           <InfoRow label={t('annual_tax_deductions')} value={fmt(deduccion7UIT + totalGastos)} />
           <InfoRow label={t('annual_tax_net_income')} value={fmt(rentaNeta)} />
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-2" />
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
           <InfoRow label={t('annual_tax_estimated_tax')} value={fmt(impuestoEstimado)} />
           <InfoRow label={t('declarar_retenciones')} value={fmt(totalRetenciones)} />
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-2" />
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
           <InfoRow label={t('annual_tax_balance')} value={fmt(saldoAPagar)} isBold />
         </View>
 
-        <TouchableOpacity
-          className="bg-[#0A2240] rounded-xl py-4 items-center mb-10"
-          onPress={() => { vibrateLight(); dispatch(go('Declarar')) }}
-          accessibilityLabel={t('annual_tax_go_declare')}
-          accessibilityRole="button"
-          accessibilityHint={t('annual_tax_go_declare_hint')}
-        >
-          <Text className="text-white font-bold text-base">{t('annual_tax_go_declare')}</Text>
-        </TouchableOpacity>
+        {/* Presentar declaración */}
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
+          <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('declarar_anual')}</Text>
+          <Text className="text-xs text-gray-500 dark:text-gray-400 mb-4 leading-4">
+            {t('declarar_info')}
+          </Text>
+          <View className="flex-row items-start mb-4">
+            <Switch
+              value={acepto}
+              onValueChange={setAcepto}
+              trackColor={{ false: '#d1d5db', true: '#002f5d' }}
+              thumbColor={acepto ? '#fff' : '#f4f3f4'}
+              accessibilityLabel={t('declarar_acepto')}
+              accessibilityHint={t('declarar_acepto_hint')}
+            />
+            <Text className="text-sm text-gray-700 dark:text-gray-300 ml-3 flex-1">
+              {t('declarar_acepto_text')}
+            </Text>
+          </View>
+          <TouchableOpacity
+            className={`rounded-xl py-4 items-center ${acepto ? 'bg-[#1B4FBF]' : 'bg-gray-300 dark:bg-gray-600'}`}
+            onPress={() => {
+              Alert.alert(
+                t('declarar_confirmar_title'),
+                t('declarar_confirmar_body'),
+                [
+                  { text: t('general_cancelar'), style: 'cancel' },
+                  {
+                    text: t('declarar_presentar'),
+                    style: 'destructive',
+                    onPress: () => { vibrateLight(); dispatch(go('DeclaracionExitosa')) },
+                  },
+                ],
+                { cancelable: true },
+              )
+            }}
+            disabled={!acepto}
+            accessibilityLabel={acepto ? t('declarar_presentar') : t('declarar_presentar_disabled')}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: !acepto }}
+            accessibilityHint={acepto ? t('declarar_presentar_hint') : t('declarar_presentar_disabled_hint')}
+          >
+            <Text className={`font-bold text-base ${acepto ? 'text-white' : 'text-gray-500 dark:text-gray-400'}`}>
+              {t('declarar_presentar')}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   )
@@ -136,7 +170,7 @@ export default function AnnualTaxScreen({ navigation }: { navigation: ScreenNav 
 
 function InfoRow({ label, value, isBold }: { label: string; value: string; isBold?: boolean }) {
   return (
-    <View className="flex-row justify-between items-center py-1.5" accessibilityLabel={`${label}: ${value}`}>
+    <View className="flex-row justify-between items-center py-2.5" accessibilityLabel={`${label}: ${value}`}>
       <Text className="text-sm" style={{ color: C.s500 }}>{label}</Text>
       <Text className={`text-xl font-extrabold ${isBold ? '' : ''}`} style={{ color: C.navy }}>{value}</Text>
     </View>

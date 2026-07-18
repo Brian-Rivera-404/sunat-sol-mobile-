@@ -68,7 +68,7 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
       </HeaderBar>
 
       <View className="px-4 pt-6">
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm" accessibilityLabel={`${t('calendar_ruc_digit')}: ${lastDigit}`}>
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm" accessibilityLabel={`${t('calendar_ruc_digit')}: ${lastDigit}`}>
           <View className="flex-row items-center mb-3">
             <Text className="text-2xl mr-2">{'\uD83D\uDCC5'}</Text>
             <View>
@@ -80,7 +80,7 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
         </View>
 
         {/* RUC-digit calendar view – prototype parity */}
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm" accessibilityLabel={t('calendar_ruc_table')}>
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm" accessibilityLabel={t('calendar_ruc_table')}>
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('calendar_ruc_table')}</Text>
           {CAL_PROTO.map((item, i) => (
             <View key={i} className="flex-row items-center justify-between py-2.5" style={{ borderBottomWidth: i < CAL_PROTO.length - 1 ? 1 : 0, borderBottomColor: '#F1F5F9' }}>
@@ -99,14 +99,14 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
         </View>
 
         <View className="mb-2.5">
-          <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3 mt-1" accessibilityRole="header">{t('calendar_upcoming')}</Text>
+          <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3 mt-2" accessibilityRole="header">{t('calendar_upcoming')}</Text>
           {DEADLINES.map((dl, i) => {
             const isPast = i < currentMonth
             const isCurrent = i === currentMonth
             return (
               <View
                 key={i}
-                className={`bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 flex-row items-center shadow-sm ${isCurrent ? 'border-2 border-[#0A2240] dark:border-blue-400' : ''} ${isPast ? 'opacity-50' : ''}`}
+                className={`bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 flex-row items-center shadow-sm ${isCurrent ? 'border-2 border-[#0A2240] dark:border-blue-400' : ''} ${isPast ? 'opacity-50' : ''}`}
                 accessibilityLabel={`${dl.mes} ${dl.dia}: ${t(dl.label)}`}
               >
                 <View className={`w-10 h-10 rounded-full ${isCurrent ? 'bg-[#0A2240]' : isPast ? 'bg-gray-200 dark:bg-gray-700' : 'bg-blue-100 dark:bg-blue-900'} items-center justify-center mr-3`}>
@@ -123,7 +123,7 @@ export default function TaxCalendarScreen({ navigation }: { navigation: ScreenNa
         </View>
 
         {/* Próximas obligaciones — prototype parity */}
-        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+        <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
           <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3" accessibilityRole="header">{t('calendar_upcoming_obligations')}</Text>
           {[
             { label: t('calendar_obligation_jul'), date: t('calendar_obligation_jul_date') },

@@ -79,7 +79,7 @@ export default function ResumenReciboScreen({ navigation }: Props) {
   return (
     <ScrollView className="flex-1 bg-[#EEF2FF] dark:bg-gray-900">
       <HeaderBar dark>
-        <TouchableOpacity onPress={() => dispatch(go('NuevoRecibo2'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('resumen_recibo_volver_hint')}>
+        <TouchableOpacity onPress={() => dispatch(go('NuevoRecibo1'))} className="mr-3 py-2.5" accessibilityLabel={t('general_volver')} accessibilityRole="button" accessibilityHint={t('resumen_recibo_volver_hint')}>
           <Text className="text-white text-2xl">{'\u2039'}</Text>
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold">{t('resumen_recibo_title')}</Text>
@@ -97,7 +97,7 @@ export default function ResumenReciboScreen({ navigation }: Props) {
       </View>
 
       <View className="px-4 pt-4">
-        <Text className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1" accessibilityRole="header">{t('resumen_recibo_verificar')}</Text>
+        <Text className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2" accessibilityRole="header">{t('resumen_recibo_verificar')}</Text>
         <Text className="text-gray-500 dark:text-gray-400 mb-6">{t('resumen_recibo_revisa')}</Text>
 
         <View className="bg-white dark:bg-gray-800 rounded-[18px] p-4 shadow-sm mb-4" accessibilityLabel={`${t('resumen_recibo_resumen')}: RUC ${ruc}, ${t('resumen_recibo_cliente')} ${cliente}, ${t('resumen_recibo_monto_bruto')} ${fmt(monto)}, ${t('resumen_recibo_retencion')} ${fmt(retencionMonto)}, ${t('resumen_recibo_forma_pago')} ${FORMA_PAGO_LABEL[formaPago] || formaPago}, ${t('resumen_recibo_neto')} ${fmt(neto)}`}>
@@ -109,8 +109,8 @@ export default function ResumenReciboScreen({ navigation }: Props) {
             <Text className="text-gray-500 dark:text-gray-400">{t('resumen_recibo_cliente')}</Text>
             <Text className="text-gray-800 dark:text-gray-200 font-medium flex-1 text-right">{cliente}</Text>
           </View>
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
-          <View className="flex-row justify-between mb-3 mt-2" accessibilityLabel={`${t('resumen_recibo_monto_bruto')}: ${fmt(monto)}`}>
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
+          <View className="flex-row justify-between mb-3" accessibilityLabel={`${t('resumen_recibo_monto_bruto')}: ${fmt(monto)}`}>
             <Text className="text-gray-500 dark:text-gray-400">{t('resumen_recibo_monto_bruto')}</Text>
             <Text className="text-gray-800 dark:text-gray-200 font-medium">{fmt(monto)}</Text>
           </View>
@@ -122,8 +122,8 @@ export default function ResumenReciboScreen({ navigation }: Props) {
             <Text className="text-gray-500 dark:text-gray-400">{t('resumen_recibo_forma_pago')}</Text>
             <Text className="text-gray-800 dark:text-gray-200 font-medium">{FORMA_PAGO_LABEL[formaPago] || formaPago}</Text>
           </View>
-          <View className="h-px bg-gray-200 dark:bg-gray-600 my-1" />
-          <View className="flex-row justify-between mt-2" accessibilityLabel={`${t('resumen_recibo_neto')}: ${fmt(neto)}`}>
+          <View className="h-px bg-gray-200 dark:bg-gray-600 my-3" />
+          <View className="flex-row justify-between" accessibilityLabel={`${t('resumen_recibo_neto')}: ${fmt(neto)}`}>
             <Text className="text-gray-800 dark:text-gray-100 font-bold text-base">{t('resumen_recibo_neto')}</Text>
             <Text className="text-xl font-extrabold" style={{ color: C.navy }}>{fmt(neto)}</Text>
           </View>
@@ -139,7 +139,7 @@ export default function ResumenReciboScreen({ navigation }: Props) {
         )}
 
         <View className="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-xl px-4 py-4 mb-4" accessibilityRole="alert" accessibilityLiveRegion="assertive" importantForAccessibility="yes">
-          <Text className="text-amber-800 dark:text-amber-200 font-bold text-sm mb-1">{'\u26A0\uFE0F'} {t('resumen_recibo_alerta_title')}</Text>
+          <Text className="text-amber-800 dark:text-amber-200 font-bold text-sm mb-2">{'\u26A0\uFE0F'} {t('resumen_recibo_alerta_title')}</Text>
           <Text className="text-amber-700 dark:text-amber-300 text-sm leading-5">{t('resumen_recibo_alerta_body')}</Text>
         </View>
 
@@ -166,7 +166,7 @@ export default function ResumenReciboScreen({ navigation }: Props) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => dispatch(go('NuevoRecibo2'))}
+          onPress={() => dispatch(go('NuevoRecibo1'))}
           className="items-center py-3 mb-10"
           accessibilityLabel={t('resumen_recibo_corregir')}
           accessibilityRole="button"

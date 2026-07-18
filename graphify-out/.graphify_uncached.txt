@@ -1,0 +1,9 @@
+E:\sunat-sol-mobile-\README.md
+E:\sunat-sol-mobile-\docs\index.html
+E:\sunat-sol-mobile-\mock-server\README.md
+E:\sunat-sol-mobile-\assets\android-icon-background.png
+E:\sunat-sol-mobile-\assets\android-icon-foreground.png
+E:\sunat-sol-mobile-\assets\android-icon-monochrome.png
+E:\sunat-sol-mobile-\assets\favicon.png
+E:\sunat-sol-mobile-\assets\icon.png
+E:\sunat-sol-mobile-\assets\splash-icon.png

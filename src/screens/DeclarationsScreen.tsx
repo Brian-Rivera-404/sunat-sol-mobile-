@@ -88,18 +88,18 @@ export default function DeclarationsScreen({ navigation }: { navigation: ScreenN
             )}
 
             {sorted.map((dec) => (
-              <View key={dec.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm">
+              <View key={dec.id} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm">
                 <View className="flex-row justify-between items-start mb-3">
                   <View className="flex-1 mr-2">
                     <Text className="text-sm font-bold text-gray-800 dark:text-gray-200">{dec.periodo}</Text>
-                    <Text className="text-xs text-gray-400 mt-0.5">{t('declarations_subtitle')}</Text>
+                    <Text className="text-xs text-gray-400 mt-1">{t('declarations_subtitle')}</Text>
                   </View>
                   <StatusPill status={dec.estado} />
                 </View>
                 <View className="flex-row justify-between items-end">
                   <View>
                     <Text className="text-xs text-gray-500">{t('declarations_base')}: {fmt(dec.monto || 0)}</Text>
-                  <Text className="text-xl font-extrabold mt-0.5" style={{ color: C.navy }}>{fmt(dec.monto || 0)}</Text>
+                  <Text className="text-xl font-extrabold mt-1" style={{ color: C.navy }}>{fmt(dec.monto || 0)}</Text>
                 </View>
                 {dec.estado === 'pendiente' ? (
                   <TouchableOpacity

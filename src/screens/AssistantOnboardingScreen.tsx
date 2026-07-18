@@ -42,7 +42,7 @@ export default function AssistantOnboardingScreen({ navigation }: { navigation: 
         <Text className="text-sm text-gray-500 dark:text-gray-400 text-center mb-8">{t('assistant_welcome_desc')}</Text>
 
         {TARJETAS.map((tjr) => (
-          <View key={tjr.key} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-2.5 shadow-sm flex-row items-center" accessibilityLabel={t('assistant_onboarding_' + tjr.key)}>
+          <View key={tjr.key} className="bg-white dark:bg-gray-800 rounded-[18px] p-4 mb-3 shadow-sm flex-row items-center" accessibilityLabel={t('assistant_onboarding_' + tjr.key)}>
             <View className="w-12 h-12 rounded-full bg-[#1B4FBF] dark:bg-blue-700 items-center justify-center mr-4">
               <Text className="text-2xl">{tjr.icon}</Text>
             </View>
